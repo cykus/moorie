@@ -1,0 +1,46 @@
+1. Uruchomienie programu
+
+2. Dekodowanie hasha
+
+3. Tworzenie listy skrzynek (+ ewentualnie obiektow skrzynek w pamieci)
+
+4. Wybor skrzynki
+
+5. Logowanie do skrzynki
+5.1 Zalogowano
+5.1.1 Flaga kontynuacji / ktory segment
+5.1.1.1 Tak -> 9
+5.1.1.2 Nie -> 5
+5.2 Jesli blad -> komunikat -> 4
+
+6. Sprawdzanie segmentow na skrzynce + tworzenie listy zalacznikow w pamieci/dysku
+6.1 Jesli jakiegos brakuje - pytaj co robic
+6.1.1 Kontynuowac -> 7
+6.1.2 Wybierz nowa skrzynka -> 4
+6.2 Lista ok -> 7
+
+7. Sciaganie pierwszego segmentu
+
+8. Sprawdzanie crc
+8.1 CRC BAD  - pytaj co robic
+8.1.1 Ponow
+8.1.2 Wybierz nowa skrzynke -> 4
+8.1.3 Kontynuuj (ostrzezenie blabla)
+8.2 CRC OK -> 9
+
+9. Sciaganie nastepnego segmentu
+9.1 Ostatni segment? 
+9.1.1 Nie -> 10
+9.1.2 Tak -> 11
+
+10. Sprawdzanie crc
+10.1 CRC BAD  - pytaj co robic
+10.1.1 Ponow
+10.1.2 Wybierz nowa skrzynke -> 4
+10.1.3 Kontynuuj (ostrzezenie blabla)
+10.2 CRC OK -> 9
+
+11. Sprawdzanie crc calego pliku
+11.1 CRC BAD - ostrzezenie o zle sciagnietym pliku - zakonczenie programu
+11.2 CRC OK - Zakonczenie programu/instancji
+
