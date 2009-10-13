@@ -11,7 +11,7 @@
  */
 
 #include "MoorhuntHash.h"
-//#include "MailSystem/Account.h"
+// #include "Account.h"
 //#include "Util.h"
 //#include "Log.h"
 #include "Decoder.h"
@@ -193,7 +193,7 @@ bool MoorhuntHash::decode(std::string hash)
 		if (declen == 0)
 			break;
 
-		td = mcrypt_module_open("rijndael-256", NULL, "cbc", NULL);
+		td = mcrypt_module_open((char*)"rijndael-256", NULL, (char*)"cbc", NULL);
 		if (td == MCRYPT_FAILED)
 			break;
 
@@ -256,19 +256,20 @@ bool MoorhuntHash::decode(std::string hash)
 			accessPasswd = string(src + v[16], v[17]);
 			tmp = string(src + v[18], v[19]); // num of mirrors
 			numOfMirrors = atoi(tmp.c_str());
-			std::cout << numOfMirrors << std::endl;
+			std::cout << "Mirrorow: " << numOfMirrors << std::endl;
 			int offset = 0;
 			//
 			// get accounts
 			for (int i=0; i<numOfMirrors; i++)
 			{
 				offset = 6*i;
-//				Account::MBoxID id = static_cast<Account::MBoxID>(src[v[20 + offset]]);
+// 				Account::MBoxID id = static_cast<Account::MBoxID>(src[v[20 + offset]]);
 				string login(src + v[22 + offset], v[23 + offset]);
 				string passwd(src + v[24 + offset], v[25 + offset]);
-//				Account acct(id, login, passwd);
-//				accounts.push_back(acct);
-				std::cout << src[v[20 + offset]] << " " << login << " " << passwd << std::endl;
+// 				Account acct(id, login, passwd);
+// 				accounts.push_back(acct);
+				std::cout << "ID:" << (src[v[20 + offset]] & 0xFF) << " ";
+				std::cout << " L:" << login << " P:" << passwd << std::endl;
 			}
 			coverURL = string(src + v[26 + offset], v[27 + offset]);
 			editPasswd = string(src + v[28 + offset], v[29 + offset]);
@@ -315,10 +316,10 @@ int MoorhuntHash::getNumOfMirrors() const
 	return accounts.size();
 }
 
-//std::list<Account> MoorhuntHash::getAccounts() const
-//{
-//	return accounts;
-//}
+// std::list<Account> MoorhuntHash::getAccounts() const
+// {
+// 	return accounts;
+// }
 
 std::string MoorhuntHash::getForWhom() const
 {

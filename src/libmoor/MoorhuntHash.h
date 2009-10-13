@@ -18,6 +18,7 @@
 #include <list>
 #include <fstream>
 #include <iostream>
+
 //#include <MailSystem/Account.h>
 
 //! Moorhunt hashfile data
@@ -62,7 +63,7 @@ class MoorhuntHash
 		long getFileSize() const;
 		int getNumOfSegments() const;
 		int getNumOfMirrors() const;
-		std::list<int> getAccounts() const;
+// 		std::list<int> getAccounts() const;
 		bool isAccessPasswordProtected() const;
 		std::string getForWhom() const;
 		std::string getAccessPassword() const;
