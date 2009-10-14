@@ -237,6 +237,7 @@ bool MoorhuntHash::decode(std::string hash)
 		else
 		{
 			int numOfMirrors;
+			string id;
 
 			fileName = string(src, v[1]);
 			crc = (
@@ -256,7 +257,6 @@ bool MoorhuntHash::decode(std::string hash)
 			accessPasswd = string(src + v[16], v[17]);
 			tmp = string(src + v[18], v[19]); // num of mirrors
 			numOfMirrors = atoi(tmp.c_str());
-			std::cout << "Mirrorow: " << numOfMirrors << std::endl;
 			int offset = 0;
 			//
 			// get accounts
@@ -268,8 +268,13 @@ bool MoorhuntHash::decode(std::string hash)
 				string passwd(src + v[24 + offset], v[25 + offset]);
 // 				Account acct(id, login, passwd);
 // 				accounts.push_back(acct);
-				std::cout << "ID:" << (src[v[20 + offset]] & 0xFF) << " ";
-				std::cout << " L:" << login << " P:" << passwd << std::endl;
+//				tmp = string(src[v[20 + offset]]); // id
+				id = string(src + v[20 + offset], v[21]);
+				accounts.push_back(id);
+				accounts.push_back(login);
+				accounts.push_back(passwd);
+// 				std::cout << "ID:" << /*(src[v[20 + offset]] & 0xFF)*/   << " ";
+// 				std::cout << " L:" << login << " P:" << passwd << std::endl;
 			}
 			coverURL = string(src + v[26 + offset], v[27 + offset]);
 			editPasswd = string(src + v[28 + offset], v[29 + offset]);
@@ -316,10 +321,11 @@ int MoorhuntHash::getNumOfMirrors() const
 	return accounts.size();
 }
 
-// std::list<Account> MoorhuntHash::getAccounts() const
-// {
-// 	return accounts;
-// }
+std::vector<std::string> MoorhuntHash::getAccounts() const
+{
+ 	return accounts;
+}
+
 
 std::string MoorhuntHash::getForWhom() const
 {

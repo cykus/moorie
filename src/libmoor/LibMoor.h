@@ -3,8 +3,11 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
+#include <cstdlib>
 
 #include "MoorhuntHash.h"
+#include "Mailboxes.h"
 
 class CLibMoor {
     MoorhuntHash * myHash;
