@@ -15,6 +15,7 @@
 //#include "Util.h"
 //#include "Log.h"
 #include "Decoder.h"
+#include "Mailboxes.h"
 #include <stdlib.h>
 #include <mcrypt.h>
 #include <mhash.h>
@@ -95,7 +96,7 @@ std::string MoorhuntHash::getMD5( const std::string & str )
 		mhash_deinit( mh, md5hash.get() );
 		std::stringstream ss;
 		// TODO get rid of boost::format
-		for (int i = 0; i < mhash_get_block_size( MHASH_MD5 ); i++) {
+		for (unsigned int i = 0; i < mhash_get_block_size( MHASH_MD5 ); i++) {
 			ss <<  ( boost::format( "%02x" ) % static_cast<unsigned int>( md5hash[i] ) );
 		}
 		return ss.str();
@@ -136,7 +137,8 @@ bool MoorhuntHash::decode(std::string hash)
 	int declen;
 	int i;
 	int hpos;
-	verMaj, verMin = 0;
+	verMaj = 0;
+	verMin = 0;
 
 	MCRYPT td;
 	valid = false;
@@ -176,7 +178,7 @@ bool MoorhuntHash::decode(std::string hash)
 			hpos += strlen(prefixes[j]);
 			break;
 		}
-		std::cout << j << std::endl;
+//		std::cout << j << std::endl;
 	}
 
 	verMaj = hashin[hpos++]; // determine moorhunt version
@@ -227,7 +229,7 @@ bool MoorhuntHash::decode(std::string hash)
 	{
 		string tmp;
 		char *src = reinterpret_cast<char *>(in);
-		char *ptr;
+//		char *ptr;
 		std::vector<int> v = split(src, declen);
 		if (v.size() < 39)
 		{
@@ -269,7 +271,7 @@ bool MoorhuntHash::decode(std::string hash)
 // 				Account acct(id, login, passwd);
 // 				accounts.push_back(acct);
 //				tmp = string(src[v[20 + offset]]); // id
-				id = string(src + v[20 + offset], v[21]);
+				id = getMailboxName(src[v[20 + offset]]);
 				accounts.push_back(id);
 				accounts.push_back(login);
 				accounts.push_back(passwd);

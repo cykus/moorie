@@ -11,12 +11,12 @@
 
 class CLibMoor {
     MoorhuntHash * myHash;
-    static short int SelectedMailBox;
 
     public:
 	CLibMoor();
 	~CLibMoor();
 	int Dehash(std::string HashCode);
+	int selectMailBox(int MailBox);
 };
 
 #endif

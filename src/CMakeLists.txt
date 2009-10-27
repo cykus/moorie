@@ -1,0 +1,24 @@
+# The name of our project is "HELLO". CMakeLists files in this project can 
+# refer to the root source directory of the project as ${HELLO_SOURCE_DIR} and 
+# to the root binary directory of the project as ${HELLO_BINARY_DIR}. 
+cmake_minimum_required (VERSION 2.6) 
+project (MOOR) 
+
+# Recurse into the "Hello" and "Demo" subdirectories. This does not actually 
+# cause another cmake executable to run. The same process will walk through 
+# the project's entire directory structure. 
+add_library (libmoor libmoor/Decoder.cpp  libmoor/LibMoor.cpp  libmoor/Mailbox.cpp  libmoor/Mailboxes.cpp  libmoor/MoorhuntHash.cpp)
+add_subdirectory (libmoor)
+add_subdirectory (moor_bin)
+
+include_directories (${MOOR_SOURCE_DIR}/moor_bin) 
+include_directories (${MOOR_SOURCE_DIR}/libmoor) 
+
+link_directories (${MOOR_BINARY_DIR}/moor_bin)
+link_directories (${MOOR_BINARY_DIR}/libmoor)
+
+
+add_executable (moor moor_bin/main.cpp)
+
+target_link_libraries (libmoor "ssl" "mcrypt" "mhash" "boost_regex" )
+target_link_libraries (moor libmoor)
