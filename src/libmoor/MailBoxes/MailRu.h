@@ -26,7 +26,7 @@ class MailRuMailbox: public CMailBox
 	public:
 		MailRuMailbox(const string &usr, const string &passwd);
 		~MailRuMailbox();
-		void loginRequest();
+		int Login();
 		void logoutRequest();
 		void getHeadersRequest();
 		void downloadRequest(/*const EmailHeader &hdr, Segment *s*/);

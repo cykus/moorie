@@ -10,6 +10,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 using namespace std;
+using namespace boost;
 
 class CMailBox {
 
@@ -32,9 +33,31 @@ class CMailBox {
 	bool validAccount; //<! Flag indicating whether this is valid mailbox
 	int uSeq; //!< Unique id of this Mailbox object derived from seq
 	bool stopFlag; //!< stops transfer
+	
+	string result; //Variable that contains result of request
 
+//	mutable mutex speedMutex;
+	posix_time::ptime startTime; //!< Connection start time, used to measure speed
+	unsigned int bytesRead; //!< Number of bytes processed, used to measure speed
+
+	static const int BUFFER_SIZE = 1024*256; //!< Size of temporary buffer (256kB)
+
+	protected:
+		static size_t _writeData(void *buffer, size_t size, size_t nmem, void *ptr);
+		virtual size_t writeData(void *buffer, size_t size, size_t nmem);
+		
+		void setCookie( string ) const;
+		string& doGet(string url, bool header=false);
+		string& doPost(string url, string vars, bool header=false);
+		string getUser() const;
+		string getPassword() const;
+		string escape(string q);
+		
+		void requestComplete();
+	
 	public:
-		CMailBox();
+		CMailBox(const std::string &usr, const std::string &passwd);
+		virtual int Login() = 0;
 		virtual ~CMailBox();
 };
 

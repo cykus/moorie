@@ -244,7 +244,7 @@ bool MoorhuntHash::decode(std::string hash)
 			fileName = string(src, v[1]);
 			crc = (
 					((unsigned char)src[v[2]]) << 24 |
-				        ((unsigned char)src[v[2] + 1]) << 16 |
+					((unsigned char)src[v[2] + 1]) << 16 |
 					((unsigned char)src[v[2] + 2]) << 8 |
 					((unsigned char)src[v[2] + 3])
 			);

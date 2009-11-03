@@ -10,26 +10,48 @@ int CLibMoor::Dehash(std::string HashCode) {
     myHash = new MoorhuntHash(HashCode);
 	if (myHash->isValid() != 1)
 		return 1;
-
-	int vector_size = myHash->getAccounts().size();
-	for (int i = 0; i < vector_size; i+= 3) {
-		std::cout << "ID: "  << myHash->getAccounts().at(i);
-		std::cout << " L: " << myHash->getAccounts().at(i+1);
-		std::cout << " P: " << myHash->getAccounts().at(i+2);
-		std::cout << std::endl;
-	}
-
-// 	for (std::list<std::string>::iterator it = myHash->getAccounts().begin(); it != myHash->getAccounts().end(); it++)
-// 		std::cout << (*it) << " ";
-
-	return 0;
+	else
+		return 0;
 }
 
 int CLibMoor::selectMailBox(int MailBox) {
-//	int selected = MailBox * 3;
+	int selected = MailBox * 3;
 //	myMailBox = new CMailBox(myHash->getAccounts().at(selected - 3), myHash->getAccounts().at(selected-2), myHash->getAccounts().at(selected-1));
 
-// 	myMailBox -> Create();
+	bool cont = false;
+	
+	int vector_size = myHash->getAccounts().size();
+	int j = 0;
+	while (cont != true) {
+		for (int i = 0; i < vector_size; i+= 3) {
+			cout << j;
+			std::cout << ". ID: "  << myHash->getAccounts().at(i);
+			std::cout << " L: " << myHash->getAccounts().at(i+1);
+			std::cout << " P: " << myHash->getAccounts().at(i+2);
+			std::cout << std::endl;
+			j++;
+		}
+		std::cout << "Logowanie do: "  << myHash->getAccounts().at(selected) << endl;
+		string login = myHash->getAccounts().at(selected+1);
+		string passwd = myHash->getAccounts().at(selected+2);
+		
+		if (myHash->getAccounts().at(selected) == "mail.ru") {
+			myMailBox = new MailRuMailbox(login, passwd);
+		}
+		
+		
+		if (myMailBox -> Login() == 0) {
+			cout << "Zalogowano pomyslnie..." << endl;
+			cont = true;
+		} else {
+			cout << "Logowanie nie powiodlo sie..." << endl;
+			cont = false;
+		}
+	}
+	cout << "Sprawdzanie listy segmentow..." << endl;
+			
+	
+//	myMailBox -> Login();
 	return 0;
 }
 

@@ -33,6 +33,7 @@ class MoorhuntHash
 		unsigned int crc;
 		int numOfSegments;
 		std::vector<std::string> accounts;
+		std::vector<int> ids;
 		std::string forWhom;
 		std::string accessPasswd;
 		std::string editPasswd;
@@ -49,7 +50,9 @@ class MoorhuntHash
 		static std::vector<int> split(char *str, int len);
 		static std::string getMD5( const std::string & str );
 		bool usesMD5Passwords() const;
-
+//		static size_t _writeData(void *buffer, size_t size, size_t nmem, void *ptr);
+//		virtual size_t writeData(void *buffer, size_t size, size_t nmem);
+		
 	public:
 		MoorhuntHash();
 		MoorhuntHash(std::string hash);

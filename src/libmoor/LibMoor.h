@@ -7,10 +7,12 @@
 #include <cstdlib>
 
 #include "MoorhuntHash.h"
+#include "Mailbox.h"
 #include "Mailboxes.h"
 
 class CLibMoor {
     MoorhuntHash * myHash;
+	CMailBox * myMailBox;
 
     public:
 	CLibMoor();

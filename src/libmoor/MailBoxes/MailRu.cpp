@@ -23,33 +23,34 @@ MailRuMailbox::MailRuMailbox(const string &usr, const string &passwd): CMailBox(
 {
 }
 
-void MailRuMailbox::loginRequest()
+int MailRuMailbox::Login()
 {
-	/*
+	
 //	LOG_ENTER("MailRuMailbox::loginRequest");
 	const string vars = string("Login=")
 		+ escape(getUser()) + "&Domain=" + escape("mail.ru") + "&Password="
 		+ escape(getPassword()) + "&level=1";
-	setState(Mailbox::LoginIP);
+//	setState(Mailbox::LoginIP);
 	page = doPost("http://win.mail.ru/cgi-bin/auth", vars,true);
-
 	smatch match;
 //	page = doGet("http://win.mail.ru/cgi-bin/msglist?folder=0");
 
 	regex re("Set-Cookie: (Mpop=.*?;)");
 	if (regex_search(page, match, re))
-	{
+	{	
 		auth = match[1];
-		LOG(Log::Debug, "auth=" + auth);
-		setState(Mailbox::LoginDone); // logged in
+//		LOG(Log::Debug, "auth=" + auth);
+//		setState(Mailbox::LoginDone); // logged in
+		return 0;
 	}
 	else
 	{
-		setState(Mailbox::LoginError); //login failure
-		throw MoorieException("Login failed");
+		cout << " dupa... :< " << endl;
+//		setState(Mailbox::LoginError); //login failure
+//		throw MoorieException("Login failed");
+		return 1;
 	}
-	setState(Mailbox::Connected);
-	*/
+//	setState(Mailbox::Connected);
 }
 
 void MailRuMailbox::logoutRequest()
