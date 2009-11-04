@@ -5,16 +5,13 @@
 int main() {
     	CLibMoor * Instance;
    	 std::string hash;
-    	hash = "<<ahQbTU4m9TnE2dW4KPF4gEV-4m3AcYUnRtm40K15lfZcPBpamtY4kNt7HtKjzi\
-S7tpfiKGtmlXw4wv15Thi-PphTUFtsKJgzWjzWUgmcCCj4QX4Q7ItbkjRxnE0bAQ\
-E7n1dF6T7WVsPifR/FNFIByqrCwYPuCp7aRT4wpKkcHoS3xHg3AW3Gg1od/ZBD5x\
-ad-7j4UARF8STlDsxaHYq0NuDwYh5crP88CwnqadIs-fEib6n7XYvTE0rsdQA16e\
-kKAPZ801YNbrfd8H6ZHQjFwA0lC4BBpjHlrPnN8lw9azgbwjy/M9OBhRBREmU5CZ\
-kjToy0xHUQUc3OM5Q7RQWyPpezNrctxEvD4-go0aVL50wUXXlI9yp31TbcLCOz2a\
-bjON8JtghB/idGaBLcDLOeEyBFzmHriE6UrJTU9UUdVVIXB151p6sW5dl-7hLpbx\
-aaB6jcoqp8F6qVVqMBgvNyD7hwj6Wan-qPKVoymYQVzjRZzFqmIswYt6itrHk-o0\
-tirj8QSk19kh8Wh0mkRMWQPIj5SdAN8P9NTFpUqKEp1OE67eoe vS-fH9sZAztk3u\
-G8vV4ldreOVnOIiJHE6FzKzeyg==>>";
+hash = "<<ahbid5tYiBHTj0MPV4rNiqs/0pu3FI-RJ8Mij7SJXzp4jY04VjeyEx43FYTDja\
+BAho7GpeDuCjtNimyEKHTdiGSWfYrSgtUpxMja9SpjYKCtXcdb l8yMBRcup5JEU7\
+vychhA1NA/mYvUxWFGYFZAcdeh/ifNoA-IxyOwEPCiBym-YRFfkF0ft0wFH9XuCd\
+pznqaOwesYpW72p5CdInYACddhZvQ6QjwmzhnxU5zuGwptxb1X sUWRKpPVCERU7e\
+EmtLNRZNK/2tNiKxrDFizuuVzy6WrzSkopKYxUuJY0r4vTYELSA72NHiAbhX ceML\
+GAkZSiL2Qy2KEa2Mi6coFBwU0adwM9YL2YMoZGIpYfPokn10X/amxhyYlmXF2x-y\
+W1191lOLwE6/hq5eKyCjfsH0WVNc5/Q0mlMLXLeP2L3d/I0=>>";
    	
 	 Instance = new CLibMoor();
 
@@ -24,7 +21,7 @@ G8vV4ldreOVnOIiJHE6FzKzeyg==>>";
 	}
 	else {
 		std::cout << "Podany hashcode jest prawidlowy... Wybieranie skrzynki" << std::endl;
-		Instance -> selectMailBox(1);
+		Instance -> selectMailBox(4);
 	}
 	return 0;
 }

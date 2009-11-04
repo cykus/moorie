@@ -58,7 +58,7 @@ class CMailBox {
 	public:
 		CMailBox(const std::string &usr, const std::string &passwd);
 		virtual int Login() = 0;
-		virtual void getHeadersRequest() = 0;
+		virtual int getHeadersRequest() = 0;
 		virtual ~CMailBox();
 };
 

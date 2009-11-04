@@ -43,8 +43,17 @@ int CLibMoor::selectMailBox(int MailBox) {
 		if (myMailBox -> Login() == 0) {
 			cout << "Zalogowano pomyslnie..." << endl;
 			cout << "Sprawdzanie listy segmentow..." << endl;
-			myMailBox -> getHeadersRequest();
-			cont = true;
+			int segments = myMailBox -> getHeadersRequest();
+			if (segments == 0) {
+				cout << "Nie znaleziono zadnego segmentu..." << endl;
+				cont = false;
+			} else if (myHash->getNumOfSegments() == segments) {
+				cout << "Znaleziono wszystkie segmenty, zaczynam pobieranie" << endl;
+				cont = true;
+			} else {
+				cout << "Znaleziono " << segments << "/" << myHash->getNumOfSegments() << " segmentow. Kontynuowac? " << endl;
+				cont = true;
+			}
 		} else {
 			cout << "Logowanie nie powiodlo sie..." << endl;
 			cont = false;

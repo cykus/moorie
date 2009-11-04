@@ -28,7 +28,7 @@ class MailRuMailbox: public CMailBox
 		~MailRuMailbox();
 		int Login();
 		void logoutRequest();
-		void getHeadersRequest();
+		int getHeadersRequest();
 		void downloadRequest(/*const EmailHeader &hdr, Segment *s*/);
 
 		void parseResponse();
