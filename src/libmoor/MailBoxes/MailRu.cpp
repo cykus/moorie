@@ -45,7 +45,6 @@ int MailRuMailbox::Login()
 	}
 	else
 	{
-		cout << " dupa... :< " << endl;
 //		setState(Mailbox::LoginError); //login failure
 //		throw MoorieException("Login failed");
 		return 1;
@@ -62,10 +61,9 @@ void MailRuMailbox::logoutRequest()
 
 void MailRuMailbox::getHeadersRequest()
 {
-	/*
-	LOG_ENTER("MailRuMailbox::getHeadersRequest");
+//	LOG_ENTER("MailRuMailbox::getHeadersRequest");
 	string url("http://win.mail.ru/cgi-bin/msglist?folder=0");
-	setState(Mailbox::ReadHeadersIP); // request headers
+	//setState(Mailbox::ReadHeadersIP); // request headers
 // 	totalEmails = 0;
 //     setCookie(auth);
  	page = doGet(url);
@@ -81,6 +79,7 @@ void MailRuMailbox::getHeadersRequest()
 	while (regex_search(page,match,re2))
 	{
 		pgcnt++;
+		cout << pgcnt << endl;
 		numstr.str("");
 		numstr << pgcnt;
 		string url = "http://win.mail.ru/cgi-bin/msglist?folder=0&page="+numstr.str();
@@ -91,15 +90,17 @@ void MailRuMailbox::getHeadersRequest()
 		string::const_iterator pbegin = page.begin();
 		string::const_iterator pend = page.end();
 		while (regex_search(pbegin, pend, match, mheadre, match_default)) {
-			EmailHeader hdr(match[1], match[2]);
-			LOG(Log::Debug, "Found Header: "+hdr.subject);
-			addHeader(hdr);
+//			EmailHeader hdr(match[1], match[2]);
+//			LOG(Log::Debug, "Found Header: "+hdr.subject);
+//			addHeader(hdr);
 			pbegin = match[2].second;
 			++msgcnt;
+			cout << msgcnt;
 		}
 	}
+	cout << "Znaleziono w sumie " << msgcnt << " segmentow." << endl;
 
-	setState(Mailbox::ReadHeadersDone); */
+//	setState(Mailbox::ReadHeadersDone); */
 }
 
 void MailRuMailbox::downloadRequest()

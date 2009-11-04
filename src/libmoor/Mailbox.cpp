@@ -59,7 +59,7 @@ string& CMailBox::doGet(std::string url, bool  header)
 //		LOG(Log::Error, format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
 //	LOG(Log::Debug,"Before request");
-//	requestComplete();
+	requestComplete();
 	return this->result;
 }
 

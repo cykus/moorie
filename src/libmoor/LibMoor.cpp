@@ -42,13 +42,14 @@ int CLibMoor::selectMailBox(int MailBox) {
 		
 		if (myMailBox -> Login() == 0) {
 			cout << "Zalogowano pomyslnie..." << endl;
+			cout << "Sprawdzanie listy segmentow..." << endl;
+			myMailBox -> getHeadersRequest();
 			cont = true;
 		} else {
 			cout << "Logowanie nie powiodlo sie..." << endl;
 			cont = false;
 		}
 	}
-	cout << "Sprawdzanie listy segmentow..." << endl;
 			
 	
 //	myMailBox -> Login();
