@@ -154,3 +154,18 @@ size_t CMailBox::writeData(void *buffer, size_t size, size_t nmem)
 	}
 	return n;
 }
+
+void CMailBox::addHeader(const EmailHeader &hdr)
+{
+	headers.push_back(hdr);
+}
+
+void CMailBox::clearHeaders()
+{
+	headers.clear();
+}
+
+std::list<EmailHeader> CMailBox::getHeaders() const
+{
+	return headers;
+}

@@ -8,6 +8,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include "EmailHeader.h"
 
 using namespace std;
 using namespace boost;
@@ -21,7 +22,7 @@ class CMailBox {
 	string password; //!< User password
 	int bufferPos; //!< Number of bytes written by subsequent writeData calls
 	char *buffer; //!< Temporary buffer for incoming data, size defined by BUFFER_SIZE
-//	list<EmailHeader> headers; //!< Email headers read by getHeadersRequest() call
+	list<EmailHeader> headers; //!< Email headers read by getHeadersRequest() call
 //	State state; //!< Current state of this Mailbox object
 //	Segment *segment; //!< Currently downloaded Segment
 	int usecnt; //!< Number of times this mailbox was used
@@ -54,11 +55,15 @@ class CMailBox {
 		string escape(string q);
 		
 		void requestComplete();
+		
+		void addHeader(const EmailHeader &hdr);
+		void clearHeaders();
 	
 	public:
 		CMailBox(const std::string &usr, const std::string &passwd);
 		virtual int Login() = 0;
 		virtual int getHeadersRequest() = 0;
+		list<EmailHeader> getHeaders() const;
 		virtual ~CMailBox();
 };
 

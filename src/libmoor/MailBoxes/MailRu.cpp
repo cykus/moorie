@@ -78,6 +78,7 @@ int MailRuMailbox::getHeadersRequest()
 
 	
 	do {
+		pgcnt++;
 		numstr.str("");
 		numstr << pgcnt;
 		string url = "http://win.mail.ru/cgi-bin/msglist?folder=0&page="+numstr.str();
@@ -88,18 +89,19 @@ int MailRuMailbox::getHeadersRequest()
 		string::const_iterator pbegin = page.begin();
 		string::const_iterator pend = page.end();
 		while (regex_search(pbegin, pend, match, mheadre, match_default)) {
-//			EmailHeader hdr(match[1], match[2]);
+			EmailHeader hdr(match[1], match[2]);
 //			LOG(Log::Debug, "Found Header: "+hdr.subject);
-//			addHeader(hdr);
+			cout << "Add header: " << hdr.subject << endl;
+			addHeader(hdr);
 			pbegin = match[2].second;
 			++msgcnt;
 		}
-		cout << pgcnt << endl;
-		pgcnt++;
+		cout << "." << endl;
 	} while (regex_search(page,match,re2));
 	
-	cout << pgcnt << endl;
-	if (pgcnt > 1) {
+	cout << "-";
+	if (pgcnt > 0) {
+		pgcnt++;
 		numstr.str("");
 		numstr << pgcnt;
 		string url = "http://win.mail.ru/cgi-bin/msglist?folder=0&page="+numstr.str();
@@ -110,13 +112,15 @@ int MailRuMailbox::getHeadersRequest()
 		string::const_iterator pbegin = page.begin();
 		string::const_iterator pend = page.end();
 		while (regex_search(pbegin, pend, match, mheadre, match_default)) {
-//			EmailHeader hdr(match[1], match[2]);
+			EmailHeader hdr(match[1], match[2]);
 //			LOG(Log::Debug, "Found Header: "+hdr.subject);
-//			addHeader(hdr);
+			cout << "Add header: " << hdr.subject << endl; 
+			addHeader(hdr);
 			pbegin = match[2].second;
 			++msgcnt;
 		}
 	}
+	cout << endl;
 	
 	return msgcnt;
 //	setState(Mailbox::ReadHeadersDone); */
