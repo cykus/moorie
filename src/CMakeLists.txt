@@ -7,7 +7,7 @@ project (MOOR)
 # Recurse into the "Hello" and "Demo" subdirectories. This does not actually 
 # cause another cmake executable to run. The same process will walk through 
 # the project's entire directory structure. 
-add_library (moor SHARED libmoor/Decoder.cpp  libmoor/LibMoor.cpp  libmoor/Mailbox.cpp  libmoor/Mailboxes.cpp  libmoor/MoorhuntHash.cpp libmoor/EmailHeader.cpp
+add_library (moor SHARED libmoor/Decoder.cpp  libmoor/LibMoor.cpp  libmoor/Mailbox.cpp  libmoor/Mailboxes.cpp  libmoor/MoorhuntHash.cpp libmoor/YgoowHash.cpp libmoor/EmailHeader.cpp libmoor/Tools.cpp
 libmoor/MailBoxes/MailRu.cpp)
 add_subdirectory (libmoor)
 add_subdirectory (moor_bin)

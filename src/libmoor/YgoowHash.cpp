@@ -10,7 +10,7 @@
  * WITHOUT ANY WARRANTY. See GPL for more details.
  */
 
-#include "MoorhuntHash.h"
+#include "YgoowHash.h"
 // #include "Account.h"
 //#include "Util.h"
 //#include "Log.h"
@@ -27,20 +27,20 @@
 
 using namespace std;
 
-MoorhuntHash::MoorhuntHash(): valid(false)
+YgoowHash::YgoowHash(): valid(false)
 {
 }
 
-MoorhuntHash::MoorhuntHash(std::string hash)
+YgoowHash::YgoowHash(std::string hash)
 {
 	decode(hash);
 }
 
-MoorhuntHash::~MoorhuntHash()
+YgoowHash::~YgoowHash()
 {
 }
 
-const unsigned char* MoorhuntHash::getKey(unsigned char vermaj, unsigned char vermin)
+const unsigned char* YgoowHash::getKey(unsigned char vermaj, unsigned char vermin)
 {
 	static const unsigned char keys[][34] = {
 		{'a', 'h', 0x1e, 0x1e, 0x1e, 0x1e, 0x1f, 0x1f, 0x1f, 0x1e, 0x1e, 0x1f, 0x1e, 0x1e, 0x1e, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1e, 0x1e, 0x1e, 0x1f, 0x1e, 0x1e, 0x1f, 0x1f, 0x1f, 0x1f, 0x1e, 0x1f, 0x1e},
@@ -64,7 +64,7 @@ const unsigned char* MoorhuntHash::getKey(unsigned char vermaj, unsigned char ve
 	return NULL;
 }
 
-const unsigned char* MoorhuntHash::getIV(unsigned char vermaj, unsigned char vermin)
+const unsigned char* YgoowHash::getIV(unsigned char vermaj, unsigned char vermin)
 {
 	static const unsigned char ivec[][34] = {
 		{'a', 'h', 0x59, 0xdd, 0x59, 0x19, 0x5b, 0xdb, 0x99, 0x9b, 0xd7, 0xd9, 0x57, 0x9d, 0x1b, 0x9b, 0x59, 0x17, 0x19, 0x97, 0xdd, 0x5d, 0x9b, 0x5d, 0x97, 0xd9, 0x19, 0x97, 0x57, 0x99, 0x1d, 0x59, 0x19, 0x5d},
@@ -87,7 +87,7 @@ const unsigned char* MoorhuntHash::getIV(unsigned char vermaj, unsigned char ver
 	return NULL;
 }
 
-std::string MoorhuntHash::getMD5( const std::string & str )
+std::string YgoowHash::getMD5( const std::string & str )
 {
 	MHASH mh = mhash_init( MHASH_MD5 );
 	if ( mh != MHASH_FAILED ) {
@@ -105,7 +105,7 @@ std::string MoorhuntHash::getMD5( const std::string & str )
 	return std::string(); //TODO
 }
 
-std::vector<int> MoorhuntHash::split(char *str, int len)
+std::vector<int> YgoowHash::split(char *str, int len)
 {
 	const char c = '|';
 	std::vector<int> v;
@@ -128,226 +128,114 @@ std::vector<int> MoorhuntHash::split(char *str, int len)
 			}
 		}
 		++i;
+		cout << tokens << endl;
 	}
 	return v;
 }
 
-bool MoorhuntHash::decode(std::string hash)
+bool YgoowHash::decode(std::string hash)
 {
-	int declen;
-	int i;
-	int hpos;
-	verMaj = 0;
-	verMin = 0;
-
+	string strHash;
+	string str2;
+	string str3;
+	string str4;
+	string str5;
+	strHash = hash;
+	
 	MCRYPT td;
-	valid = false;
-	boost::scoped_array<char> hashin(new char [hash.size() + hash.size()/64 + 1]); //allocate room for reformatted (including newlines) hash string
-
-	//
-	// reformat hash code - add new lines, remove or replace some
-	// characters
-	i = 0;
-	for (hpos = 0; hash[hpos]; hpos++)
-	{
-		if (hash[hpos] == '>' || hash[hpos] == ' ' || hash[hpos] == '\t')
-			continue;
-		if (hash[hpos] == '-')
-			hashin[i++] = '+';
-		else
-			hashin[i++] = hash[hpos];
-		if ((i % 64) == 0)
-			hashin[i++] = '\n';
-	}
-	if (i == 0)
-		return false; // empty hash code
-
-	hashin[i++] = '\n';
-	hashin[i] = 0;
-
-	hashString = std::string(&hashin[0]);
-	//
-	// strip off moorhunt prefixes
-	static const char *prefixes[] = { "<<", "mh://", NULL};
-	hpos = 0;
-	for (int j=0; prefixes[j]; j++)
-	{
-		if (strncmp(&hashin[0], prefixes[j], strlen(prefixes[j])) == 0)
-		{
-			hpos += strlen(prefixes[j]);
-			break;
-		}
-//		std::cout << j << std::endl;
+	
+	for (int i = 0; i < strHash.length(); i++) {
+		if (strHash[i] == '\n')
+			strHash.erase(i, i);
+		else if (strHash[i] == '\r')
+			strHash.erase(i, i);
+		else if (strHash[i] == '\t')
+			strHash[i] = '\0';
 	}
 
-	verMaj = hashin[hpos++]; // determine moorhunt version
-	verMin = hashin[hpos++];
-
-//	unsigned char *in = base64Decode(&hashin[hpos], i, &declen);
-	unsigned char *in = unbase64(&hashin[hpos], strlen(&hashin[hpos]));
-	declen = strlen(&hashin[hpos]);
-	//
-	// AES decryption
-	do
-	{
-		if (declen == 0)
-			break;
-
-		td = mcrypt_module_open((char*)"rijndael-256", NULL, (char*)"cbc", NULL);
-		if (td == MCRYPT_FAILED)
-			break;
-
-		unsigned char *key = const_cast<unsigned char *>(getKey(verMaj, verMin));
-		unsigned char *iv = const_cast<unsigned char *>(getIV(verMaj, verMin));
-
-		if (key == NULL || iv == NULL)
-			break;
-
-		if (mcrypt_generic_init(td, key, 32, iv) < 0)
-		{
-			mcrypt_module_close(td);
-			break;
+	strHash.erase(0, 9);
+	
+	char *dupa = const_cast<char *>(strHash.c_str());
+	ids = split(dupa, strlen(strHash.c_str()));
+	
+	
+	
+	string hashin[10];
+	int j; j=0;
+	for (int i = 0; i < strHash.length(); i++) {
+		if (strHash[i] == '|') {
+			j++; i++;
 		}
-
-		if (mdecrypt_generic(td, in, declen) != 0)
- 		{
- 			mcrypt_module_close(td);
- 			break;
- 		}
-
-//		LOG_BUFFER(Log::Debug, reinterpret_cast<char *>(in), declen);
-		mcrypt_generic_deinit(td);
-		mcrypt_module_close(td);
-
-		valid = true;
-
-	} while (false); //just once
-
-	if (valid)
-	{
-		string tmp;
-		char *src = reinterpret_cast<char *>(in);
-//		char *ptr;
-		std::vector<int> v = split(src, declen);
-		if (v.size() < 39)
-		{
-			valid = false;
-//			LOG(Log::Warn, "decode: less than expected number of tokens");
-		}
-		else
-		{
-			int numOfMirrors;
-			string id;
-
-			fileName = string(src, v[1]);
-			crc = (
-					((unsigned char)src[v[2]]) << 24 |
-					((unsigned char)src[v[2] + 1]) << 16 |
-					((unsigned char)src[v[2] + 2]) << 8 |
-					((unsigned char)src[v[2] + 3])
-			);
-			tmp = string(src + v[4], v[5]);
-			fileSize = atol(tmp.c_str());
-			tmp = string(src + v[6], v[7]); // bool 1
-			tmp = string(src + v[8], v[9]); // bool 2
-			tmp = string(src + v[10], v[11]); // num of segments
-			numOfSegments = atoi(tmp.c_str());
-			tmp = string(src + v[12], v[13]); // int
-			tmp = string(src + v[14], v[15]); // int
-			accessPasswd = string(src + v[16], v[17]);
-			tmp = string(src + v[18], v[19]); // num of mirrors
-			numOfMirrors = atoi(tmp.c_str());
-			int offset = 0;
-			//
-			// get accounts
-			for (int i=0; i<numOfMirrors; i++)
-			{
-				offset = 6*i;
-// 				Account::MBoxID id = static_cast<Account::MBoxID>(src[v[20 + offset]]);
-				string login(src + v[22 + offset], v[23 + offset]);
-				string passwd(src + v[24 + offset], v[25 + offset]);
-// 				Account acct(id, login, passwd);
-// 				accounts.push_back(acct);
-//				tmp = string(src[v[20 + offset]]); // id
-				id = getMailboxName(src[v[20 + offset]]);
-				accounts.push_back(id);
-				accounts.push_back(login);
-				accounts.push_back(passwd);
-// 				std::cout << "ID:" << /*(src[v[20 + offset]] & 0xFF)*/   << " ";
-// 				std::cout << " L:" << login << " P:" << passwd << std::endl;
-			}
-			coverURL = string(src + v[26 + offset], v[27 + offset]);
-			editPasswd = string(src + v[28 + offset], v[29 + offset]);
-			forWhom = string(src + v[30 + offset], v[31 + offset]);
-			descURL = string(src + v[32 + offset], v[33 + offset]);
-			fullTitle = string(src + v[34 + offset], v[35 + offset]);
-			uploader = string(src + v[36 + offset], v[37 + offset]);
-			comment = string(src + v[38 + offset], v[39 + offset]);
-
-			if (fileSize <=0 || numOfMirrors <= 0 || numOfSegments <=0)
-			{
-				valid = false;
-//				LOG(Log::Warn, boost::format("fileSize or numOfMirrors or numOfMirrors <= 0: %d %d %d") % fileSize % numOfMirrors % numOfSegments);
-			}
-		}
+		hashin[j] += strHash[i];
 	}
-
-	delete [] in;
+	cout << hashin[2] << endl;
+	
+	fileName = hashin[0]; // strArray[1]
+	hashString = hashin[2];
+// 	cout << strHash << endl;
+// 	cout << endl << "Oryginal: " << endl <<  hash << endl;
+	
+	
+	// 	char *dupa = const_cast<char *>(hashString.c_str());
+// 	int len = strlen(hashString.c_str());
+// 	unsigned char *in = unbase64(dupa, len);
+	
+//	cout << in << endl;
 	return valid;
 }
 
-bool MoorhuntHash::isValid() const
+bool YgoowHash::isValid() const
 {
 	return valid;
 }
 
-string MoorhuntHash::getFileName() const
+string YgoowHash::getFileName() const
 {
 	return fileName;
 }
 
-long MoorhuntHash::getFileSize() const
+long YgoowHash::getFileSize() const
 {
 	return fileSize;
 }
 
-int MoorhuntHash::getNumOfSegments() const
+int YgoowHash::getNumOfSegments() const
 {
 	return numOfSegments;
 }
 
-int MoorhuntHash::getNumOfMirrors() const
+int YgoowHash::getNumOfMirrors() const
 {
 	return accounts.size();
 }
 
-std::vector<std::string> MoorhuntHash::getAccounts() const
+std::vector<std::string> YgoowHash::getAccounts() const
 {
  	return accounts;
 }
 
 
-std::string MoorhuntHash::getForWhom() const
+std::string YgoowHash::getForWhom() const
 {
 	return forWhom;
 }
 
-bool MoorhuntHash::usesMD5Passwords() const
+bool YgoowHash::usesMD5Passwords() const
 {
 	return ( verMaj == 'a' && ( verMin == 'g' || verMin == 'h' ) );
 }
 
-bool MoorhuntHash::isAccessPasswordProtected() const
+bool YgoowHash::isAccessPasswordProtected() const
 {
 	return accessPasswd.size() > 0;
 }
 
-std::string MoorhuntHash::getAccessPassword() const
+std::string YgoowHash::getAccessPassword() const
 {
 	return accessPasswd;
 }
 
-bool MoorhuntHash::checkAccessPassword( const std::string & pass ) const
+bool YgoowHash::checkAccessPassword( const std::string & pass ) const
 {
 	if ( !isAccessPasswordProtected() ) {
 		return true;
@@ -358,12 +246,12 @@ bool MoorhuntHash::checkAccessPassword( const std::string & pass ) const
 	return pass == accessPasswd;
 }
 
-std::string MoorhuntHash::getEditPassword() const
+std::string YgoowHash::getEditPassword() const
 {
 	return editPasswd;
 }
 
-bool MoorhuntHash::checkEditPassword( const std::string & pass ) const
+bool YgoowHash::checkEditPassword( const std::string & pass ) const
 {
 	if ( usesMD5Passwords() ) {
 		return getMD5( pass ) == editPasswd;
@@ -371,42 +259,42 @@ bool MoorhuntHash::checkEditPassword( const std::string & pass ) const
 	return pass == editPasswd;
 }
 
-std::string MoorhuntHash::getCoverURL() const
+std::string YgoowHash::getCoverURL() const
 {
 	return coverURL;
 }
 
-std::string MoorhuntHash::getDescriptionURL() const
+std::string YgoowHash::getDescriptionURL() const
 {
 	return descURL;
 }
 
-std::string MoorhuntHash::getFullTitle() const
+std::string YgoowHash::getFullTitle() const
 {
 	return fullTitle;
 }
 
-std::string MoorhuntHash::getUploader() const
+std::string YgoowHash::getUploader() const
 {
 	return uploader;
 }
 
-std::string MoorhuntHash::getComment() const
+std::string YgoowHash::getComment() const
 {
 	return comment;
 }
 
-unsigned int MoorhuntHash::getCrc() const
+unsigned int YgoowHash::getCrc() const
 {
 	return crc;
 }
 
-std::string MoorhuntHash::getHashString() const
+std::string YgoowHash::getHashString() const
 {
 	return hashString;
 }
 
-bool MoorhuntHash::operator==(const MoorhuntHash &m)
+bool YgoowHash::operator==(const YgoowHash &m)
 {
 	if (fileName != m.fileName)
 		return false;
@@ -414,7 +302,7 @@ bool MoorhuntHash::operator==(const MoorhuntHash &m)
 	return true;
 }
 
-bool MoorhuntHash::read(std::ifstream &f)
+bool YgoowHash::read(std::ifstream &f)
 {
         const boost::regex re("^\\s*#");
 	std::string hashStr;
@@ -427,7 +315,7 @@ bool MoorhuntHash::read(std::ifstream &f)
 		hashStr += line;
 		if (line.find(">>") != std::string::npos)
 		{
-//			LOG(Log::Debug, "Found Moorhunt hash");
+//			LOG(Log::Debug, "Found Ygoow hash");
 			decode(hashStr);
 			hashStr = "";
 			return true;
@@ -436,12 +324,12 @@ bool MoorhuntHash::read(std::ifstream &f)
 	return false;
 }
 
-std::list<MoorhuntHash> MoorhuntHash::fromFile(std::ifstream &f)
+std::list<YgoowHash> YgoowHash::fromFile(std::ifstream &f)
 {
-	std::list<MoorhuntHash> mh;
+	std::list<YgoowHash> mh;
 	while (f.good())
 	{
-		MoorhuntHash h;
+		YgoowHash h;
 		if (h.read(f))
 			mh.push_back(h);
 	}

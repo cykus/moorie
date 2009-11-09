@@ -7,17 +7,20 @@
 #include <cstdlib>
 
 #include "MoorhuntHash.h"
+#include "YgoowHash.h"
 #include "Mailbox.h"
 #include "Mailboxes.h"
 
 class CLibMoor {
     MoorhuntHash * myHash;
+	YgoowHash * myYgoowHash;
 	CMailBox * myMailBox;
 
     public:
 	CLibMoor();
 	~CLibMoor();
 	int Dehash(std::string HashCode);
+	int DehashYgoow(std::string HashCode);
 	int selectMailBox(int MailBox);
 };
 

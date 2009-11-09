@@ -14,6 +14,10 @@ int CLibMoor::Dehash(std::string HashCode) {
 		return 0;
 }
 
+int CLibMoor::DehashYgoow(std::string HashCode) {
+	myYgoowHash = new YgoowHash(HashCode);
+	
+}
 int CLibMoor::selectMailBox(int MailBox) {
 	int selected = MailBox * 3;
 //	myMailBox = new CMailBox(myHash->getAccounts().at(selected - 3), myHash->getAccounts().at(selected-2), myHash->getAccounts().at(selected-1));
@@ -47,7 +51,7 @@ int CLibMoor::selectMailBox(int MailBox) {
 			if (segments == 0) {
 				cout << "Nie znaleziono zadnego segmentu..." << endl;
 				cont = false;
-			} else if (myHash->getNumOfSegments() == segments) {
+			} else if (segments >= myHash->getNumOfSegments()) {
 				cout << "Znaleziono wszystkie segmenty, zaczynam pobieranie" << endl;
 				cont = true;
 			} else {
@@ -57,6 +61,7 @@ int CLibMoor::selectMailBox(int MailBox) {
 		} else {
 			cout << "Logowanie nie powiodlo sie..." << endl;
 			cont = false;
+			break;
 		}
 	}
 			

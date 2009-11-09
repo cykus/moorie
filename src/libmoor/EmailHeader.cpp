@@ -24,11 +24,20 @@ std::string EmailHeader::decode( const std::string& code )
     boost::erase_all( code_temp, " " );
     std::string code1;
 
+	int digits;
+	digits = 0;
     int l = code_temp.length();
-    if (code_temp.length() > 18 )
-	code1 = code_temp.substr(l-18, l);
+    if (code_temp.length() > 18 ) {
+		for (int i = 0; i < code_temp.length()-18; i++) {
+			if (!isdigit (code_temp[i]) )
+				digits++;
+		}
+		int cut = code_temp.length() - digits;
+		code1 = code_temp.substr(l-cut, l);
+	}
     else 
-	code1 = code_temp;
+		code1 = code_temp;
+	
     try{
 
     std::string sa,sb,sc;

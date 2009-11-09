@@ -76,7 +76,38 @@ int MailRuMailbox::getHeadersRequest()
 	regex re2("<a href=\".*?\" id=\"nextbut\">.*?\n&nbsp;&nbsp;<a");
 	smatch match2;
 
+	regex re3("<td width=10% class=\"rovn tdl\"><img src=http://img.mail.ru/0.gif width=24 height=1><br>(.*?)</td>");
+	smatch match3;
+	regex_search(page,match3,re3);
+	istringstream pg(match3[1]);
+	int pages;
+	pg >> pages; 
+	pages = pages/25 + 1;
+	cout << "match: " << match3[1] << " stron: " << pages;
 	
+	while (pgcnt < pages) {
+		pgcnt++;
+		numstr.str("");
+		numstr << pgcnt;
+		string url = "http://win.mail.ru/cgi-bin/msglist?folder=0&page="+numstr.str();
+		page = doGet(url);
+
+		regex mheadre("<td class=letavtor title=.*?</a></td>.*?<td class=lettem><a href=\"readmsg([^\"]*)\"[^<>]*>([^<>]*)</a></td>");
+	//	const string page = getPage();
+		string::const_iterator pbegin = page.begin();
+		string::const_iterator pend = page.end();
+		while (regex_search(pbegin, pend, match, mheadre, match_default)) {
+			EmailHeader hdr(match[1], match[2]);
+//			LOG(Log::Debug, "Found Header: "+hdr.subject);
+			cout << "Add header: " << hdr.subject << endl;
+			addHeader(hdr);
+			pbegin = match[2].second;
+			++msgcnt;
+		}
+		cout << "." << endl;		
+	}
+	
+	/*
 	do {
 		pgcnt++;
 		numstr.str("");
@@ -98,30 +129,7 @@ int MailRuMailbox::getHeadersRequest()
 		}
 		cout << "." << endl;
 	} while (regex_search(page,match,re2));
-	
-	cout << "-";
-	if (pgcnt > 0) {
-		pgcnt++;
-		numstr.str("");
-		numstr << pgcnt;
-		string url = "http://win.mail.ru/cgi-bin/msglist?folder=0&page="+numstr.str();
-		page = doGet(url);
-
-		regex mheadre("<td class=letavtor title=.*?</a></td>.*?<td class=lettem><a href=\"readmsg([^\"]*)\"[^<>]*>([^<>]*)</a></td>");
-	//	const string page = getPage();
-		string::const_iterator pbegin = page.begin();
-		string::const_iterator pend = page.end();
-		while (regex_search(pbegin, pend, match, mheadre, match_default)) {
-			EmailHeader hdr(match[1], match[2]);
-//			LOG(Log::Debug, "Found Header: "+hdr.subject);
-			cout << "Add header: " << hdr.subject << endl; 
-			addHeader(hdr);
-			pbegin = match[2].second;
-			++msgcnt;
-		}
-	}
-	cout << endl;
-	
+	*/
 	return msgcnt;
 //	setState(Mailbox::ReadHeadersDone); */
 }
