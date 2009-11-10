@@ -11,7 +11,7 @@
  */
 
 #include "MailRu.h"
-// #include "Log.h"
+#include "../Log.h"
 // #include "Downloader.h"
 // #include "MoorieException.h"
 #include <sstream>
@@ -83,7 +83,8 @@ int MailRuMailbox::getHeadersRequest()
 	int pages;
 	pg >> pages; 
 	pages = pages/25 + 1;
-	cout << "match: " << match3[1] << " stron: " << pages;
+//	cout << "match: " << match3[1] << " stron: " << pages;
+	LOG(Log::Debug,boost::format( "match: "+match3[1]+" stron: %d" ) % pages );
 	
 	while (pgcnt < pages) {
 		pgcnt++;
@@ -100,14 +101,16 @@ int MailRuMailbox::getHeadersRequest()
 			EmailHeader hdr(match[1], match[2]);
 //			cout << match[1] << " " << match[2] << endl;
 //			LOG(Log::Debug, "Found Header: "+hdr.subject);
-			cout << "Add header: " << hdr.subject << " Link: " << match[1] << endl;
+//			cout << "Add header: " << hdr.subject << endl;
+			LOG(Log::Debug, "Add header: " + hdr.subject + " Link: " + match[1]);
 			addHeader(hdr);
 //			addHeaderSubject(hdr.subject);
 			addHeaderLink(match[1]);
 			pbegin = match[2].second;
 			++msgcnt;
 		}
-		cout << "." << endl;		
+//		cout << "." << endl;
+		LOG(Log::Debug, ".");
 	}
 	
 	/*
@@ -151,7 +154,8 @@ int MailRuMailbox::downloadRequest(int seg)
 	if(regex_search(page,match,re))
 	{
 		link=match[1];
-		cout << link << endl;
+//		cout << link << endl;
+		LOG(Log::Debug, link);
 		downloadSeg();
 		doGet(link);
 		downloadSegDone();
