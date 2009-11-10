@@ -26,6 +26,8 @@ int CLibMoor::selectMailBox(int MailBox) {
 
 	bool cont = false;
 	
+	// sprawdzenie ktory segment do sciagniecia...
+	
 	int vector_size = myHash->getAccounts().size();
 	int j = 0;
 	while (cont != true) {
@@ -87,7 +89,7 @@ void CLibMoor::startDownload() {
 	while (mySeg < myHash->getNumOfSegments()) {
 		mySeg++;
 //		cout << "Sciaganie segmenu: " << mySeg << "/" << myHash->getNumOfSegments() << endl;
-		LOG( Log::Info, boost::format( "Sciaganie segmenu: %1%/%2%" ) %mySeg %myHash->getNumOfSegments());
+		LOG( Log::Info, boost::format( "Sciaganie segmentu: %1%/%2%" ) %mySeg %myHash->getNumOfSegments());
 		myMailBox -> downloadRequest(mySeg);
 	}
 //	cout << "Wszystkie segmenty sciagniete..." << endl;
