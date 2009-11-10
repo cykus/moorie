@@ -1,6 +1,7 @@
 #include "LibMoor.h"
 
 CLibMoor::CLibMoor() {
+	mySeg = 0;
 }
 
 CLibMoor::~CLibMoor() {
@@ -54,6 +55,7 @@ int CLibMoor::selectMailBox(int MailBox) {
 			} else if (segments >= myHash->getNumOfSegments()) {
 				cout << "Znaleziono wszystkie segmenty, zaczynam pobieranie" << endl;
 				cont = true;
+				startDownload();
 			} else {
 				cout << "Znaleziono " << segments << "/" << myHash->getNumOfSegments() << " segmentow. Kontynuowac? " << endl;
 				cont = true;
@@ -70,3 +72,11 @@ int CLibMoor::selectMailBox(int MailBox) {
 	return 0;
 }
 
+void CLibMoor::startDownload() {
+	while (mySeg < myHash->getNumOfSegments()) {
+		mySeg++;
+		cout << "Sciaganie segmenut: " << mySeg << "/" << myHash->getNumOfSegments() << endl;
+		myMailBox -> downloadRequest(mySeg);
+	}
+	cout << "Wszystkie segmenty sciagniete..." << endl;
+}

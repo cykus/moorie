@@ -15,13 +15,15 @@ class CLibMoor {
     MoorhuntHash * myHash;
 	YgoowHash * myYgoowHash;
 	CMailBox * myMailBox;
-
+	int mySeg;
+	
     public:
 	CLibMoor();
 	~CLibMoor();
 	int Dehash(std::string HashCode);
 	int DehashYgoow(std::string HashCode);
 	int selectMailBox(int MailBox);
+	void startDownload();
 };
 
 #endif

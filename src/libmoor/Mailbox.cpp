@@ -26,6 +26,7 @@ CMailBox::CMailBox(const std::string &usr, const std::string &passwd)
 	//curl_easy_setopt(handle, CURLOPT_FRESH_CONNECT, 1);
 	//curl_easy_setopt(handle, CURLOPT_VERBOSE, 1);
 
+	segDownload = false;
 }
 
 CMailBox::~CMailBox() {
@@ -136,7 +137,11 @@ size_t CMailBox::writeData(void *buffer, size_t size, size_t nmem)
 //	{
 //		segment->writeData(static_cast<char *>(buffer), n);
 //	}
-//	else
+	if (segDownload == true) {
+		file -> write(static_cast<char *>(buffer), n);
+		cout << "Bytes readed: " << bytesRead << " Writed: " << n << endl;
+	}
+	else
 	{
 		if (bufferPos + n >= CMailBox::BUFFER_SIZE)
 		{
@@ -160,6 +165,11 @@ void CMailBox::addHeader(const EmailHeader &hdr)
 	headers.push_back(hdr);
 }
 
+void CMailBox::addHeaderLink(std::string link)
+{
+	segments_links.push_back(link);	
+}
+
 void CMailBox::clearHeaders()
 {
 	headers.clear();
@@ -168,4 +178,48 @@ void CMailBox::clearHeaders()
 std::list<EmailHeader> CMailBox::getHeaders() const
 {
 	return headers;
+}
+
+std::vector<string> CMailBox::getLinks() const
+{
+	return segments_links;
+}
+
+string CMailBox::getLink(int seg) {
+	int counter; counter = 0;
+	ostringstream ss;
+	ss << seg;
+	string id = ss.str();
+	boost::regex hreg("\\[" + id + "\\]"); // match "[crc][id]"
+	boost::smatch match; 
+	for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
+	{
+		counter++;
+		if (boost::regex_search(it->subject, match, hreg))
+		{
+			cout << match[0] << endl;
+			//
+                        // get crc for this segment from email header
+//			const std::string cksum = match[1];
+//			return cksum;
+//			LOG(Log::Debug, "Found header: " + it->subject);
+//			fromHex(cksum, crc);
+//			bytesWritten = 0;
+//			crcRes.reset();
+//			file = new std::ofstream(fileName.c_str(), std::ofstream::binary); //TODO: blad?
+//			mailbox->downloadRequest(*it, this);
+			break;
+		}
+
+	} 
+	return segments_links.at(counter);
+}
+
+int CMailBox::downloadSeg(bool dec) {
+	if (dec == true) {
+		segDownload = true;
+		file = new std::ofstream("seg_tmp", std::ofstream::binary | std::ofstream::app);
+	}
+	else 
+		segDownload = false;
 }

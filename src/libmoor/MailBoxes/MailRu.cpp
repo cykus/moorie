@@ -98,9 +98,12 @@ int MailRuMailbox::getHeadersRequest()
 		string::const_iterator pend = page.end();
 		while (regex_search(pbegin, pend, match, mheadre, match_default)) {
 			EmailHeader hdr(match[1], match[2]);
+//			cout << match[1] << " " << match[2] << endl;
 //			LOG(Log::Debug, "Found Header: "+hdr.subject);
-			cout << "Add header: " << hdr.subject << endl;
+//			cout << "Add header: " << hdr.subject << endl;
 			addHeader(hdr);
+//			addHeaderSubject(hdr.subject);
+			addHeaderLink(match[1]);
 			pbegin = match[2].second;
 			++msgcnt;
 		}
@@ -134,8 +137,27 @@ int MailRuMailbox::getHeadersRequest()
 //	setState(Mailbox::ReadHeadersDone); */
 }
 
-void MailRuMailbox::downloadRequest()
+int MailRuMailbox::downloadRequest(int seg)
 {
+	string mylink = getLink(seg);
+//	cout << mylink << endl;
+ 	setCookie(auth);
+ 	page = doGet("http://win.mail.ru/cgi-bin/readmsg"+mylink);
+//	regex re("http://a[a-z]*[0-9].mail.ru/cgi-bin/readmsg/.*?&mode=attachment&channel=");
+ 	regex re("<a href=\"(http://a[^\"]*/cgi-bin/readmsg/[^\"]*&mode=attachment&channel=)");
+	
+	smatch match;
+	string link;
+	if(regex_search(page,match,re))
+	{
+		link=match[1];
+		cout << link << endl;
+		downloadSeg(true);
+		doGet(link);
+		downloadSeg(false);
+//		setState(Mailbox::DownloadIP);
+//		setSegment(s);
+	}
 
 }
 

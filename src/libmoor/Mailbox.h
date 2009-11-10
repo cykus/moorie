@@ -8,6 +8,9 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/regex.hpp>
+#include <fstream>
+
 #include "EmailHeader.h"
 
 using namespace std;
@@ -23,6 +26,7 @@ class CMailBox {
 	int bufferPos; //!< Number of bytes written by subsequent writeData calls
 	char *buffer; //!< Temporary buffer for incoming data, size defined by BUFFER_SIZE
 	list<EmailHeader> headers; //!< Email headers read by getHeadersRequest() call
+	vector<string> segments_links;
 //	State state; //!< Current state of this Mailbox object
 //	Segment *segment; //!< Currently downloaded Segment
 	int usecnt; //!< Number of times this mailbox was used
@@ -43,6 +47,8 @@ class CMailBox {
 
 	static const int BUFFER_SIZE = 1024*256; //!< Size of temporary buffer (256kB)
 
+	std::ofstream *file;
+	bool segDownload;
 	protected:
 		static size_t _writeData(void *buffer, size_t size, size_t nmem, void *ptr);
 		virtual size_t writeData(void *buffer, size_t size, size_t nmem);
@@ -57,13 +63,19 @@ class CMailBox {
 		void requestComplete();
 		
 		void addHeader(const EmailHeader &hdr);
+		void addHeaderLink(std::string link);
 		void clearHeaders();
+		
+		string getLink(int seg);
+		int downloadSeg(bool dec);
 	
 	public:
 		CMailBox(const std::string &usr, const std::string &passwd);
 		virtual int Login() = 0;
 		virtual int getHeadersRequest() = 0;
+		virtual int downloadRequest(int seg) = 0;
 		list<EmailHeader> getHeaders() const;
+		vector<string> getLinks() const;
 		virtual ~CMailBox();
 };
 

@@ -29,7 +29,7 @@ class MailRuMailbox: public CMailBox
 		int Login();
 		void logoutRequest();
 		int getHeadersRequest();
-		void downloadRequest(/*const EmailHeader &hdr, Segment *s*/);
+		int downloadRequest(int seg/*const EmailHeader &hdr, Segment *s*/);
 
 		void parseResponse();
 };
