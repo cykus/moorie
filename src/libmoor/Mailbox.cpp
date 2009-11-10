@@ -1,4 +1,5 @@
 #include "Mailbox.h"
+#include "Log.h"
 
 CMailBox::CMailBox(const std::string &usr, const std::string &passwd)
 	: user(usr)
@@ -86,8 +87,8 @@ string& CMailBox::doPost(std::string url, std::string vars, bool header)
 	CURLcode status = curl_easy_perform(handle);
 	if (status != 0)
 	{
-//		LOG(Log::Error, format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
-		cout << curl_easy_strerror(status) << endl;
+//		cout << curl_easy_strerror(status) << endl;
+		LOG(Log::Error, format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
 	requestComplete();
 	return this->result;
@@ -205,8 +206,10 @@ string CMailBox::getLink(int seg) {
 		}
 		else
 			counter++;
+
 	} 
-	cout << counter << " " << segments_links.at(counter) << endl;
+//	cout << counter << " " << segments_links.at(counter) << endl;
+	LOG( Log::Debug, boost::format( "%1% %2%" ) %counter %segments_links.at(counter));
 	return segments_links.at(counter);
 }
 
@@ -225,7 +228,6 @@ int CMailBox::downloadSegDone() {
 	tmp_file->close();
 	string tmpfile = filename+".seg";
 	ifstream in(tmpfile.c_str(), std::ifstream::binary);
-	
 	while (!in.eof()) {
 		in.read(buffer, READ_BUFFER_SIZE);
 		int n = in.gcount();
@@ -236,7 +238,8 @@ int CMailBox::downloadSegDone() {
 	stringstream ss;
 	ss << std::hex << crcRes.checksum();
 	segCRC = ss.str();
-	cout << segCRC << endl;
+//	cout << segCRC << endl;
+	LOG( Log::Info, segCRC);
 // 	int counter; counter = 0;
 // 	segNumber = seg;
 // 	ostringstream ss;
@@ -260,7 +263,7 @@ int CMailBox::downloadSegDone() {
 		while (!segfile.eof()) {
 			segfile.read(buffer, READ_BUFFER_SIZE);
 			int n = segfile.gcount();
-//			crcRes.process_bytes(buffer, n);
+			crcRes.process_bytes(buffer, n);
 			myfile.write(buffer, n);
 		}
 		boost::filesystem::remove(tmpfile.c_str());
