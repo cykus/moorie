@@ -100,7 +100,7 @@ int MailRuMailbox::getHeadersRequest()
 			EmailHeader hdr(match[1], match[2]);
 //			cout << match[1] << " " << match[2] << endl;
 //			LOG(Log::Debug, "Found Header: "+hdr.subject);
-			cout << "Add header: " << hdr.subject << endl;
+			cout << "Add header: " << hdr.subject << " Link: " << match[1] << endl;
 			addHeader(hdr);
 //			addHeaderSubject(hdr.subject);
 			addHeaderLink(match[1]);

@@ -205,17 +205,19 @@ string CMailBox::getLink(int seg) {
 		}
 		else
 			counter++;
-
 	} 
+	cout << counter << " " << segments_links.at(counter) << endl;
 	return segments_links.at(counter);
 }
 
 int CMailBox::downloadSeg() {
 	segDownload = true;
 	segOK = false;
+	crcRes.reset();
 	string tmpfile = filename+".seg";
-	if (tmp_file = new std::ofstream(tmpfile.c_str(), std::ofstream::binary | std::ofstream::app))
-		return 0;
+	boost::filesystem::remove(tmpfile.c_str());
+	tmp_file = new std::ofstream(tmpfile.c_str(), std::ofstream::binary | std::ofstream::app);
+	return 0;
 }
 
 int CMailBox::downloadSegDone() {
@@ -223,6 +225,7 @@ int CMailBox::downloadSegDone() {
 	tmp_file->close();
 	string tmpfile = filename+".seg";
 	ifstream in(tmpfile.c_str(), std::ifstream::binary);
+	
 	while (!in.eof()) {
 		in.read(buffer, READ_BUFFER_SIZE);
 		int n = in.gcount();
@@ -233,7 +236,7 @@ int CMailBox::downloadSegDone() {
 	stringstream ss;
 	ss << std::hex << crcRes.checksum();
 	segCRC = ss.str();
-	
+	cout << segCRC << endl;
 // 	int counter; counter = 0;
 // 	segNumber = seg;
 // 	ostringstream ss;
@@ -257,7 +260,7 @@ int CMailBox::downloadSegDone() {
 		while (!segfile.eof()) {
 			segfile.read(buffer, READ_BUFFER_SIZE);
 			int n = segfile.gcount();
-			crcRes.process_bytes(buffer, n);
+//			crcRes.process_bytes(buffer, n);
 			myfile.write(buffer, n);
 		}
 		boost::filesystem::remove(tmpfile.c_str());

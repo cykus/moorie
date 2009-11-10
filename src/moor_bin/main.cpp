@@ -31,7 +31,7 @@ W1191lOLwE6/hq5eKyCjfsH0WVNc5/Q0mlMLXLeP2L3d/I0=>>";
 	} else if (opt == "moorhunt") {
 		Instance = new CLibMoor();
 		Instance -> Dehash(hash);
-		Instance -> selectMailBox(4);
+		Instance -> selectMailBox(5);
 	}
 /*
 	if (Instance -> Dehash(hash) != 0) {
