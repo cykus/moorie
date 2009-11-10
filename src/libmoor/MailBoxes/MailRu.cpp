@@ -100,7 +100,7 @@ int MailRuMailbox::getHeadersRequest()
 			EmailHeader hdr(match[1], match[2]);
 //			cout << match[1] << " " << match[2] << endl;
 //			LOG(Log::Debug, "Found Header: "+hdr.subject);
-//			cout << "Add header: " << hdr.subject << endl;
+			cout << "Add header: " << hdr.subject << endl;
 			addHeader(hdr);
 //			addHeaderSubject(hdr.subject);
 			addHeaderLink(match[1]);
@@ -152,9 +152,9 @@ int MailRuMailbox::downloadRequest(int seg)
 	{
 		link=match[1];
 		cout << link << endl;
-		downloadSeg(true);
+		downloadSeg();
 		doGet(link);
-		downloadSeg(false);
+		downloadSegDone();
 //		setState(Mailbox::DownloadIP);
 //		setSegment(s);
 	}

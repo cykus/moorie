@@ -21,5 +21,5 @@ link_directories (${MOOR_BINARY_DIR}/libmoor)
 
 add_executable (moorie moor_bin/main.cpp)
 
-target_link_libraries (moorie "ssl" "mcrypt" "mhash" "boost_regex" "curl")
+target_link_libraries (moorie "ssl" "mcrypt" "mhash" "boost_regex" "boost_filesystem" "curl")
 target_link_libraries (moorie moor)

@@ -35,6 +35,10 @@ CMailBox::~CMailBox() {
 		delete [] buffer;
 }
 
+void CMailBox::setFileName(string file) {
+	filename = file;
+}
+
 void CMailBox::setCookie( std::string cookie ) const
 {
 	curl_easy_setopt(handle, CURLOPT_COOKIE, cookie.c_str());
@@ -138,8 +142,8 @@ size_t CMailBox::writeData(void *buffer, size_t size, size_t nmem)
 //		segment->writeData(static_cast<char *>(buffer), n);
 //	}
 	if (segDownload == true) {
-		file -> write(static_cast<char *>(buffer), n);
-		cout << "Bytes readed: " << bytesRead << " Writed: " << n << endl;
+		tmp_file -> write(static_cast<char *>(buffer), n);
+//		cout << "Bytes readed: " << bytesRead << " Writed: " << n << endl;
 	}
 	else
 	{
@@ -190,36 +194,76 @@ string CMailBox::getLink(int seg) {
 	ostringstream ss;
 	ss << seg;
 	string id = ss.str();
+	segNumber = id;
 	boost::regex hreg("\\[" + id + "\\]"); // match "[crc][id]"
 	boost::smatch match; 
 	for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
 	{
-		counter++;
 		if (boost::regex_search(it->subject, match, hreg))
 		{
-			cout << match[0] << endl;
-			//
-                        // get crc for this segment from email header
-//			const std::string cksum = match[1];
-//			return cksum;
-//			LOG(Log::Debug, "Found header: " + it->subject);
-//			fromHex(cksum, crc);
-//			bytesWritten = 0;
-//			crcRes.reset();
-//			file = new std::ofstream(fileName.c_str(), std::ofstream::binary); //TODO: blad?
-//			mailbox->downloadRequest(*it, this);
 			break;
 		}
+		else
+			counter++;
 
 	} 
 	return segments_links.at(counter);
 }
 
-int CMailBox::downloadSeg(bool dec) {
-	if (dec == true) {
-		segDownload = true;
-		file = new std::ofstream("seg_tmp", std::ofstream::binary | std::ofstream::app);
+int CMailBox::downloadSeg() {
+	segDownload = true;
+	segOK = false;
+	string tmpfile = filename+".seg";
+	if (tmp_file = new std::ofstream(tmpfile.c_str(), std::ofstream::binary | std::ofstream::app))
+		return 0;
+}
+
+int CMailBox::downloadSegDone() {
+	segDownload = false;
+	tmp_file->close();
+	string tmpfile = filename+".seg";
+	ifstream in(tmpfile.c_str(), std::ifstream::binary);
+	while (!in.eof()) {
+		in.read(buffer, READ_BUFFER_SIZE);
+		int n = in.gcount();
+		crcRes.process_bytes(buffer, n);
 	}
-	else 
-		segDownload = false;
+	in.close();
+
+	stringstream ss;
+	ss << std::hex << crcRes.checksum();
+	segCRC = ss.str();
+	
+// 	int counter; counter = 0;
+// 	segNumber = seg;
+// 	ostringstream ss;
+//	ss << seg;
+//	string id = ss.str();
+	boost::to_upper(segCRC);
+	boost::regex hreg("\\[" + segCRC + "\\]\\[" + segNumber + "\\]"); // match "[crc][id]"
+	boost::smatch match; 
+	for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
+	{
+		if (boost::regex_search(it->subject, match, hreg))
+		{
+			cout << match[0] << endl;
+			segOK = true;
+			break;
+		}
+	} 
+	if (segOK == true) {
+		ifstream segfile(tmpfile.c_str(), std::ifstream::binary);
+		ofstream myfile(filename.c_str(), std::ofstream::binary | std::ofstream::app);
+		while (!segfile.eof()) {
+			segfile.read(buffer, READ_BUFFER_SIZE);
+			int n = segfile.gcount();
+			crcRes.process_bytes(buffer, n);
+			myfile.write(buffer, n);
+		}
+		boost::filesystem::remove(tmpfile.c_str());
+		return 0;
+	} else {
+		boost::filesystem::remove(tmpfile.c_str());
+		return 1;
+	}
 }

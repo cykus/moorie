@@ -9,6 +9,9 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/regex.hpp>
+#include <boost/crc.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 #include <fstream>
 
 #include "EmailHeader.h"
@@ -23,6 +26,7 @@ class CMailBox {
 	string vars; //<! Variables for current POST request (used for CURLOPT_POSTFIELDS)
 	string user; //!< User login
 	string password; //!< User password
+	string filename;
 	int bufferPos; //!< Number of bytes written by subsequent writeData calls
 	char *buffer; //!< Temporary buffer for incoming data, size defined by BUFFER_SIZE
 	list<EmailHeader> headers; //!< Email headers read by getHeadersRequest() call
@@ -46,9 +50,16 @@ class CMailBox {
 	unsigned int bytesRead; //!< Number of bytes processed, used to measure speed
 
 	static const int BUFFER_SIZE = 1024*256; //!< Size of temporary buffer (256kB)
-
-	std::ofstream *file;
+	static const int READ_BUFFER_SIZE = 8192;
+	
+	// zmienne dla segmentow
+	std::ofstream *tmp_file;
 	bool segDownload;
+	bool segOK;
+	boost::crc_32_type crcRes;
+	string segCRC;
+	string segNumber;
+	
 	protected:
 		static size_t _writeData(void *buffer, size_t size, size_t nmem, void *ptr);
 		virtual size_t writeData(void *buffer, size_t size, size_t nmem);
@@ -67,10 +78,12 @@ class CMailBox {
 		void clearHeaders();
 		
 		string getLink(int seg);
-		int downloadSeg(bool dec);
-	
+		int downloadSeg();
+		int downloadSegDone();
+
 	public:
 		CMailBox(const std::string &usr, const std::string &passwd);
+		void setFileName(string);
 		virtual int Login() = 0;
 		virtual int getHeadersRequest() = 0;
 		virtual int downloadRequest(int seg) = 0;

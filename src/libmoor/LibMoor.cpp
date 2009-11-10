@@ -43,6 +43,7 @@ int CLibMoor::selectMailBox(int MailBox) {
 		if (myHash->getAccounts().at(selected) == "mail.ru") {
 			myMailBox = new MailRuMailbox(login, passwd);
 		}
+		myMailBox -> setFileName(myHash->getFileName());
 		
 		
 		if (myMailBox -> Login() == 0) {
