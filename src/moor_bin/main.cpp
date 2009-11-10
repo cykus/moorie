@@ -1,10 +1,15 @@
 #include <iostream>
 
 #include "../libmoor/LibMoor.h"
+#include "../libmoor/Log.h"
 
 int main() {
+	unsigned int logLevel(8);
+        logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
+        LogConsoleHandle *logh = new LogConsoleHandle(static_cast<Log::Level>( logLevel ));
+        Log::getLog()->addHandle(logh);
     	CLibMoor * Instance;
-   	 std::string hash;
+   	std::string hash;
 hash = "<<ahbid5tYiBHTj0MPV4rNiqs/0pu3FI-RJ8Mij7SJXzp4jY04VjeyEx43FYTDja\
 BAho7GpeDuCjtNimyEKHTdiGSWfYrSgtUpxMja9SpjYKCtXcdb l8yMBRcup5JEU7\
 vychhA1NA/mYvUxWFGYFZAcdeh/ifNoA-IxyOwEPCiBym-YRFfkF0ft0wFH9XuCd\
