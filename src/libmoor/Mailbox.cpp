@@ -234,9 +234,9 @@ int CMailBox::downloadSegDone() {
 		crcRes.process_bytes(buffer, n);
 	}
 	in.close();
-
+//	cout << crcRes.checksum() << endl;
 	stringstream ss;
-	ss << std::hex << crcRes.checksum();
+	ss << setw(8) << setfill('0')  << std::hex << crcRes.checksum();
 	segCRC = ss.str();
 //	cout << segCRC << endl;
 	LOG( Log::Info, segCRC);
@@ -252,7 +252,7 @@ int CMailBox::downloadSegDone() {
 	{
 		if (boost::regex_search(it->subject, match, hreg))
 		{
-			cout << match[0] << endl;
+//			cout << match[0] << endl;
 			segOK = true;
 			break;
 		}

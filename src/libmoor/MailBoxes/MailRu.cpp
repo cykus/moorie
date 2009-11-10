@@ -100,42 +100,18 @@ int MailRuMailbox::getHeadersRequest()
 		while (regex_search(pbegin, pend, match, mheadre, match_default)) {
 			EmailHeader hdr(match[1], match[2]);
 //			cout << match[1] << " " << match[2] << endl;
-//			LOG(Log::Debug, "Found Header: "+hdr.subject);
+			LOG(Log::Debug, "Found Header: "+hdr.subject);
 //			cout << "Add header: " << hdr.subject << endl;
-			LOG(Log::Debug, "Add header: " + hdr.subject + " Link: " + match[1]);
+//			LOG(Log::Debug, "Add header: " + hdr.subject + " Link: " + match[1]);
 			addHeader(hdr);
 //			addHeaderSubject(hdr.subject);
 			addHeaderLink(match[1]);
 			pbegin = match[2].second;
 			++msgcnt;
 		}
-//		cout << "." << endl;
-		LOG(Log::Debug, ".");
+//		LOG(Log::Debug, ".");
 	}
 	
-	/*
-	do {
-		pgcnt++;
-		numstr.str("");
-		numstr << pgcnt;
-		string url = "http://win.mail.ru/cgi-bin/msglist?folder=0&page="+numstr.str();
-		page = doGet(url);
-
-		regex mheadre("<td class=letavtor title=.*?</a></td>.*?<td class=lettem><a href=\"readmsg([^\"]*)\"[^<>]*>([^<>]*)</a></td>");
-	//	const string page = getPage();
-		string::const_iterator pbegin = page.begin();
-		string::const_iterator pend = page.end();
-		while (regex_search(pbegin, pend, match, mheadre, match_default)) {
-			EmailHeader hdr(match[1], match[2]);
-//			LOG(Log::Debug, "Found Header: "+hdr.subject);
-			cout << "Add header: " << hdr.subject << endl;
-			addHeader(hdr);
-			pbegin = match[2].second;
-			++msgcnt;
-		}
-		cout << "." << endl;
-	} while (regex_search(page,match,re2));
-	*/
 	return msgcnt;
 //	setState(Mailbox::ReadHeadersDone); */
 }
