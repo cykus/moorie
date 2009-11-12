@@ -4,7 +4,7 @@
 cmake_minimum_required (VERSION 2.6) 
 project (MOOR) 
 
-find_package(Boost COMPONENTS regex thread filesystem REQUIRED)
+find_package(Boost COMPONENTS regex thread filesystem program_options REQUIRED)
 # Recurse into the "Hello" and "Demo" subdirectories. This does not actually 
 # cause another cmake executable to run. The same process will walk through 
 # the project's entire directory structure. 
@@ -23,4 +23,4 @@ link_directories (${MOOR_BINARY_DIR}/libmoor)
 add_executable (moorie moor_bin/main.cpp)
 
 target_link_libraries (moorie "ssl" "mcrypt" "mhash" "curl")
-target_link_libraries (moorie moor ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_FILESYSTEM_LIBRARY})
+target_link_libraries (moorie moor ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY})

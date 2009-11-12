@@ -27,3 +27,34 @@ string& str_replace(const string &search, const string &replace, string &subject
     subject = buffer;
     return subject;
 }
+
+string Rot13(string str)
+{
+	string str2 = "";
+	for (int i = 0; i < str.length(); i++)
+	{
+		char ch;
+		if ((str[i] >= 'A') && (str[i] < '['))
+		{
+			ch = (char) (str[i] + '\r');
+			if (ch >= '[')
+			{
+				ch = (char) (ch - '\x001a');
+			}
+		}
+		else if ((str[i] >= 'a') && (str[i] < '{'))
+		{
+			ch = (char) (str[i] + '\r');
+			if (ch >= '{')
+			{
+				ch = (char) (ch - '\x001a');
+			}
+		}
+		else
+		{
+			ch = str[i];
+		}
+		str2 = str2 + ch;
+	}
+	return str2;
+}

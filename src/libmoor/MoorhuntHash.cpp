@@ -183,6 +183,7 @@ bool MoorhuntHash::decode(std::string hash)
 	verMaj = hashin[hpos++]; // determine moorhunt version
 	verMin = hashin[hpos++];
 
+	
 //	unsigned char *in = base64Decode(&hashin[hpos], i, &declen);
 	unsigned char *in = unbase64(&hashin[hpos], strlen(&hashin[hpos]));
 	declen = strlen(&hashin[hpos]);

@@ -46,8 +46,8 @@ class YgoowHash
 		std::string hashString; //!< raw hash std::string (base64 encoded)
 
 	protected:
-		static const unsigned char* getKey(unsigned char vermaj, unsigned char vermin);
-		static const unsigned char* getIV(unsigned char vermaj, unsigned char vermin);
+		static const unsigned char* getKey();
+		static const unsigned char* getIV();
 		static std::vector<int> split(char *str, int len);
 		static std::string getMD5( const std::string & str );
 		bool usesMD5Passwords() const;

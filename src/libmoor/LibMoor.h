@@ -23,7 +23,7 @@ class CLibMoor {
 	int Dehash(std::string HashCode);
 	int DehashYgoow(std::string HashCode);
 	int selectMailBox(int MailBox);
-	void startDownload();
+	int startDownload();
 };
 
 #endif

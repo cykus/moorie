@@ -2,33 +2,95 @@
 
 #include "../libmoor/LibMoor.h"
 #include "../libmoor/Log.h"
+#include <boost/program_options.hpp>
 
-int main() {
+#define VERSION 0.2
+
+int main(int argc, char **argv) {
 	unsigned int logLevel(8);
-        logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
-        LogConsoleHandle *logh = new LogConsoleHandle(static_cast<Log::Level>( logLevel ));
-        Log::getLog()->addHandle(logh);
-    	CLibMoor * Instance;
-   	std::string hash;
-hash = "<<ahbid5tYiBHTj0MPV4rNiqs/0pu3FI-RJ8Mij7SJXzp4jY04VjeyEx43FYTDja\
-BAho7GpeDuCjtNimyEKHTdiGSWfYrSgtUpxMja9SpjYKCtXcdb l8yMBRcup5JEU7\
-vychhA1NA/mYvUxWFGYFZAcdeh/ifNoA-IxyOwEPCiBym-YRFfkF0ft0wFH9XuCd\
-pznqaOwesYpW72p5CdInYACddhZvQ6QjwmzhnxU5zuGwptxb1X sUWRKpPVCERU7e\
-EmtLNRZNK/2tNiKxrDFizuuVzy6WrzSkopKYxUuJY0r4vTYELSA72NHiAbhX ceML\
-GAkZSiL2Qy2KEa2Mi6coFBwU0adwM9YL2YMoZGIpYfPokn10X/amxhyYlmXF2x-y\
-W1191lOLwE6/hq5eKyCjfsH0WVNc5/Q0mlMLXLeP2L3d/I0=>>";
-   	
-   	std::string ygoowhash;
-	ygoowhash = "ygoow://|The Exploited Solaufein_for ufs.rar|c1dfd96eeac13261256r278|==jNnMrClSW\
-			mRYLPYkbic9jcrih5CkNkvh/Vlfcucqny01fOHaezSYZkmBMP16hNRELbuoKURZ6tzMU39ls4G9PRX\
-			slBrFKkEBGkrDMOQdNv6y/MCFKgnqrGqO0WGb7Z2cZHLujgDTDT1I2TKKCxuKD1+qMpjDZZ252Q68g\
-			arnTcpD0SgdgNrXcoy/yIAb1VfzwwJ778lkHK/hp9249dYYbMpnyKIUhidPIjGipSj6IPxnAct5cgr\
-			UtoVar732tHGI5bSTJEBNVhaeNg8T8k8bq1gTPQRVm83akeAS6oTblAV9QvyZszmyw0JkVqqRHsghy\
-			iBNcASBKiKOKPUl135FMJIUgl0kcxZNtD19eZq+NvUiHVn969gKjgXBm2LnKngifmr/KQCGbJc3bao\
-			HwOKXDB5+qCyBnO8UTrlRDTRcqWifIhHev7eLjAworBRjCRzXUWBMYBVPoCg+hGhWR/insufdicvJO\
-			fmeH6ZvRHVK9+FfEofXfcDGjvrrivQQ+E62+o9RpDmGON+xeqxYh3wG5qigYSwn7NuDl7fSLtb9DBp\
-			CqmKZDgFyH3cgBeZOKs6bp7OohD1I3TpWacg3ErjmPI|/";
-			
+	logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
+	LogConsoleHandle *logh = new LogConsoleHandle(static_cast<Log::Level>( logLevel ));
+	Log::getLog()->addHandle(logh);
+    	
+	std::string file;   // hash input file
+	std::string strhash;
+	std::string mhpass; // moorhunt password
+	std::string hash;
+	
+	boost::program_options::options_description desc("Moorie 0.2 (C)by Moorie Team (http://moorie.mahho.net/) \n\nOptions");
+	desc.add_options()
+			("hash,f",          boost::program_options::value<std::string>(), "Hash file")
+			("shash,s",	    boost::program_options::value<std::string>(), "Hash string")
+			("password,p",      boost::program_options::value<std::string>(), "Hash password")
+//			("max-downloads,m", boost::program_options::value<unsigned int>(), "Maximum number of concurrent downloads")
+			("log-level,l",     boost::program_options::value<unsigned int>( &logLevel )->default_value( 0 ), "Log level (0-8)")
+//			("keep,k",          "Keep segments on disk after merging")
+//			("creator,c",	    "Simple Creator")
+			("info,i",          "Display detailed hash information")
+			("verify,v",        "Verify hash correctness, then exit")
+			("version",         "Show version information")
+			("help,h",          "Show help");
+	boost::program_options::variables_map vars;
+	try
+	{
+		boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vars);
+		boost::program_options::notify(vars);
+	}
+	catch (boost::program_options::error e)
+	{
+		std::cerr << e.what() << std::endl;
+		return 1;
+	}
+	
+	if (vars.count("help"))
+	{
+		std::cout << "help" << std::endl;
+		return 0;
+	}
+	
+	if (vars.count("version"))
+	{
+		std::cout << "Moorie " << VERSION << std::endl;
+		return 0;
+	}
+	if (vars.count("password"))
+	{
+		mhpass = vars["password"].as<std::string>();
+	}
+
+	if (vars.count("hash"))
+	{
+		file = vars["hash"].as<std::string>();
+		std::string buf, line;
+		std::ifstream f(file.c_str());
+		while(std::getline(f,line))
+			hash += line;
+	}
+	else if (vars.count("shash"))
+	{
+		strhash = vars["shash"].as<std::string>();
+		hash = strhash;
+	}
+	else if (strhash.length() == 0)
+	{
+		std::cerr << "Hash not specified" << std::endl;
+		return 1;
+	}
+	curl_global_init(CURL_GLOBAL_ALL);
+	
+	if (file!="") 
+	{
+
+	}
+	else
+	{
+		
+	}
+	
+	CLibMoor * Instance;
+   			
+	string ygoowhash = "";
+	
 	string opt = "moorhunt";
 	if (opt == "ygoow") {
 	 	Instance = new CLibMoor();
@@ -36,7 +98,7 @@ W1191lOLwE6/hq5eKyCjfsH0WVNc5/Q0mlMLXLeP2L3d/I0=>>";
 	} else if (opt == "moorhunt") {
 		Instance = new CLibMoor();
 		Instance -> Dehash(hash);
-		Instance -> selectMailBox(4);
+		Instance -> selectMailBox(0);
 	}
 /*
 	if (Instance -> Dehash(hash) != 0) {
