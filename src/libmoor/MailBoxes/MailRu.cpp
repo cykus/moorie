@@ -23,7 +23,7 @@ MailRuMailbox::MailRuMailbox(const string &usr, const string &passwd): CMailBox(
 {
 }
 
-int MailRuMailbox::Login()
+int MailRuMailbox::loginRequest()
 {
 	
 //	LOG_ENTER("MailRuMailbox::loginRequest");
@@ -59,7 +59,7 @@ void MailRuMailbox::logoutRequest()
 	*/
 }
 
-int MailRuMailbox::getHeadersRequest()
+void MailRuMailbox::getHeadersRequest()
 {
 //	LOG_ENTER("MailRuMailbox::getHeadersRequest");
 	string url("http://win.mail.ru/cgi-bin/msglist?folder=0");
@@ -100,7 +100,6 @@ int MailRuMailbox::getHeadersRequest()
 		while (regex_search(pbegin, pend, match, mheadre, match_default)) {
 			EmailHeader hdr(match[1], match[2]);
 //			cout << match[1] << " " << match[2] << endl;
-			LOG(Log::Debug, "Found Header: "+hdr.subject);
 //			cout << "Add header: " << hdr.subject << endl;
 //			LOG(Log::Debug, "Add header: " + hdr.subject + " Link: " + match[1]);
 			addHeader(hdr);
@@ -112,7 +111,6 @@ int MailRuMailbox::getHeadersRequest()
 //		LOG(Log::Debug, ".");
 	}
 	
-	return msgcnt;
 //	setState(Mailbox::ReadHeadersDone); */
 }
 

@@ -7,6 +7,7 @@
 #include <cstdlib>
 
 #include "MailBoxes/MailRu.h"
+#include "MailBoxes/GMail.h"
 
 enum MBoxID {
 	Walla        = 0x01,
