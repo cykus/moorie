@@ -70,6 +70,7 @@ class CMailBox {
 		string getUser() const;
 		string getPassword() const;
 		string escape(string q);
+		string unescape(string q);
 		
 		void requestComplete();
 		
@@ -84,11 +85,12 @@ class CMailBox {
 	public:
 		CMailBox(const std::string &usr, const std::string &passwd);
 		void setFileName(string);
-		virtual int Login() = 0;
-		virtual int getHeadersRequest() = 0;
+		virtual int loginRequest() = 0;
+		virtual void getHeadersRequest() = 0;
 		virtual int downloadRequest(int seg) = 0;
 		list<EmailHeader> getHeaders() const;
 		vector<string> getLinks() const;
+		int checkHeaders(int numOfSegments);
 		virtual ~CMailBox();
 };
 

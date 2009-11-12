@@ -1,7 +1,7 @@
 /*
  * This file is a part of Moorie.
  *
- * Copyright (C) 2007 Krzysztof Konieczny <silent@aol.pl>
+ * Copyright (C) 2007 Pawel Stolowski <pawel.stolowski@wp.pl>
  *
  * Moorie is free software; you can redestribute it and/or modify it
  * under terms of GNU General Public License by Free Software Foundation.
@@ -10,26 +10,27 @@
  * WITHOUT ANY WARRANTY. See GPL for more details.
  */
 
-#ifndef __MAILRU_H
-#define __MAILRU_H
+#ifndef __GMAIL_H
+#define __GMAIL_H
 
-#include <string>
 #include "../Mailbox.h"
+#include <string>
 
-class MailRuMailbox: public CMailBox
+//! Mailbox implementation for gmail.com
+class GMailMailbox: public CMailBox
 {
-		std::string auth, page;
+	private:
+		string auth;
 		int totalEmails;
-		int pgcnt;
-
+		string page;
 
 	public:
-		MailRuMailbox(const string &usr, const string &passwd);
-		~MailRuMailbox();
+		GMailMailbox(const std::string &usr, const std::string &passwd);
+		~GMailMailbox();
 		int loginRequest();
 		void logoutRequest();
 		void getHeadersRequest();
-		int downloadRequest(int seg/*const EmailHeader &hdr, Segment *s*/);
+		int downloadRequest(int seg);
 
 		void parseResponse();
 };

@@ -123,6 +123,13 @@ std::string CMailBox::escape(std::string q)
 	return s;
 }
 
+std::string CMailBox::unescape(std::string q)
+{
+	char *e = curl_easy_unescape(handle, q.c_str(), 0, NULL);
+	std::string s(e);
+	return s;
+}
+
 size_t CMailBox::_writeData(void *buffer, size_t size, size_t nmem, void *ptr)
 {
 	CMailBox *myMailBox = static_cast<CMailBox *>(ptr);
@@ -272,4 +279,23 @@ int CMailBox::downloadSegDone() {
 		boost::filesystem::remove(tmpfile.c_str());
 		return 1;
 	}
+}
+
+int CMailBox::checkHeaders(int numOfSegments) {
+	int segments = 0;
+	for (int i = 1; i <= numOfSegments; i++) {
+		ostringstream ss;
+		ss << i;
+		string id = ss.str();
+		boost::regex hreg("\\[" + id + "\\]"); // match "[crc][id]"
+		boost::smatch match; 
+		for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
+		{
+			if (boost::regex_search(it->subject, match, hreg))
+			{
+				segments++;
+			}
+		} 
+	}
+	return segments;
 }

@@ -15,7 +15,7 @@
 //#include <boost/regex.hpp>
 #include <boost/algorithm/string.hpp>
 #include "EmailHeader.h"
-//#include "Log.h"
+#include "Log.h"
 
 #include <iostream>
 std::string EmailHeader::decode( const std::string& code )
@@ -81,6 +81,7 @@ std::string EmailHeader::decode( const std::string& code )
     }
     boost::to_upper(crc1);
     boost::to_upper(crc2);
+	LOG(Log::Debug, "Segment: ["+crc1+"]"+"["+crc2+"]"+"["+boost::lexical_cast<std::string>(iseg)+"]");
     return "["+crc1+"]"+"["+crc2+"]"+"["+boost::lexical_cast<std::string>(iseg)+"]";
     }
     catch(...){

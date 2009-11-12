@@ -43,16 +43,15 @@ int CLibMoor::selectMailBox(int MailBox) {
 	int j = 0;
 	int tries = 0;
 	
-//	for (int i = 0; i < vector_size; i+= 3) {
+	for (int i = 0; i < vector_size; i+= 3) {
 //			std::cout << j;
 //			std::cout << ". ID: "  << myHash->getAccounts().at(i);
 //			std::cout << " L: " << myHash->getAccounts().at(i+1);
 //			std::cout << " P: " << myHash->getAccounts().at(i+2);
 //			std::cout << std::endl;
-//		LOG( Log::Debug, boost::format( "%1%. ID: %2% L: %3% P: %4%" ) 
-//				%j %myHash->getAccounts().at(i) %myHash->getAccounts().at(i+1) %myHash->getAccounts().at(i+2) );
+		LOG( Log::Debug, boost::format( "%1%. ID: %2% L: %3% P: %4%" ) %j %myHash->getAccounts().at(i) %myHash->getAccounts().at(i+1) %myHash->getAccounts().at(i+2) );
 //		j++;
-//	}
+	}
 	
 	do {
 		// zmiana skrzynki?
@@ -71,18 +70,22 @@ int CLibMoor::selectMailBox(int MailBox) {
 		if (myHash->getAccounts().at(selected) == "mail.ru") {
 			myMailBox = new MailRuMailbox(login, passwd);
 			validMailbox = true;
-		} else  {
+		} else if (myHash->getAccounts().at(selected) == "gmail.com") {
+			myMailBox = new GMailMailbox(login, passwd);
+			validMailbox = true;
+		} else {
 			LOG( Log::Info, "Blad skrzynki");
 			validMailbox = false;
 		}
 		
-		if (validMailbox == true && myMailBox -> Login() == 0) {
+		if (validMailbox == true && myMailBox -> loginRequest() == 0) {
 			myMailBox -> setFileName(myHash->getFileName());
 //			cout << "Zalogowano pomyslnie..." << endl;
 //			cout << "Sprawdzanie listy segmentow..." << endl;
 			LOG( Log::Info, "Zalogowano pomyslnie...");
 			LOG( Log::Info, "Sprawdzanie listy segmentow...");
-			int segments = myMailBox -> getHeadersRequest();
+			myMailBox -> getHeadersRequest();
+			int segments = myMailBox->checkHeaders(myHash->getNumOfSegments());
 			if (segments == 0) {
 //				cout << "Nie znaleziono zadnego segmentu..." << endl;
 				LOG( Log::Info, "Nie znaleziono zadnego segmentu...");

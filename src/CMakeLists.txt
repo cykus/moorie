@@ -9,7 +9,7 @@ find_package(Boost COMPONENTS regex thread filesystem program_options REQUIRED)
 # cause another cmake executable to run. The same process will walk through 
 # the project's entire directory structure. 
 add_library (moor SHARED libmoor/Decoder.cpp  libmoor/LibMoor.cpp libmoor/Log.cpp  libmoor/Mailbox.cpp  libmoor/Mailboxes.cpp  libmoor/MoorhuntHash.cpp libmoor/YgoowHash.cpp libmoor/EmailHeader.cpp libmoor/Tools.cpp
-libmoor/MailBoxes/MailRu.cpp)
+libmoor/MailBoxes/MailRu.cpp libmoor/MailBoxes/GMail.cpp)
 add_subdirectory (libmoor)
 add_subdirectory (moor_bin)
 
