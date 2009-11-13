@@ -132,7 +132,10 @@ int MailRuMailbox::downloadRequest(int seg)
 		LOG(Log::Debug, link);
 		downloadSeg();
 		doGet(link);
-		downloadSegDone();
+		if (downloadSegDone() == 0)
+			return 0;
+		else
+			return 1;
 //		setState(Mailbox::DownloadIP);
 //		setSegment(s);
 	}

@@ -136,8 +136,8 @@ int CLibMoor::startDownload() {
 			}
 			else 
 				segValid = 1;// proba pobrania segmentu jeszcze raz
+		} else
 			segValid = 1;
-		}
 	}
 	if (segValid == 1)
 		LOG( Log::Info, "Wszystkie segmenty sciagnieto pomyslnie...");

@@ -28,9 +28,9 @@ int GMailMailbox::loginRequest()
 		+ "&service=mail&rm=false&Email="
 		+ escape(getUser()) + "&Passwd="
 		+ escape(getPassword())
-		+ "&null=Sign+in";
+		+ "&null=signIn";
 	
-	page = doPost("https://www.google.com/accounts/ServiceLoginAuth", vars);
+	page = doPost("https://www.google.com/accounts/ServiceLoginAuth?service=mail", vars);
 
 	regex re("url=&#39;(.+)&");
 	regex re2("&amp;");
