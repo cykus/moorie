@@ -23,14 +23,19 @@ GMailMailbox::GMailMailbox(const string &usr, const string &passwd): CMailBox(us
 int GMailMailbox::loginRequest()
 {
 //	LOG_ENTER("GMailMailbox::loginRequest");
-	const string vars = string("continue=")
+	smatch match2;
+        page = doGet("https://www.google.com/accounts/ServiceLoginAuth");
+        regex re3("name=\"GALX\"[\n].*?value=\"([a-zA-Z0-9_*[-]*]*)\"");
+        regex_search(page, match2, re3);
+        const string vars = string("&continue=")
 		+ escape("http://mail.google.com/mail/?")
-		+ "&service=mail&rm=false&Email="
+                + "&service=mail&rm=false&GALX="
+                + escape(match2[1]) + "&Email="
 		+ escape(getUser()) + "&Passwd="
 		+ escape(getPassword())
-		+ "&null=signIn";
+                + "&signIn=Sign+in";
 	
-	page = doPost("https://www.google.com/accounts/ServiceLoginAuth?service=mail", vars);
+	page = doPost("https://www.google.com/accounts/ServiceLoginAuth", vars);
 
 	regex re("url=&#39;(.+)&");
 	regex re2("&amp;");
