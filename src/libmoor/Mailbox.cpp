@@ -261,6 +261,7 @@ int CMailBox::downloadSegDone() {
 		{
 //			cout << match[0] << endl;
 			segOK = true;
+			LOG( Log::Info, "Seg CRC OK");
 			break;
 		}
 	} 
