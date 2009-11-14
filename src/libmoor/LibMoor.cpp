@@ -99,7 +99,7 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 //				cout << "Znaleziono wszystkie segmenty, zaczynam pobieranie" << endl;
 				LOG( Log::Info, "Znaleziono wszystkie segmenty, zaczynam pobieranie");
 				cont = true;
-				if (startDownload() != 0) {
+				if (startDownload() == 0) {
 					LOG( Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %segments );
 					changeMailbox = true;
 				} 
