@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>images/add.png</file>
+        <file>images/help_about.png</file>
+        <file>images/exit.png</file>
+        <file>images/remove.png</file>
+        <file>images/pause.png</file>
+        <file>images/play.png</file>
+        <file>images/tool2.png</file>
+        <file>images/query.png</file>
+        <file>images/config.png</file>
+        <file>images/update.png</file>
+        <file>images/qtlogo.png</file>
+        <file>images/hi16-app-qmoorie.png</file>
+        <file>images/hi64-app-qmoorie.png</file>
+    </qresource>
+</RCC>

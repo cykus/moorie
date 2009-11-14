@@ -1,0 +1,21 @@
+
+* 2009/02/05: 0.1.0  -- Dodano Tymczasowy wybór skrzynek
+                     -- Zmiana kodowania z ISO 8859-2 na UTF-8
+                     -- Poprawiony wybór skrzynek
+                     -- Przycisk zamknij nie wyłącza aplikacji, a chowie do traya
+                     -- poprawki - wyłączenie możliwości edytowania tabeli
+                     -- poprawki - segfaul gdy plik "hashcode.txt" jest pusty
+                     -- poprawki - Zliczanie pobranych danych z poprzedniej sesji
+                     -- poprawki - Poprawienie statusów
+                     -- next
+    
+* 2008/07/16: 0.0.2  -- Dodano okno informacyjne
+                     -- Dodano logi w oknie programu
+                     -- Dodano kilka opcji w ustawieniach
+                     -- Dodano kolumną "pozostało"
+                     -- Poprawki w zapisywaniu stanu downloadu (co segment)
+                     -- Wybór katalogu pobierania 
+                     -- Inne drobne poprawki 
+
+* 2008/07/04: 0.0.1  -- Pierwsza wesja działająca
+
