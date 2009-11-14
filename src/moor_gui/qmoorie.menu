@@ -1,0 +1,6 @@
+?package(qmoorie):\
+    needs="X11"\
+    section="Apps/Net"\
+    title="Qmoorie"\
+    icon32x32="qmoorie"\
+    command="/usr/bin/qmoorie"
