@@ -30,7 +30,8 @@ int CLibMoor::DehashYgoow(std::string HashCode) {
 	myYgoowHash = new YgoowHash(HashCode);
 	
 }
-int CLibMoor::selectMailBox(int MailBox) {
+int CLibMoor::selectMailBox(int MailBox, std::string path) {
+        if(path.find_last_of("/") != 0) path+="/";
 	int selected = MailBox * 3;
 //	myMailBox = new CMailBox(myHash->getAccounts().at(selected - 3), myHash->getAccounts().at(selected-2), myHash->getAccounts().at(selected-1));
 
@@ -79,7 +80,7 @@ int CLibMoor::selectMailBox(int MailBox) {
 		}
 		
 		if (validMailbox == true && myMailBox -> loginRequest() == 0) {
-			myMailBox -> setFileName(myHash->getFileName());
+                        myMailBox -> setFileName(path+myHash->getFileName());
 //			cout << "Zalogowano pomyslnie..." << endl;
 //			cout << "Sprawdzanie listy segmentow..." << endl;
 			LOG( Log::Info, "Zalogowano pomyslnie...");
