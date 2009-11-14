@@ -40,6 +40,15 @@ void CMailBox::setFileName(string file) {
 	filename = file;
 }
 
+void CMailBox::setFileCRC(int crc) {
+	stringstream ss;
+	ss << setw(8) << setfill('0')  << hex << crc;
+	cout << hex << crc;
+	fileCRC = ss.str();
+	boost::to_upper(fileCRC);
+	LOG( Log::Info, boost::format("File CRC: %1%") %fileCRC);
+
+}
 void CMailBox::setCookie( std::string cookie ) const
 {
 	curl_easy_setopt(handle, CURLOPT_COOKIE, cookie.c_str());
@@ -203,7 +212,7 @@ string CMailBox::getLink(int seg) {
 	ss << seg;
 	string id = ss.str();
 	segNumber = id;
-	boost::regex hreg("\\[" + id + "\\]"); // match "[crc][id]"
+	boost::regex hreg("\\[" + fileCRC + "\\](.+)\\[" + id + "\\]"); // match "[crc][id]"
 	boost::smatch match; 
 	for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
 	{
@@ -253,7 +262,7 @@ int CMailBox::downloadSegDone() {
 //	ss << seg;
 //	string id = ss.str();
 	boost::to_upper(segCRC);
-	boost::regex hreg("\\[" + segCRC + "\\]\\[" + segNumber + "\\]"); // match "[crc][id]"
+	boost::regex hreg("\\[" + fileCRC + "\\]\\[" + segCRC + "\\]\\[" + segNumber + "\\]"); // match "[crc][id]"
 	boost::smatch match; 
 	for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
 	{
@@ -288,7 +297,7 @@ int CMailBox::checkHeaders(int numOfSegments) {
 		ostringstream ss;
 		ss << i;
 		string id = ss.str();
-		boost::regex hreg("\\[" + id + "\\]"); // match "[crc][id]"
+		boost::regex hreg("\\[" + fileCRC + "\\](.+)\\[" + id + "\\]"); // match "[crc][id]"
 		boost::smatch match; 
 		for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
 		{

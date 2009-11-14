@@ -7,6 +7,22 @@
 #define VERSION 0.2
 
 int main(int argc, char **argv) {
+	
+	string ygoowhash = "Ygoow://|Static-X Cult of static(2009)Sewol_for_ufs.pl.rar|ac3478d69ac165n4r5r6n\
+			p4|==DDpy2jHA8YCJ8VukJZGQS7PITaduwRw-gpgLHSob3VHXwo6QdDv98EEfWz/nNolODiCi4nqMr\
+			8hs3fHd26JekX32IqM3inbpn9KvsPpusVg1ukOzC0/YU5DyN4P9vEeL3OTaeCf6EZM/5iGI90y6zEp\
+			Zkjl27xlR/A3krMeRR50dRBkYIVA5oVLeAb3Egf07sCYwg2JrZDmwg8h-ZhfAaU4OoXCew79GicdMN\
+			rRxMs8cwVl1iyEisNSDnrb5SAbcSVshkymeas7Glf44BCZS2Rjv9EPD8RYLs6PGcOtCKm9/7I/Eoq4\
+			Ex/OAYUPZwaILWogqIpa/ex5CNpHxA2lLODmXjZOtTjINgeI9mEUUsJKWqu2JShGclxIqd1La-NaRV\
+			OfFWDS2VyhmLs5KjtgTQH1sz0Q2u9uIQN1om6pM1dmg6MJAsITjyh62Qd64eoRCAqeoy4gDoEwrrG5\
+			Oh8AVP-|/";
+	CLibMoor * Instance;
+	
+	Instance = new CLibMoor();
+	Instance -> DehashYgoow(ygoowhash);
+	delete Instance;
+	
+	
 	unsigned int logLevel(8);
 	logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
 	LogConsoleHandle *logh = new LogConsoleHandle(static_cast<Log::Level>( logLevel ));
@@ -87,19 +103,18 @@ int main(int argc, char **argv) {
 		
 	}
 	
-	CLibMoor * Instance;
    			
-	string ygoowhash = "";
 	
-	string opt = "moorhunt";
-	if (opt == "ygoow") {
+// 	string opt = "moorhunt";
+// 	if (opt == "ygoow") {
 	 	Instance = new CLibMoor();
 		Instance -> DehashYgoow(ygoowhash);
-	} else if (opt == "moorhunt") {
+		delete Instance;
+// 	} else if (opt == "moorhunt") {
 		Instance = new CLibMoor();
 		Instance -> Dehash(hash);
 		Instance -> selectMailBox(0);
-	}
+// 	}
 /*
 	if (Instance -> Dehash(hash) != 0) {
 		std::cout << "Podany hashcode jest nieprawidlowy..." << std::endl;
