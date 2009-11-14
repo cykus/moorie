@@ -59,6 +59,7 @@ class CMailBox {
 	boost::crc_32_type crcRes;
 	string segCRC;
 	string segNumber;
+	string fileCRC;
 	
 	protected:
 		static size_t _writeData(void *buffer, size_t size, size_t nmem, void *ptr);
@@ -84,7 +85,8 @@ class CMailBox {
 
 	public:
 		CMailBox(const std::string &usr, const std::string &passwd);
-		void setFileName(string);
+		void setFileName(string file);
+		void setFileCRC(int crc);
 		virtual int loginRequest() = 0;
 		virtual void getHeadersRequest() = 0;
 		virtual int downloadRequest(int seg) = 0;

@@ -166,6 +166,7 @@ bool YgoowHash::decode(std::string hash)
 	}
 	
 	hash = myhashin[3]; 
+ 	hash = Rot13(hash);
 	
 	int declen;
 	int i;
@@ -175,7 +176,7 @@ bool YgoowHash::decode(std::string hash)
 //	cout << endl << endl << array<< endl;
 	std::reverse(hash.begin(), hash.end());
 
-//	hash = Rot13(hash);
+// 	hash = Rot13(hash);
 	cout << hash << endl;
 	boost::scoped_array<char> hashin(new char [hash.size() + hash.size()/64 + 1]); //allocate room for reformatted (including newlines) hash string
 
@@ -191,8 +192,8 @@ bool YgoowHash::decode(std::string hash)
 			hashin[i++] = '+';
 		else
 			hashin[i++] = hash[hpos];
-		if ((i % 64) == 0)
-			hashin[i++] = '\n';
+ 		if ((i % 64) == 0)
+ 			hashin[i++] = '\n';
 	}
 //	cout << i << endl;
 	if (i == 0)
@@ -211,13 +212,14 @@ bool YgoowHash::decode(std::string hash)
 	unsigned char *in = unbase64(const_cast<char *>(hashString.c_str()), strlen(hashString.c_str()));
 	declen = strlen(hashString.c_str());
 	cout << in << " " << declen << endl;
-	td = mcrypt_module_open((char*)"rijndael-256", NULL, (char*)"ofb", NULL);
+	td = mcrypt_module_open((char*)"rijndael-256", NULL, (char*)"cbc", NULL);
 
 
 	unsigned char *key = const_cast<unsigned char *>(getKey());
 	unsigned char *iv = const_cast<unsigned char *>(getIV());
 
 	cout << " KEY: " << key << " IV: " << iv << endl;
+	
 	
 	if (key == NULL || iv == NULL)
 		return 1;

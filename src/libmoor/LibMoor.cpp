@@ -6,6 +6,7 @@ CLibMoor::CLibMoor() {
 }
 
 CLibMoor::~CLibMoor() {
+	
 }
 
 int CLibMoor::Dehash(std::string HashCode) {
@@ -28,10 +29,12 @@ int CLibMoor::Dehash(std::string HashCode) {
 
 int CLibMoor::DehashYgoow(std::string HashCode) {
 	myYgoowHash = new YgoowHash(HashCode);
-	
 }
 int CLibMoor::selectMailBox(int MailBox, std::string path) {
-        if(path.find_last_of("/") != 0) path+="/";
+	if(path.find_last_of("/") != 0) {
+		path+="/";
+	}
+	LOG( Log::Info, boost::format("Pobieranie do %1%") %path);
 	int selected = MailBox * 3;
 //	myMailBox = new CMailBox(myHash->getAccounts().at(selected - 3), myHash->getAccounts().at(selected-2), myHash->getAccounts().at(selected-1));
 
@@ -80,7 +83,8 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 		}
 		
 		if (validMailbox == true && myMailBox -> loginRequest() == 0) {
-                        myMailBox -> setFileName(path+myHash->getFileName());
+            myMailBox -> setFileName(path+myHash->getFileName());
+			myMailBox -> setFileCRC(myHash->getCrc());
 //			cout << "Zalogowano pomyslnie..." << endl;
 //			cout << "Sprawdzanie listy segmentow..." << endl;
 			LOG( Log::Info, "Zalogowano pomyslnie...");
@@ -126,10 +130,11 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 
 int CLibMoor::startDownload() {
 	bool segValid;
-	while (mySeg <= myHash->getNumOfSegments()) {
+	int seg_left = myHash->getNumOfSegments();
+	do {
 		mySeg++;
 //		cout << "Sciaganie segmenu: " << mySeg << "/" << myHash->getNumOfSegments() << endl;
-		LOG( Log::Info, boost::format( "Sciaganie segmentu: %1%/%2%" ) %mySeg %myHash->getNumOfSegments());
+		LOG( Log::Info, boost::format( "Sciaganie segmentu: %1%/%2%" ) %mySeg %seg_left);
 		if (myMailBox -> downloadRequest(mySeg) != 0) {
 			if (myMailBox -> downloadRequest(mySeg) != 0) {
 				segValid = 0;
@@ -139,7 +144,7 @@ int CLibMoor::startDownload() {
 				segValid = 1;// proba pobrania segmentu jeszcze raz
 		} else
 			segValid = 1;
-	}
+	} while (mySeg < seg_left);
 	if (segValid == 1)
 		LOG( Log::Info, "Wszystkie segmenty sciagnieto pomyslnie...");
 	return segValid;
