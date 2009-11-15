@@ -38,7 +38,6 @@ class ConfigDialog : public QDialog
 public:
     ConfigDialog();
 
-    void setConfigDir();
 public Q_SLOTS:
     void changePage(QListWidgetItem *current, QListWidgetItem *previous);
     void saveConfigFile();

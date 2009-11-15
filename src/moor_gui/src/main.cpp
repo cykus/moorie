@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     app.setApplicationName("Qmoorie");
     app.setOrganizationName("Moorie Team");
+    app.setOrganizationDomain("moorie.mahho.net");
     app.setApplicationVersion ("SVN");
     app.setQuitOnLastWindowClosed(true);
     Q_INIT_RESOURCE(application);

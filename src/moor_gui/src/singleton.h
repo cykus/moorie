@@ -32,6 +32,7 @@ public:
     QString  PATH;
     unsigned int LLEVEL, DLEVEL;
     bool KSEGMENTS;
+    bool TRAY;
 private:
     Singleton();
     Singleton(const Singleton&);

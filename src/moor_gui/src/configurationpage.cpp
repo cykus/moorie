@@ -36,10 +36,7 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     dBox -> setValue(Zmienne().DLEVEL);
     QLabel *kLabel = new QLabel(tr("Pozostaw segmenty po scalaniu:"));
     kBox = new QCheckBox();
-    // if(parent->KSEGMENTS)
-    // {
-         kBox -> setChecked(false);
-    // }
+    kBox -> setChecked(Zmienne().KSEGMENTS);
 
     QGroupBox *logGroup = new QGroupBox(tr("Dziennik zdarzeń"));
 
@@ -47,6 +44,12 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     lBox = new QSpinBox();
     lBox ->setRange(1,8);
     lBox -> setValue(Zmienne().LLEVEL);
+
+    QGroupBox *otherGroup = new QGroupBox(tr("Inne"));
+
+    QLabel *tLabel = new QLabel(tr("Ikonka systemowa:"));
+    tBox = new QCheckBox();
+    tBox->setChecked(Zmienne().TRAY);
 
     QHBoxLayout *pathLayout = new QHBoxLayout;
     pathLayout -> addWidget(pathLabel);
@@ -70,9 +73,18 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     logLayout->addLayout(lLayout);
     logGroup->setLayout(logLayout);
 
+    QHBoxLayout *tLayout = new QHBoxLayout;
+    tLayout -> addWidget(tLabel);
+    tLayout -> addWidget(tBox);
+
+    QVBoxLayout *trayLayout = new QVBoxLayout;
+    trayLayout->addLayout(tLayout);
+    otherGroup->setLayout(trayLayout);
+
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(downloadGroup);
     mainLayout->addWidget(logGroup);
+    mainLayout->addWidget(otherGroup);
     mainLayout->addStretch(1);
     setLayout(mainLayout);
 

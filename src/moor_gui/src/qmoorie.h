@@ -80,20 +80,14 @@ public:
     void createActions(); //!< Tworzy akcje dla przycisków
     void loadDownloads();
     void readConfigFile();
-    void setConfigDir();
+    void writeConfigFile();
     void setTray();
-    void showLog();
-    void writeDefaultConfigFile();
+    void setLog();
 
     addDownload *dodaj;
-    ConfigDialog *dialog;
     MainWindow ui;
     myTableWidget *tabela;
 
-    std::string hstr ,pass;
-    int refreshInterval, idx, n, m, LLEVEL, mbox;
-    unsigned int DLEVEL;
-    volatile bool stop, KSEGMENTS;
     QString PATH;
     QStringList headarB, headarV;
     QSystemTrayIcon *tray;
@@ -121,7 +115,6 @@ public:
 
 
 public Q_SLOTS:
-    void setLog();
     void addDialog();
     void aboutDialog();
     void infoDialog();
