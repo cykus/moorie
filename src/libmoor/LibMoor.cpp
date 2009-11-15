@@ -76,6 +76,9 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 		} else if (myHash->getAccounts().at(selected) == "gmail.com") {
 			myMailBox = new GMailMailbox(login, passwd);
 			validMailbox = true;
+		} else if (myHash->getAccounts().at(selected) == "yahoo.com") {
+			myMailBox = new YahooMailbox(login, passwd);
+			validMailbox = true;
 		} else {
 			LOG( Log::Info, "Blad skrzynki");
 			validMailbox = false;
