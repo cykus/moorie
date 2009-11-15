@@ -20,12 +20,12 @@
 #include "qmoorie.h"
 
 
-QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f)
+QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new Ui::MainWindow)
 {
     setWindowIcon( QIcon(":/images/hi16-app-qmoorie.png"));
     setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Hashcode Downloader");
 
-    ui.setupUi(this);
+    ui->setupUi(this);
     QTextCodec::setCodecForTr (QTextCodec::codecForName ("UTF-8"));
     QTextCodec::setCodecForCStrings ( QTextCodec::codecForName ("UTF-8"));
     QTextCodec::setCodecForLocale ( QTextCodec::codecForName ("UTF-8"));
@@ -105,6 +105,7 @@ void QMoorie::toggleVisibility()
      connect(exitAct, SIGNAL(triggered()), this, SLOT(exitApp()));
 
      connect(tabela->tInfoAct, SIGNAL(triggered()), this, SLOT(infoDialog()));
+     connect(&tLogs, SIGNAL(append(const QString &)), ui->log, SLOT(append(const QString&)));
 }
 
  void QMoorie::createToolBars()
@@ -129,15 +130,12 @@ void QMoorie::createTable()
     tabela = new myTableWidget();
     QVBoxLayout *main = new QVBoxLayout;
     main -> addWidget(tabela);
-    ui.tab_2->setLayout(main);
+    ui->tab_2->setLayout(main);
     tabela->setEditTriggers(0);
     tabela->setItemDelegate(new TrackDelegate());
     tabela->setColumnCount(7);
-    QHeaderView *header = tabela->horizontalHeader();
-    header->resizeSection( 0, 200 );
-    header->resizeSection( 5, 120 );
-    headarB  << "Nazwa pliku" << "Rozmiar" << "Pozostało"<< "Stan Pobierania " << "Prędkość" << "Status" << "Skrzynka";
-    tabela->setHorizontalHeaderLabels( headarB );
+    headarH  << "Nazwa pliku" << "Rozmiar" << "Pozostało"<< "Stan Pobierania " << "Prędkość" << "Status" << "Skrzynka";
+    tabela->setHorizontalHeaderLabels(headarH);
 }
 void QMoorie::addDialog()
 {
@@ -174,10 +172,8 @@ void QMoorie::addInstance(QString hash, QString path)
 }
 void QMoorie::setLog()
 {
-    unsigned int logLevel(Zmienne().LLEVEL);
-    logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
-    LogConsoleHandle *logh = new LogConsoleHandle(static_cast<Log::Level>( logLevel ));
-    Log::getLog()->addHandle(logh);
+    tLogs.setLogLevel(Zmienne().LLEVEL);
+    tLogs.start();
 }
 void QMoorie::aboutDialog()
 {
@@ -201,6 +197,7 @@ void QMoorie::showSettings()
 }
 void QMoorie::readConfigFile()
 {
+    QHeaderView *header = tabela->horizontalHeader();
     QSettings settings;
     settings.beginGroup("CONFIG_PAGE");
     Zmienne().PATH = settings.value("PATH", "home").toString();
@@ -211,31 +208,54 @@ void QMoorie::readConfigFile()
     settings.endGroup();
 
     settings.beginGroup("GEOMETRY_QMOORIE");
-    resize(settings.value("size", QSize(720, 280)).toSize());
+    resize(settings.value("size", QSize(848, 280)).toSize());
     move(settings.value("pos", QPoint(0, 0)).toPoint());
+    header->resizeSection( 0, settings.value("tabela_column_0", 260).toInt() );
+    header->resizeSection( 1, settings.value("tabela_column_1", 80).toInt() );
+    header->resizeSection( 2, settings.value("tabela_column_2", 70).toInt() );
+    header->resizeSection( 3, settings.value("tabela_column_3", 120).toInt() );
+    header->resizeSection( 4, settings.value("tabela_column_4", 65).toInt() );
+    header->resizeSection( 5, settings.value("tabela_column_5", 120).toInt() );
+    header->resizeSection( 6, settings.value("tabela_column_6", 100).toInt() );
     settings.endGroup();
 
     writeConfigFile();
 }
 void QMoorie::writeConfigFile()
 {
+    QHeaderView *header = tabela->horizontalHeader();
     QSettings settings;
-    settings.beginGroup("CONFIG_PAGE");
-    settings.setValue("PATH", Zmienne().PATH);
-    settings.setValue("LLEVEL", Zmienne().LLEVEL);
-    settings.setValue("DLEVEL", Zmienne().DLEVEL);
-    settings.setValue("KSEGMENTS", Zmienne().KSEGMENTS);
-    settings.setValue("TRAY", Zmienne().TRAY);
-    settings.endGroup();
-    settings.beginGroup("GEOMETRY_QMOORIE");
-    settings.setValue("size", size());
-    settings.setValue("pos", pos());
-    settings.endGroup();
+
+    if(settings.isWritable()){
+        settings.beginGroup("CONFIG_PAGE");
+        settings.setValue("PATH", Zmienne().PATH);
+        settings.setValue("LLEVEL", Zmienne().LLEVEL);
+        settings.setValue("DLEVEL", Zmienne().DLEVEL);
+        settings.setValue("KSEGMENTS", Zmienne().KSEGMENTS);
+        settings.setValue("TRAY", Zmienne().TRAY);
+        settings.endGroup();
+
+        settings.beginGroup("GEOMETRY_QMOORIE");
+        settings.setValue("size", size());
+        settings.setValue("pos", pos());
+        settings.setValue("tabela_column_0", header->sectionSize(0));
+        settings.setValue("tabela_column_1", header->sectionSize(1));
+        settings.setValue("tabela_column_2", header->sectionSize(2));
+        settings.setValue("tabela_column_3", header->sectionSize(3));
+        settings.setValue("tabela_column_4", header->sectionSize(4));
+        settings.setValue("tabela_column_5", header->sectionSize(5));
+        settings.setValue("tabela_column_6", header->sectionSize(6));
+        settings.endGroup();
+    }
+    else
+    {
+        QMessageBox::critical(NULL, "QMoorie", "Nie można zapisać pliku konfiguracyjnego do\n "+settings.fileName(), "OK");
+        this->close();
+    }
 }
 void QMoorie::closeEvent(QCloseEvent *event)
 {
     writeConfigFile();
-    //saveDownloads();
     if(Zmienne().TRAY){
         event->ignore();
         hide();
@@ -245,22 +265,8 @@ void QMoorie::closeEvent(QCloseEvent *event)
 void QMoorie::exitApp()
 {
     writeConfigFile();
-    //saveDownloads();
     qApp->quit();
 }
 QMoorie::~QMoorie()
 {
-}
-QMoorie::LogGuiHandle::LogGuiHandle( Log::Level lvl): LogHandle(lvl)
-{
-}
-QMoorie::LogGuiHandle::~LogGuiHandle()
-{
-}
-void QMoorie::LogGuiHandle::log(const char *msg)
-{
-QString t;
-t = QString::fromUtf8(msg);
-QTime time = QTime::currentTime();
-Zmienne().logi += time.toString("hh:mm:ss") + " " + t + "\n";
 }

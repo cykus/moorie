@@ -10,6 +10,7 @@ set( QMOORIE_SRCS
     configdialog.cpp
     configurationpage.cpp
     threadinstance.cpp
+    threadlogs.cpp
 )
 set( QMOORIE_MOC_HDRS
     qmoorie.h
@@ -22,6 +23,7 @@ set( QMOORIE_MOC_HDRS
     configdialog.h
     configurationpage.h
     threadinstance.h
+    threadlogs.h
 )
 set( QMOORIE_UIS
     qmoorie.ui

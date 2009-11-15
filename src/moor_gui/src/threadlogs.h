@@ -17,28 +17,34 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef SINGLETON_H
-#define SINGLETON_H
+#ifndef THREADLOGS_H
+#define THREADLOGS_H
+#include <QtCore>
+#include <QThread>
+#include <QTime>
 
-#include <QString>
-#include <string>
-#include <QTextStream> 
-class Singleton {
-// definicja klasy o nazwie Singleton - jest 
-// to nazwa wlasna :)
+#include "singleton.h"
+#include <Log.h>
+#include <iostream>
+
+class threadLogs : public QThread
+{
+    Q_OBJECT
 public:
-    QString logs;
-    QString caption;
-    QString  PATH;
-    int LLEVEL, DLEVEL;
-    bool KSEGMENTS;
-    bool TRAY;
-private:
-    Singleton();
-    Singleton(const Singleton&);
-    // konstruktor klasy 
-    friend Singleton& Zmienne();
+    threadLogs();
+    void run();
+    void setLogLevel(int);
+
+    class LogGuiHandle: public LogHandle
+    {
+    public:
+        LogGuiHandle(Log::Level lvl);
+        virtual ~LogGuiHandle();
+        virtual void log(const char *msg);
+    };
+Q_SIGNALS:
+    void append(const QString & text);
+
 };
 
-Singleton& Zmienne();
-#endif
+#endif // THREADLOGS_H

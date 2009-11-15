@@ -31,13 +31,12 @@
 #include "myTableWidget.h"
 #include "tabledelegate.h"
 #include "threadinstance.h"
+#include "threadlogs.h"
 // moorie
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
-#include <Log.h>
-#include <LibMoor.h>
 #include <MoorhuntHash.h>
 //
 #include <cmath>
@@ -46,7 +45,10 @@
 #include <map>
 #include <sstream>
 
-using namespace Ui;
+namespace Ui
+{
+    class MainWindow;
+}
 
 class QMoorie:public QMainWindow
 {
@@ -67,6 +69,12 @@ class QMoorie:public QMainWindow
     QAction *infoAct;
     QAction *removeAct;
 
+    QStringList headarH;
+    QSystemTrayIcon *tray;
+    QToolBar *fileToolBar;
+
+    Ui::MainWindow *ui;
+
 protected:
     void closeEvent(QCloseEvent *event);
 
@@ -85,34 +93,9 @@ public:
     void setLog();
 
     addDownload *dodaj;
-    MainWindow ui;
     myTableWidget *tabela;
-
-    QString PATH;
-    QStringList headarB, headarV;
-    QSystemTrayIcon *tray;
-    QToolBar *fileToolBar;
-
     QVector<threadInstance*> tInstance; //!< Wektor instancji klasy threadInstance
-
-    QTableWidgetItem *idItem;
-    QTableWidgetItem *nazwaItem;
-    QTableWidgetItem *rozmiarItem;
-    QTableWidgetItem *pozostaloItem;
-    QTableWidgetItem *stanItem;
-    QTableWidgetItem *predkoscItem;
-    QTableWidgetItem *statusItem;
-    QTableWidgetItem *skrzynkaItem;
-
-    class LogGuiHandle: public LogHandle
-    {
-    public:
-        LogGuiHandle(Log::Level lvl);
-        virtual ~LogGuiHandle();
-        virtual void log(const char *msg);
-        bool seg;
-    };
-
+    threadLogs tLogs; //!< Wątek odpowiedzialny za wyświetlanie logów
 
 public Q_SLOTS:
     void addDialog();
