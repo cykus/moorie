@@ -1,3 +1,8 @@
+* 2009/11/15: 0.2.0  -- Aplikacja została przepisana od początku razem moorie
+                     -- Dodano wybór katalogu dla każdego pliku
+                     -- Qmoorie pamięta pozycje i rozmiar okna głównego i rozmiar kolumn
+                     -- Możliwość wyłączenie ikonki systemowej
+                     -- Zakładka Logi w oddzielny wątku
 
 * 2009/02/05: 0.1.0  -- Dodano Tymczasowy wybór skrzynek
                      -- Zmiana kodowania z ISO 8859-2 na UTF-8

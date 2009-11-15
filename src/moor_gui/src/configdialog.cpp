@@ -114,13 +114,19 @@ void ConfigDialog::saveConfigFile()
     Zmienne().TRAY = confpage->tBox->isChecked();
 
     QSettings settings;
-    settings.beginGroup("CONFIG_PAGE");
-    settings.setValue("PATH", confpage->pathEdit->text());
-    settings.setValue("LLEVEL", confpage->lBox->value());
-    settings.setValue("DLEVEL", confpage->dBox->value());
-    settings.setValue("KSEGMENTS", confpage->kBox->isChecked());
-    settings.setValue("TRAY", confpage->tBox->isChecked());
-    settings.endGroup();
-
-    this->close();
+    if(settings.isWritable()){
+        settings.beginGroup("CONFIG_PAGE");
+        settings.setValue("PATH", confpage->pathEdit->text());
+        settings.setValue("LLEVEL", confpage->lBox->value());
+        settings.setValue("DLEVEL", confpage->dBox->value());
+        settings.setValue("KSEGMENTS", confpage->kBox->isChecked());
+        settings.setValue("TRAY", confpage->tBox->isChecked());
+        settings.endGroup();
+        this->close();
+    }
+    else
+    {
+        QMessageBox::critical(NULL, "QMoorie", "Nie można zapisać pliku konfiguracyjnego do\n "+settings.fileName(), "OK");
+        this->close();
+    }
 }
