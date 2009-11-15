@@ -30,29 +30,19 @@ QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f)
     QTextCodec::setCodecForCStrings ( QTextCodec::codecForName ("UTF-8"));
     QTextCodec::setCodecForLocale ( QTextCodec::codecForName ("UTF-8"));
 
-    Zmienne().LLEVEL = 8;
-    Zmienne().DLEVEL = 2;
-    Zmienne().KSEGMENTS = true;
-    stop = true;
-    idx = 0;
-    m = 0;
-
     createTable();
-    readConfigFile();
     createActions();
     createToolBars();
+    readConfigFile();
+
     setTray();
-    //loadDownloads();
-    unsigned int logLevel(8);
-    logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
-    LogConsoleHandle *logh = new LogConsoleHandle(static_cast<Log::Level>( logLevel ));
-    Log::getLog()->addHandle(logh);
+    setLog();
 }
 
 void QMoorie::setTray()
 {
-    tray = new QSystemTrayIcon( this );
-    tray->setIcon ( QIcon(":/images/hi64-app-qmoorie.png") );
+    tray = new QSystemTrayIcon();
+    tray->setIcon(QIcon(":/images/hi64-app-qmoorie.png") );
     connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
     this,SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
     contextMenu = new QMenu();
@@ -61,7 +51,8 @@ void QMoorie::setTray()
     contextMenu -> addSeparator();
     contextMenu -> addAction(exitAct);
     tray -> setContextMenu(contextMenu);
-    tray->show();
+    if(Zmienne().TRAY) tray->show();
+
 }
 void QMoorie::trayActivated(QSystemTrayIcon::ActivationReason reason)
 {
@@ -113,7 +104,6 @@ void QMoorie::toggleVisibility()
      exitAct->setStatusTip(tr("Wyjście z aplikacji"));
      connect(exitAct, SIGNAL(triggered()), this, SLOT(exitApp()));
 
-     connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(setLog()));
      connect(tabela->tInfoAct, SIGNAL(triggered()), this, SLOT(infoDialog()));
 }
 
@@ -182,6 +172,13 @@ void QMoorie::addInstance(QString hash, QString path)
     tabela->setItem(tInstance.last()->itemRow, 1, rozmiarPliku);
 
 }
+void QMoorie::setLog()
+{
+    unsigned int logLevel(Zmienne().LLEVEL);
+    logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
+    LogConsoleHandle *logh = new LogConsoleHandle(static_cast<Log::Level>( logLevel ));
+    Log::getLog()->addHandle(logh);
+}
 void QMoorie::aboutDialog()
 {
     about *get = new about(this);
@@ -196,82 +193,63 @@ void QMoorie::infoDialog()
 }
 void QMoorie::showSettings()
 {
-    dialog = new ConfigDialog();
-    dialog -> show();
+    ConfigDialog *get = new ConfigDialog();
+    get->exec();
+    if(!Zmienne().TRAY) tray->hide();
+    else tray->show();
+    delete get;
 }
-void QMoorie::setConfigDir()
-{
- QDir::setCurrent(QDir::homePath ());
- QDir currentDir = QDir::current();
- currentDir.mkdir(".config/Qmoorie");
- currentDir.cd(".config/Qmoorie");
- QDir::setCurrent(currentDir.path());
-}
-
-//This is called if no config file is available, contains default settings
-void QMoorie::writeDefaultConfigFile()
-{
- setConfigDir();
- QFile configFile("config.txt"); 
-
-  if (configFile.open(QFile::WriteOnly)) 
-  {
-     QTextStream out(&configFile); 
-     out.setCodec("UTF-8");
-     out << "home" <<"\n"; //Folder pobierania
-     out << "8" <<"\n"; //Log Level
-     out << "2" <<"\n"; //Max Downloads
-     out << "ON" <<"\n"; //keep segments
-  
-  } 
-   else
-    { 
-      QMessageBox::warning(NULL, "QMoorie", "Nie można zapisać pliku konfiguracyjnego.", "OK");
-    }; 
- readConfigFile();
-}
-
 void QMoorie::readConfigFile()
-{//Reads the config file and sets the config variables which are noted all upercase starting
-//with C_ (from CONFIG)
- setConfigDir();
- QFile configFile("config.txt");
- 
- if (configFile.open(QFile::ReadOnly))
- {
-   QTextStream in(&configFile);
-   in.setCodec("UTF-8");
-   Zmienne().PATH = in.readLine();
-   Zmienne().LLEVEL=(in.readLine()).toInt();
-   Zmienne().DLEVEL=(in.readLine()).toInt();
-   QString ksegmentsString = in.readLine();
-   if(ksegmentsString=="ON") Zmienne().KSEGMENTS=true;
-   else Zmienne().KSEGMENTS = false;
-   
- } 
- else writeDefaultConfigFile();
+{
+    QSettings settings;
+    settings.beginGroup("CONFIG_PAGE");
+    Zmienne().PATH = settings.value("PATH", "home").toString();
+    Zmienne().LLEVEL = settings.value("LLEVEL", 8).toInt();
+    Zmienne().DLEVEL = settings.value("DLEVEL", 2).toInt();
+    Zmienne().KSEGMENTS = settings.value("KSEGMENTS", 1).toBool();
+    Zmienne().TRAY = settings.value("TRAY", true).toBool();
+    settings.endGroup();
 
+    settings.beginGroup("GEOMETRY_QMOORIE");
+    resize(settings.value("size", QSize(720, 280)).toSize());
+    move(settings.value("pos", QPoint(0, 0)).toPoint());
+    settings.endGroup();
+
+    writeConfigFile();
 }
-
+void QMoorie::writeConfigFile()
+{
+    QSettings settings;
+    settings.beginGroup("CONFIG_PAGE");
+    settings.setValue("PATH", Zmienne().PATH);
+    settings.setValue("LLEVEL", Zmienne().LLEVEL);
+    settings.setValue("DLEVEL", Zmienne().DLEVEL);
+    settings.setValue("KSEGMENTS", Zmienne().KSEGMENTS);
+    settings.setValue("TRAY", Zmienne().TRAY);
+    settings.endGroup();
+    settings.beginGroup("GEOMETRY_QMOORIE");
+    settings.setValue("size", size());
+    settings.setValue("pos", pos());
+    settings.endGroup();
+}
 void QMoorie::closeEvent(QCloseEvent *event)
 {
-            //saveDownloads();
-            event->ignore();
-            hide();
+    writeConfigFile();
+    //saveDownloads();
+    if(Zmienne().TRAY){
+        event->ignore();
+        hide();
+    }
+    else qApp->quit();
 }
 void QMoorie::exitApp()
 {
- //saveDownloads();
- qApp->quit();
+    writeConfigFile();
+    //saveDownloads();
+    qApp->quit();
 }
 QMoorie::~QMoorie()
 {
-  stop = true;
-}
-
-void QMoorie::setLog()
-{
-ui.log->setPlainText(Zmienne().logi);
 }
 QMoorie::LogGuiHandle::LogGuiHandle( Log::Level lvl): LogHandle(lvl)
 {

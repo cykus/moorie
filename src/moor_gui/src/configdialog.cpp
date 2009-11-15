@@ -19,6 +19,7 @@
  */
 #include <QtGui>
 #include <iostream>
+#include <QSettings>
 #include "configdialog.h"
 
 
@@ -106,40 +107,20 @@ void ConfigDialog::changePage(QListWidgetItem *current, QListWidgetItem *previou
 }
 void ConfigDialog::saveConfigFile()
 {
- Zmienne().PATH = confpage->pathEdit->text();
- Zmienne().LLEVEL = confpage->lBox->value();
- Zmienne().DLEVEL = confpage->dBox->value();
- Zmienne().KSEGMENTS = confpage->kBox->isChecked();
- setConfigDir();
- QFile configFile("config.txt");
- if (configFile.open(QFile::WriteOnly))
-  {
-    QTextStream out(&configFile);
-    out.setCodec("UTF-8");
-    if(Zmienne().PATH == QDir::homePath()) out << "home";
-    else
-      if(!Zmienne().PATH.endsWith(QDir::separator())) out << Zmienne().PATH+QDir::separator();
-      else out << Zmienne().PATH;
-    out <<"\n";
-    out << Zmienne().LLEVEL <<"\n";
-    out << Zmienne().DLEVEL<<"\n";
-    if(Zmienne().KSEGMENTS)
-     out <<"ON";
-      else out << "OFF";
-    out <<"\n";
-  }
-  else
-   {
-    QMessageBox::warning(NULL, "QMoorie", "Nie można zapisać pliku konfiguracyjnego.", "OK");
-   };
- repaint();
- this->close();
-}
-void ConfigDialog::setConfigDir()
-{
- QDir::setCurrent(QDir::homePath ());
- QDir currentDir = QDir::current();
- currentDir.mkdir(".config/Qmoorie");
- currentDir.cd(".config/Qmoorie");
- QDir::setCurrent(currentDir.path());
+    Zmienne().PATH = confpage->pathEdit->text();
+    Zmienne().LLEVEL = confpage->lBox->value();
+    Zmienne().DLEVEL = confpage->dBox->value();
+    Zmienne().KSEGMENTS = confpage->kBox->isChecked();
+    Zmienne().TRAY = confpage->tBox->isChecked();
+
+    QSettings settings;
+    settings.beginGroup("CONFIG_PAGE");
+    settings.setValue("PATH", confpage->pathEdit->text());
+    settings.setValue("LLEVEL", confpage->lBox->value());
+    settings.setValue("DLEVEL", confpage->dBox->value());
+    settings.setValue("KSEGMENTS", confpage->kBox->isChecked());
+    settings.setValue("TRAY", confpage->tBox->isChecked());
+    settings.endGroup();
+
+    this->close();
 }

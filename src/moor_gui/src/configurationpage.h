@@ -26,7 +26,7 @@ class ConfigurationPage : public QWidget
 {
     Q_OBJECT
 public:
-    QCheckBox *kBox;
+    QCheckBox *kBox, *tBox;
     QSpinBox *dBox, *lBox;
     QLineEdit *pathEdit;
     ConfigurationPage(QWidget *parent = 0);
