@@ -36,6 +36,7 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <MoorhuntHash.h>
+#include <Status.h>
 //
 #include <cmath>
 #include <iomanip>
