@@ -1,5 +1,4 @@
 #include "Mailbox.h"
-#include "Log.h"
 
 CMailBox::CMailBox(const std::string &usr, const std::string &passwd)
 	: user(usr)
@@ -13,6 +12,7 @@ CMailBox::CMailBox(const std::string &usr, const std::string &passwd)
 	, scoreNeedsUpdate(true)
 	, validAccount(true)
 	, bytesRead( 0 )
+        , allBytesRead( 0 )
 {
 	handle = curl_easy_init();
 	curl_easy_setopt(handle, CURLOPT_AUTOREFERER, 1);
@@ -57,6 +57,7 @@ void CMailBox::setCookie( std::string cookie ) const
 string& CMailBox::doGet(std::string url, bool  header)
 {
 //	mutex::scoped_lock lock( speedMutex );
+        allBytesRead += bytesRead;
 	bytesRead = 0;
 	startTime = posix_time::microsec_clock::universal_time();
 //	lock.unlock();
@@ -81,6 +82,7 @@ string& CMailBox::doGet(std::string url, bool  header)
 string& CMailBox::doPost(std::string url, std::string vars, bool header)
 {
 //	mutex::scoped_lock lock( speedMutex );
+        allBytesRead += bytesRead;
 	bytesRead = 0;
 	startTime = posix_time::microsec_clock::universal_time();
 //	lock.unlock();
@@ -308,4 +310,17 @@ int CMailBox::checkHeaders(int numOfSegments) {
 		} 
 	}
 	return segments;
+}
+unsigned int CMailBox::getBytesRead() {
+        return bytesRead+allBytesRead;
+}
+unsigned int CMailBox::getSpeed() const
+{
+        const posix_time::ptime currTime = posix_time::microsec_clock::universal_time();
+        const posix_time::time_duration d = currTime - startTime;
+        if ( bytesRead > 0 && d.total_seconds() > 0 ) {
+                const double b = ( static_cast<double>( bytesRead ) / d.total_seconds() );
+                return static_cast<int>( b );
+        }
+        return 0;
 }

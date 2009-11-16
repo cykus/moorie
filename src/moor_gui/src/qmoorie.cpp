@@ -37,6 +37,7 @@ QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new 
 
     setTray();
     setLog();
+    statusesThread = new boost::thread( boost::bind( &QMoorie::refreshStatuses, this ) );
 }
 
 void QMoorie::setTray()
@@ -168,7 +169,41 @@ void QMoorie::addInstance(QString hash, QString path)
     QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize + " MB");
     tabela->setItem(tInstance.last()->itemRow, 0, nazwaPliku);
     tabela->setItem(tInstance.last()->itemRow, 1, rozmiarPliku);
+}
+void QMoorie::refreshStatuses()
+{
 
+    while(1)
+    {
+        sleep(2);
+        for (int i = 0; i < tInstance.size(); ++i) {
+                QString fileSize; fileSize.sprintf("%.2f", (tInstance.at(i)->size - tInstance.at(i)->vInstance.getBytesRead())  / 1024 / 1024);
+
+                QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize + " MB");
+                tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
+                int percentDownloaded = 100.0f * tInstance.at(i)->vInstance.getBytesRead()  / tInstance.at(i)->size;
+                QTableWidgetItem *stanPobieraniaPliku = new QTableWidgetItem;
+                stanPobieraniaPliku->setData(Qt::DisplayRole, percentDownloaded);
+                tabela->setItem(tInstance.at(i)->itemRow, 3, stanPobieraniaPliku);
+
+                const double speed( static_cast<double>( tInstance.at(i)->vInstance.getSpeed()) / 1024.0f );
+                std::stringstream s;
+                s.setf( std::ios::fixed);
+                if ( speed - round( speed ) < 0.1f )
+                {
+                    s << std::setprecision( 0 );
+                }
+                else
+                {
+                    s << std::setprecision( 2 );
+                }
+                s << speed;
+                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(QString::fromStdString(s.str()) + " KB/s");
+                tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
+
+
+        }
+    }
 }
 void QMoorie::setLog()
 {

@@ -15,6 +15,7 @@
 #include <fstream>
 
 #include "EmailHeader.h"
+#include "Log.h"
 
 using namespace std;
 using namespace boost;
@@ -23,7 +24,7 @@ class CMailBox {
 
 	CURL *handle; //!< Connection handle using curl easy interface
 	string url; //!< Current URL
-	string vars; //<! Variables for current POST request (used for CURLOPT_POSTFIELDS)
+        string vars; //!< Variables for current POST request (used for CURLOPT_POSTFIELDS)
 	string user; //!< User login
 	string password; //!< User password
 	string filename;
@@ -31,15 +32,15 @@ class CMailBox {
 	char *buffer; //!< Temporary buffer for incoming data, size defined by BUFFER_SIZE
 	list<EmailHeader> headers; //!< Email headers read by getHeadersRequest() call
 	vector<string> segments_links;
-//	State state; //!< Current state of this Mailbox object
+//      State state; //!< Current state of this Mailbox object
 //	Segment *segment; //!< Currently downloaded Segment
 	int usecnt; //!< Number of times this mailbox was used
-	int successcnt; //<! Number of successful uses of this mailbox
-	int failcnt; //<! Number of failuers for this mailbox
-	int prefweight; //<! Preference weight for this mailbox
-	int score; //<! Current score of this mailbox, based on usecnt, successful, failcnt, prefweight
-	bool scoreNeedsUpdate; //<! Flag indicating that score needs to be recalculated
-	bool validAccount; //<! Flag indicating whether this is valid mailbox
+        int successcnt; //!< Number of successful uses of this mailbox
+        int failcnt; //!< Number of failuers for this mailbox
+        int prefweight; //!< Preference weight for this mailbox
+        int score; //!< Current score of this mailbox, based on usecnt, successful, failcnt, prefweight
+        bool scoreNeedsUpdate; //!< Flag indicating that score needs to be recalculated
+        bool validAccount; //!< Flag indicating whether this is valid mailbox
 	int uSeq; //!< Unique id of this Mailbox object derived from seq
 	bool stopFlag; //!< stops transfer
 	
@@ -48,6 +49,7 @@ class CMailBox {
 //	mutable mutex speedMutex;
 	posix_time::ptime startTime; //!< Connection start time, used to measure speed
 	unsigned int bytesRead; //!< Number of bytes processed, used to measure speed
+        unsigned int allBytesRead;
 
 	static const int BUFFER_SIZE = 1024*256; //!< Size of temporary buffer (256kB)
 	static const int READ_BUFFER_SIZE = 8192;
@@ -93,6 +95,8 @@ class CMailBox {
 		list<EmailHeader> getHeaders() const;
 		vector<string> getLinks() const;
 		int checkHeaders(int numOfSegments);
+                unsigned int getBytesRead();
+                unsigned int getSpeed() const;
 		virtual ~CMailBox();
 };
 

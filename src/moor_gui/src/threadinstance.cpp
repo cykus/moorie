@@ -24,6 +24,7 @@ threadInstance::threadInstance(QString hash, QString path)
 {
     this->hashcode = hash;
     this->path = path;
+    unsigned long pobranoLS = 0;
 }
 void threadInstance::run()
 {
