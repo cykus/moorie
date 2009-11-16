@@ -136,8 +136,8 @@ void QMoorie::createTable()
     tabela->setEditTriggers(0);
     tabela->setItemDelegate(new TrackDelegate());
     tabela->setColumnCount(7);
-    headarH  << "Nazwa pliku" << "Rozmiar" << "Pozostało"<< "Stan Pobierania " << "Prędkość" << "Status" << "Skrzynka";
-    tabela->setHorizontalHeaderLabels(headarH);
+    headerH  << "Nazwa pliku" << "Rozmiar" << "Pozostało"<< "Stan Pobierania " << "Prędkość" << "Status" << "Skrzynka";
+    tabela->setHorizontalHeaderLabels(headerH);
 }
 void QMoorie::addDialog()
 {
@@ -206,9 +206,11 @@ void QMoorie::refreshStatuses()
             tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
 
             QTableWidgetItem *statusPobierania = new QTableWidgetItem(
-                    QString::number(status.downloadSegment) + " / " + QString::number(tInstance.at(i)->totalSegments));
+                    QString::number(status.downloadSegment) + "/" + QString::number(tInstance.at(i)->totalSegments));
             tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
             //qDebug() << status.downloadSegment;
+            QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
+            tabela->setItem(tInstance.at(i)->itemRow, 6, SkrzynkaPobierania);
         }
     }
 }
@@ -240,10 +242,11 @@ void QMoorie::showSettings()
 void QMoorie::readConfigFile()
 {
     QHeaderView *header = tabela->horizontalHeader();
+    header->setDefaultAlignment(Qt::AlignLeft);
     QSettings settings;
     settings.beginGroup("CONFIG_PAGE");
     Zmienne().PATH = settings.value("PATH", "home").toString();
-    Zmienne().LLEVEL = settings.value("LLEVEL", 8).toInt();
+    Zmienne().LLEVEL = settings.value("LLEVEL", 6).toInt();
     Zmienne().DLEVEL = settings.value("DLEVEL", 2).toInt();
     Zmienne().KSEGMENTS = settings.value("KSEGMENTS", 1).toBool();
     Zmienne().TRAY = settings.value("TRAY", true).toBool();

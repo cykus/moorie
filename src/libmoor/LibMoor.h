@@ -17,6 +17,7 @@ class CLibMoor {
 	YgoowHash * myYgoowHash;
 	CMailBox * myMailBox;
 	int mySeg;
+        int selected;
 	
     public:
 	CLibMoor();
