@@ -68,7 +68,7 @@ class QMoorie:public QMainWindow
     QAction *infoAct;
     QAction *removeAct;
 
-    QStringList headarH;
+    QStringList headerH;
     QSystemTrayIcon *tray;
     QToolBar *fileToolBar;
 

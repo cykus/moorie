@@ -34,7 +34,7 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
         if(path.find_last_of("/") != 0 && path.length() > 1) path+="/";
 	LOG( Log::Info, boost::format("Pobieranie do %1%") %path);
 
-	int selected = MailBox * 3;
+        selected = MailBox * 3;
 //	myMailBox = new CMailBox(myHash->getAccounts().at(selected - 3), myHash->getAccounts().at(selected-2), myHash->getAccounts().at(selected-1));
 
 	bool cont = false;
@@ -152,6 +152,6 @@ int CLibMoor::startDownload() {
 	return segValid;
 }
 Status CLibMoor::getStatus() {
-        Status s(mySeg, myMailBox->getSpeed(), myMailBox->getBytesRead());
+        Status s(mySeg, myMailBox->getSpeed(), myMailBox->getBytesRead(), myHash->getAccounts().at(selected));
         return s;
 }
