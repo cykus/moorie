@@ -125,6 +125,7 @@ void QMoorie::toggleVisibility()
      fileToolBar->addAction(exitAct);
      fileToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
      fileToolBar->setIconSize(QSize(24,24));
+     fileToolBar->setMovable(false);
  }
 void QMoorie::createTable()
 {
@@ -158,6 +159,7 @@ void QMoorie::addInstance(QString hash, QString path)
     const MoorhuntHash & hashcode (tInstance.last()->hashcode.toStdString());
     tInstance.last()->filename = QString::fromStdString(hashcode.getFileName());
     tInstance.last()->size = hashcode.getFileSize();
+    tInstance.last()->totalSegments = hashcode.getNumOfSegments();
     tInstance.last()->pobrano = false;
     tInstance.last()->itemRow = tabela->rowCount();
 
@@ -176,32 +178,37 @@ void QMoorie::refreshStatuses()
     while(1)
     {
         sleep(2);
-        for (int i = 0; i < tInstance.size(); ++i) {
-                QString fileSize; fileSize.sprintf("%.2f", (tInstance.at(i)->size - tInstance.at(i)->vInstance.getBytesRead())  / 1024 / 1024);
+        for (int i = 0; i < tInstance.size(); ++i)
+        {
+            Status status = tInstance.at(i)->vInstance.getStatus();
+            QString fileSize; fileSize.sprintf("%.2f", (tInstance.at(i)->size - status.bytesRead)  / 1024 / 1024);
 
-                QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize + " MB");
-                tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
-                int percentDownloaded = 100.0f * tInstance.at(i)->vInstance.getBytesRead()  / tInstance.at(i)->size;
-                QTableWidgetItem *stanPobieraniaPliku = new QTableWidgetItem;
-                stanPobieraniaPliku->setData(Qt::DisplayRole, percentDownloaded);
-                tabela->setItem(tInstance.at(i)->itemRow, 3, stanPobieraniaPliku);
+            QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize + " MB");
+            tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
+            int percentDownloaded = 100.0f * status.bytesRead  / tInstance.at(i)->size;
+            QTableWidgetItem *stanPobieraniaPliku = new QTableWidgetItem;
+            stanPobieraniaPliku->setData(Qt::DisplayRole, percentDownloaded);
+            tabela->setItem(tInstance.at(i)->itemRow, 3, stanPobieraniaPliku);
 
-                const double speed( static_cast<double>( tInstance.at(i)->vInstance.getSpeed()) / 1024.0f );
-                std::stringstream s;
-                s.setf( std::ios::fixed);
-                if ( speed - round( speed ) < 0.1f )
-                {
-                    s << std::setprecision( 0 );
-                }
-                else
-                {
-                    s << std::setprecision( 2 );
-                }
-                s << speed;
-                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(QString::fromStdString(s.str()) + " KB/s");
-                tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
+            const double speed( static_cast<double>( status.speed) / 1024.0f );
+            std::stringstream s;
+            s.setf( std::ios::fixed);
+            if ( speed - round( speed ) < 0.1f )
+            {
+                s << std::setprecision( 0 );
+            }
+            else
+            {
+                s << std::setprecision( 2 );
+            }
+            s << speed;
+            QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(QString::fromStdString(s.str()) + " KB/s");
+            tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
 
-
+            QTableWidgetItem *statusPobierania = new QTableWidgetItem(
+                    QString::number(status.downloadSegment) + " / " + QString::number(tInstance.at(i)->totalSegments));
+            tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
+            //qDebug() << status.downloadSegment;
         }
     }
 }

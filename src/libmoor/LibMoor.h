@@ -10,6 +10,7 @@
 #include "YgoowHash.h"
 #include "Mailbox.h"
 #include "Mailboxes.h"
+#include "Status.h"
 
 class CLibMoor {
     MoorhuntHash * myHash;
@@ -24,8 +25,7 @@ class CLibMoor {
 	int DehashYgoow(std::string HashCode);
         int selectMailBox(int MailBox,std::string = "");
 	int startDownload();
-        unsigned int getBytesRead();
-        unsigned int getSpeed();
+        Status getStatus();
 };
 
 #endif

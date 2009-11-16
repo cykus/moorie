@@ -151,9 +151,7 @@ int CLibMoor::startDownload() {
 		LOG( Log::Info, "Wszystkie segmenty sciagnieto pomyslnie...");
 	return segValid;
 }
-unsigned int CLibMoor::getBytesRead() {
-        return myMailBox->getBytesRead();
-}
-unsigned int CLibMoor::getSpeed() {
-        return myMailBox->getSpeed();
+Status CLibMoor::getStatus() {
+        Status s(mySeg, myMailBox->getSpeed(), myMailBox->getBytesRead());
+        return s;
 }
