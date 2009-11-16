@@ -35,14 +35,9 @@ public:
     void run();
     bool pobrano;
     float size; //!< rozmiar pliku
-    float bytesLeft; //!< liczba pozostałych bajtów do pobrania
-    int downloadedSegments; //!< liczba pobranych segmentów
     int totalSegments; //!< liczba wszystkich segmentów
-    int percentDownloaded; //!< % pobranego plik
-    int pause;
-    int mbox; //!< nr skrzynki
     unsigned int itemRow; //!< Nr. wiersza w tabeli
-    long pobranoLS;
+    long pobranoLS; //!< Ile pobrano w poprzedniej sesji
     QString hashcode; //!< hashcode pliku
     QString path; //!< Ścieżka pobierania pliku
     QString pass; //!< hasło pliku

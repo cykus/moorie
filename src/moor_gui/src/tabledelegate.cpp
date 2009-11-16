@@ -30,7 +30,7 @@ TrackDelegate::TrackDelegate(QObject *parent)
 }
 void TrackDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    if( index.column() == 4 )
+    if( index.column() == 3 )
     {
         QStyleOptionProgressBarV2 opts;
         opts.text = index.model()->data(index, Qt::DisplayRole).toString() + " %";

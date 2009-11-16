@@ -85,7 +85,7 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 		}
 		
 		if (validMailbox == true && myMailBox -> loginRequest() == 0) {
-            myMailBox -> setFileName(path+myHash->getFileName());
+                        myMailBox -> setFileName(path+myHash->getFileName());
 			myMailBox -> setFileCRC(myHash->getCrc());
 //			cout << "Zalogowano pomyslnie..." << endl;
 //			cout << "Sprawdzanie listy segmentow..." << endl;
@@ -150,4 +150,10 @@ int CLibMoor::startDownload() {
 	if (segValid == 1)
 		LOG( Log::Info, "Wszystkie segmenty sciagnieto pomyslnie...");
 	return segValid;
+}
+unsigned int CLibMoor::getBytesRead() {
+        return myMailBox->getBytesRead();
+}
+unsigned int CLibMoor::getSpeed() {
+        return myMailBox->getSpeed();
 }

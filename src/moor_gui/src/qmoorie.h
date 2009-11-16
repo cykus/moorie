@@ -34,9 +34,7 @@
 #include "threadlogs.h"
 // moorie
 #include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
-#include <boost/thread/condition.hpp>
 #include <MoorhuntHash.h>
 //
 #include <cmath>
@@ -74,6 +72,9 @@ class QMoorie:public QMainWindow
     QToolBar *fileToolBar;
 
     Ui::MainWindow *ui;
+    boost::thread *statusesThread;
+
+    void refreshStatuses();
 
 protected:
     void closeEvent(QCloseEvent *event);
