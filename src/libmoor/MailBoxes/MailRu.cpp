@@ -12,11 +12,23 @@
 
 #include "MailRu.h"
 #include "../Log.h"
+#include "MailboxFactory.h"
+
 // #include "Downloader.h"
 // #include "MoorieException.h"
 #include <sstream>
 #include <boost/regex.hpp>
-
+        
+namespace {
+  CMailBox* Create(const std::string& username, 
+                   const std::string& password) 
+  {
+    return new MailRuMailbox(username, password);
+  }
+  
+  const bool registered = MailboxFactory::Instance().
+                                          Register("mail.ru", Create);
+}        
 
 MailRuMailbox::MailRuMailbox(const string &usr, const string &passwd): CMailBox(usr, passwd), totalEmails(0)
 

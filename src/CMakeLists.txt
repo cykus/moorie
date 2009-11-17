@@ -5,8 +5,24 @@ find_package(Boost COMPONENTS regex thread filesystem program_options REQUIRED)
 find_package (CURL REQUIRED)
 find_package (OpenSSL REQUIRED)
 
-add_library (moor SHARED libmoor/Decoder.cpp  libmoor/LibMoor.cpp libmoor/Log.cpp  libmoor/Mailbox.cpp  libmoor/Mailboxes.cpp  libmoor/MoorhuntHash.cpp libmoor/YgoowHash.cpp libmoor/Status.cpp libmoor/EmailHeader.cpp libmoor/Tools.cpp
-libmoor/MailBoxes/MailRu.cpp libmoor/MailBoxes/GMail.cpp libmoor/MailBoxes/Yahoo.cpp)
+add_library (moor SHARED libmoor/Decoder.cpp
+												 libmoor/LibMoor.cpp 
+												 libmoor/Log.cpp  
+												 libmoor/Mailbox.cpp  
+												 libmoor/Mailboxes.cpp  
+												 libmoor/MoorhuntHashDecoder.cpp 
+												 libmoor/YgoowHashDecoder.cpp 
+												 libmoor/Status.cpp 
+												 libmoor/EmailHeader.cpp 
+												 libmoor/Tools.cpp
+												 libmoor/MailBoxes/MailRu.cpp 
+												 libmoor/MailBoxes/GMail.cpp 
+												 libmoor/MailBoxes/Yahoo.cpp 
+												 libmoor/MailboxFactory.cpp
+												 libmoor/HashManager.cpp
+												 libmoor/HashUtils.cpp
+												 libmoor/StringUtils.cpp
+												 libmoor/Utils.cpp)
 add_subdirectory (libmoor)
 add_subdirectory (moor_bin)
 

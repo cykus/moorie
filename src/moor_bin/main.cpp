@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 	CLibMoor * Instance;
 	
 	Instance = new CLibMoor();
-	Instance -> DehashYgoow(ygoowhash);
+	Instance -> Dehash(ygoowhash);
 	delete Instance;
 	
 	
@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
 // 	string opt = "moorhunt";
 // 	if (opt == "ygoow") {
 	 	Instance = new CLibMoor();
-		Instance -> DehashYgoow(ygoowhash);
+		Instance -> Dehash(ygoowhash);
 		delete Instance;
 // 	} else if (opt == "moorhunt") {
 		Instance = new CLibMoor();
