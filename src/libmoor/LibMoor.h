@@ -5,6 +5,8 @@
 #include <string>
 #include <cstring>
 #include <cstdlib>
+#include <boost/filesystem.hpp>
+#include <fstream>
 
 #include "MoorhuntHash.h"
 #include "YgoowHash.h"

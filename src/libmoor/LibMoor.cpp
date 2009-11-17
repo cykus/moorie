@@ -30,11 +30,26 @@ int CLibMoor::Dehash(std::string HashCode) {
 int CLibMoor::DehashYgoow(std::string HashCode) {
 	myYgoowHash = new YgoowHash(HashCode);
 }
+
 int CLibMoor::selectMailBox(int MailBox, std::string path) {
         if(path.find_last_of("/") != 0 && path.length() > 1) path+="/";
 	LOG( Log::Info, boost::format("Pobieranie do %1%") %path);
 
-        selected = MailBox * 3;
+	// sprawdzanie pobranego pliku
+	string strfile = path + myHash->getFileName();
+	ifstream myfile (strfile.c_str(), std::ifstream::binary);
+	if (boost::filesystem::exists(strfile)) {
+		int filesize = boost::filesystem::file_size(strfile);
+		if (filesize < myHash->getFileSize()) {
+			mySeg = filesize / myHash->getSegmentSize() ;
+			LOG( Log::Info, boost::format("Kontyunuje pobieranie pliku: %1%   Segment: %2%") %strfile %mySeg);
+		} else  {
+			LOG( Log::Info, boost::format("Plik pobrano w calosci, przerywam...") %strfile %mySeg);
+			return 1;
+		}
+			
+	}
+	
 //	myMailBox = new CMailBox(myHash->getAccounts().at(selected - 3), myHash->getAccounts().at(selected-2), myHash->getAccounts().at(selected-1));
 
 	bool cont = false;
