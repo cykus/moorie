@@ -21,7 +21,6 @@ add_library (moor SHARED libmoor/Decoder.cpp
 												 libmoor/MailboxFactory.cpp
 												 libmoor/HashManager.cpp
 												 libmoor/HashUtils.cpp
-												 libmoor/StringUtils.cpp
 												 libmoor/Utils.cpp)
 add_subdirectory (libmoor)
 add_subdirectory (moor_bin)
