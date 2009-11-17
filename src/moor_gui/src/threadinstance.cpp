@@ -22,12 +22,13 @@
 
 threadInstance::threadInstance(QString hash, QString path)
 {
+    pobranoLS = 0;
     this->hashcode = hash;
     this->path = path;
-    unsigned long pobranoLS = 0;
 }
 void threadInstance::run()
 {
     vInstance.Dehash(hashcode.toStdString());
     vInstance.selectMailBox(0, path.toStdString());
+    pobrano = true;
 }

@@ -40,6 +40,8 @@ void threadLogs::setLogLevel(int llevel)
     logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
     LogGuiHandle *logh = new LogGuiHandle(static_cast<Log::Level>( logLevel ) );
     Log::getLog()->addHandle(logh);
+    LogConsoleHandle *logh2 = new LogConsoleHandle(static_cast<Log::Level>( logLevel ) );
+    Log::getLog()->addHandle(logh2);
 }
 threadLogs::LogGuiHandle::LogGuiHandle( Log::Level lvl): LogHandle(lvl)
 {

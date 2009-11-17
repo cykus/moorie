@@ -24,7 +24,6 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
 {
     QGroupBox *downloadGroup = new QGroupBox(tr("Pobieranie"));
 
-    QLabel *pathLabel = new QLabel(tr("Folder Pobierania:"));
     pathEdit = new QLineEdit(Zmienne().PATH);
     if(Zmienne().PATH=="home") pathEdit->setText(QDir::homePath());
     QPushButton *pathButton = new QPushButton(tr("Przeglądaj"));
@@ -47,12 +46,12 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
 
     QGroupBox *otherGroup = new QGroupBox(tr("Inne"));
 
-    QLabel *tLabel = new QLabel(tr("Ikonka systemowa:"));
+    QLabel *tLabel = new QLabel(tr("Ikonka systemowa"));
     tBox = new QCheckBox();
+    tBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     tBox->setChecked(Zmienne().TRAY);
 
     QHBoxLayout *pathLayout = new QHBoxLayout;
-    pathLayout -> addWidget(pathLabel);
     pathLayout -> addWidget(pathEdit);
     pathLayout -> addWidget(pathButton);
 
@@ -74,8 +73,8 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     logGroup->setLayout(logLayout);
 
     QHBoxLayout *tLayout = new QHBoxLayout;
-    tLayout -> addWidget(tLabel);
     tLayout -> addWidget(tBox);
+    tLayout -> addWidget(tLabel);
 
     QVBoxLayout *trayLayout = new QVBoxLayout;
     trayLayout->addLayout(tLayout);

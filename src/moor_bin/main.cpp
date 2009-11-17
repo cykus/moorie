@@ -18,9 +18,9 @@ int main(int argc, char **argv) {
 			Oh8AVP-|/";
 	CLibMoor * Instance;
 	
-	Instance = new CLibMoor();
-	Instance -> Dehash(ygoowhash);
-	delete Instance;
+//	Instance = new CLibMoor();
+//	Instance -> Dehash(ygoowhash);
+//	delete Instance;
 	
 	
 	unsigned int logLevel(8);
@@ -107,13 +107,13 @@ int main(int argc, char **argv) {
 	
 // 	string opt = "moorhunt";
 // 	if (opt == "ygoow") {
-	 	Instance = new CLibMoor();
-		Instance -> Dehash(ygoowhash);
-		delete Instance;
+//	 	Instance = new CLibMoor();
+//                Instance -> Dehash(hash);
+//		delete Instance;
 // 	} else if (opt == "moorhunt") {
 		Instance = new CLibMoor();
-		Instance -> Dehash(hash);
-		Instance -> selectMailBox(0);
+                Instance -> Dehash(hash);
+                Instance -> selectMailBox(0);
 // 	}
 /*
 	if (Instance -> Dehash(hash) != 0) {

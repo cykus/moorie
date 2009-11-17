@@ -211,6 +211,15 @@ void QMoorie::refreshStatuses()
             //qDebug() << status.downloadSegment;
             QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
             tabela->setItem(tInstance.at(i)->itemRow, 6, SkrzynkaPobierania);
+
+            if(tInstance.at(i)->pobrano)
+            {
+                tInstance.remove(i);
+                for(int j = 0 ; j < 7 ; j++ )
+                {
+                    tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 255));//zielony
+                }
+            }
         }
     }
 }
