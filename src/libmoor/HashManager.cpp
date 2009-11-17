@@ -6,7 +6,8 @@
 #include "YgoowHashDecoder.h"
 
 const boost::regex ygoowHashRegex("Ygoow://.*$");
-const boost::regex moorhuntHashRegex("^<<.*?==>>$");
+const boost::regex moorhuntHashRegex("^<<a[a-h].*>>");
+
 
 HashInfo HashManager::fromString(const std::string& hashcode) {
 	HashDecoder* decoder = getHashDecoder(hashcode);

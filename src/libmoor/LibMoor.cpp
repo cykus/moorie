@@ -5,6 +5,7 @@
 
 CLibMoor::CLibMoor() {
 	mySeg = 0;
+        selected = 0;
 }
 
 CLibMoor::~CLibMoor() {
@@ -42,7 +43,7 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 			mySeg = filesize / myHash.segmentSize;
 			LOG(Log::Info, boost::format("Kontynuuje pobieranie pliku: %1%   Segment: %2%") %strfile %mySeg);
 		} else  {
-			LOG(Log::Info, boost::format("Plik pobrano w calosci, przerywam...") %strfile %mySeg);
+                        LOG(Log::Info, "Plik pobrano w calosci, przerywam...");
 			return 1;
 		}
 			

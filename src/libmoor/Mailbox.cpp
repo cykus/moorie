@@ -57,7 +57,6 @@ void CMailBox::setCookie( std::string cookie ) const
 string& CMailBox::doGet(std::string url, bool  header)
 {
 //	mutex::scoped_lock lock( speedMutex );
-	allBytesRead += bytesRead;
 	bytesRead = 0;
 	startTime = posix_time::microsec_clock::universal_time();
 //	lock.unlock();
@@ -82,7 +81,6 @@ string& CMailBox::doGet(std::string url, bool  header)
 string& CMailBox::doPost(std::string url, std::string vars, bool header)
 {
 //	mutex::scoped_lock lock( speedMutex );
-        allBytesRead += bytesRead;
 	bytesRead = 0;
 	startTime = posix_time::microsec_clock::universal_time();
 //	lock.unlock();
@@ -154,7 +152,6 @@ size_t CMailBox::writeData(void *buffer, size_t size, size_t nmem)
 
 //	mutex::scoped_lock lock( speedMutex );
 	bytesRead += n;
-	
 //	lock.unlock();
 
 //	if (getState() == Mailbox::DownloadIP)
@@ -164,6 +161,7 @@ size_t CMailBox::writeData(void *buffer, size_t size, size_t nmem)
 	if (segDownload == true) {
 		tmp_file -> write(static_cast<char *>(buffer), n);
 //		cout << "Bytes readed: " << bytesRead << " Writed: " << n << endl;
+                allBytesRead += n;
 	}
 	else
 	{
@@ -314,7 +312,7 @@ int CMailBox::checkHeaders(int numOfSegments) {
 	return segments;
 }
 unsigned int CMailBox::getBytesRead() {
-        return bytesRead+allBytesRead;
+        return allBytesRead;
 }
 unsigned int CMailBox::getSpeed() const
 {
