@@ -32,6 +32,7 @@ class MoorhuntHash
 		long fileSize;
 		unsigned int crc;
 		int numOfSegments;
+		int segmentSize;
 		std::vector<std::string> accounts;
 		std::vector<int> ids;
 		std::string forWhom;
@@ -66,6 +67,7 @@ class MoorhuntHash
 		long getFileSize() const;
 		int getNumOfSegments() const;
 		int getNumOfMirrors() const;
+		int getSegmentSize() const;
  		std::vector<std::string> getAccounts() const;
 		bool isAccessPasswordProtected() const;
 		std::string getForWhom() const;

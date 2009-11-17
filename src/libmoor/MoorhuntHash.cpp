@@ -254,6 +254,7 @@ bool MoorhuntHash::decode(std::string hash)
 			tmp = string(src + v[10], v[11]); // num of segments
 			numOfSegments = atoi(tmp.c_str());
 			tmp = string(src + v[12], v[13]); // int
+			segmentSize = atoi(tmp.c_str());
 			tmp = string(src + v[14], v[15]); // int
 			accessPasswd = string(src + v[16], v[17]);
 			tmp = string(src + v[18], v[19]); // num of mirrors
@@ -320,6 +321,11 @@ int MoorhuntHash::getNumOfSegments() const
 int MoorhuntHash::getNumOfMirrors() const
 {
 	return accounts.size();
+}
+
+int MoorhuntHash::getSegmentSize() const 
+{
+	return segmentSize;
 }
 
 std::vector<std::string> MoorhuntHash::getAccounts() const

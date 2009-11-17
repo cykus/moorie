@@ -57,7 +57,7 @@ void CMailBox::setCookie( std::string cookie ) const
 string& CMailBox::doGet(std::string url, bool  header)
 {
 //	mutex::scoped_lock lock( speedMutex );
-        allBytesRead += bytesRead;
+	allBytesRead += bytesRead;
 	bytesRead = 0;
 	startTime = posix_time::microsec_clock::universal_time();
 //	lock.unlock();
@@ -154,6 +154,7 @@ size_t CMailBox::writeData(void *buffer, size_t size, size_t nmem)
 
 //	mutex::scoped_lock lock( speedMutex );
 	bytesRead += n;
+	
 //	lock.unlock();
 
 //	if (getState() == Mailbox::DownloadIP)
@@ -276,6 +277,7 @@ int CMailBox::downloadSegDone() {
 			break;
 		}
 	} 
+	
 	if (segOK == true) {
 		ifstream segfile(tmpfile.c_str(), std::ifstream::binary);
 		ofstream myfile(filename.c_str(), std::ofstream::binary | std::ofstream::app);
