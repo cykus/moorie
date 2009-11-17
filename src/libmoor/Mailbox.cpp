@@ -12,7 +12,7 @@ CMailBox::CMailBox(const std::string &usr, const std::string &passwd)
 	, scoreNeedsUpdate(true)
 	, validAccount(true)
 	, bytesRead( 0 )
-        , allBytesRead( 0 )
+  , allBytesRead( 0 )
 {
 	handle = curl_easy_init();
 	curl_easy_setopt(handle, CURLOPT_AUTOREFERER, 1);

@@ -16,19 +16,20 @@
 #include <string>
 
 //! Email header data
-using namespace std;
-using namespace boost;
 struct EmailHeader
 {
-	string subject; //!< Email message subject
-	string uniqueId; //!< Unique id of the message
+	std::string subject; //!< Email message subject
+	std::string uniqueId; //!< Unique id of the message
 
-	EmailHeader(string id, string subj): uniqueId(id) 
-	    { subject = decode(subj); }
+	EmailHeader(const std::string& id, const std::string& subj)
+    : uniqueId(id) 
+	{ 
+    subject = decode(subj); 
+  }
 
     private:
-	    string decode( const string & );
-	    string asciiDecode( const string& );
+	    std::string decode(const std::string&);
+	    std::string asciiDecode(const std::string&);
 };
 
 #endif

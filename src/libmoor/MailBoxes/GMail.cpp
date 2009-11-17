@@ -12,11 +12,26 @@
 
 #include "GMail.h"
 #include "../Log.h"
+#include "MailboxFactory.h"
+
 #include <sstream>
 #include <boost/regex.hpp>
 #include <boost/format.hpp>
 
-GMailMailbox::GMailMailbox(const string &usr, const string &passwd): CMailBox(usr, passwd), totalEmails(0)
+namespace {
+  CMailBox* Create(const std::string& username, 
+                   const std::string& password) 
+  {
+    return new GMailMailbox(username, password);
+  }
+  
+  const bool registered = MailboxFactory::Instance().
+                                          Register("gmail.com", Create);
+}
+
+GMailMailbox::GMailMailbox(const string &usr, const string &passwd)
+  : CMailBox(usr, passwd), 
+    totalEmails(0)
 {
 }
 

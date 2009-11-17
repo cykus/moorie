@@ -12,11 +12,25 @@
 
 #include "Yahoo.h"
 #include "../Log.h"
+#include "MailboxFactory.h"
+
 //#include "Downloader.h"
 //#include "MoorieException.h"
 #include <sstream>
 #include <boost/regex.hpp>
 #include <boost/format.hpp>
+
+namespace {
+  CMailBox* Create(const std::string& username, 
+                   const std::string& password) 
+  {
+    return new YahooMailbox(username, password);
+  }
+  
+  const bool registered = MailboxFactory::Instance().
+                                          Register("yahoo.com", Create);
+}
+
 YahooMailbox::YahooMailbox(const string &usr, const string &passwd): CMailBox(usr, passwd), totalEmails(0)
 {
 }

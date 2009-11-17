@@ -98,6 +98,10 @@ class CMailBox {
                 unsigned int getBytesRead();
                 unsigned int getSpeed() const;
 		virtual ~CMailBox();
+    
+  private:
+    CMailBox(const CMailBox&);
+    CMailBox& operator=(const CMailBox&);
 };
 
 
