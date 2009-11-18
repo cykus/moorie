@@ -29,7 +29,7 @@
 class threadInstance : public QThread
 {
 public:
-    threadInstance(QString, QString = "");
+    threadInstance(QString, QString, QString = "");
     CLibMoor vInstance; //!< Instancja klasy CLibMoor
 
     void run();
@@ -38,12 +38,10 @@ public:
     int totalSegments; //!< liczba wszystkich segmentów
     unsigned int itemRow; //!< Nr. wiersza w tabeli
     long pobranoLS; //!< Ile pobrano w poprzedniej sesji
-    QString hashcode; //!< hashcode pliku
+    QString hash; //!< hashcode pliku
     QString path; //!< Ścieżka pobierania pliku
     QString pass; //!< hasło pliku
     QString filename; //!< nazwa pliku
-    QString speed;
-    QString status;
 };
 
 #endif // THREADINSTANCE_H

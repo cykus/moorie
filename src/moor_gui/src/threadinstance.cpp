@@ -20,15 +20,16 @@
 #include "threadinstance.h"
 
 
-threadInstance::threadInstance(QString hash, QString path)
+threadInstance::threadInstance(QString hash, QString pass, QString path)
 {
     pobranoLS = 0;
-    this->hashcode = hash;
+    this->hash = hash;
     this->path = path;
+    this->pass = pass;
 }
 void threadInstance::run()
 {
-    vInstance.Dehash(hashcode.toStdString());
+    vInstance.Dehash(hash.toStdString());
     vInstance.selectMailBox(0, path.toStdString());
     pobrano = true;
 }

@@ -36,8 +36,10 @@ QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new 
     readConfigFile();
 
     setTray();
-    setLog();
     statusesThread = new boost::thread( boost::bind( &QMoorie::refreshStatuses, this ) );
+    logsThread = new boost::thread( boost::bind( &QMoorie::refreshLogs, this ) );
+
+    loadDownloads();
 }
 
 void QMoorie::setTray()
@@ -106,7 +108,6 @@ void QMoorie::toggleVisibility()
      connect(exitAct, SIGNAL(triggered()), this, SLOT(exitApp()));
 
      connect(tabela->tInfoAct, SIGNAL(triggered()), this, SLOT(infoDialog()));
-     connect(&tLogs, SIGNAL(append(const QString &)), ui->log, SLOT(append(const QString&)));
 }
 
  void QMoorie::createToolBars()
@@ -143,23 +144,28 @@ void QMoorie::addDialog()
 {
     addDownload *get = new addDownload(this);
     get->exec();
-    if(get->result())addInstance(get->text->toPlainText(), get->pathEdit->text());
+    if(get->result())
+    {
+        addInstance(get->text->toPlainText(), get->edit->text(), get->pathEdit->text());
+        saveDownloads();
+    }
     delete get;
 }
 
 /**
-* Tworzymy nową instację pobierania
+* Tworzymy nowy wątek pobierania
 * @param hash zawiera hashcode
+* @param pass zawiera hasło pobierania
 * @param path zawiera ścieżkę pobierania
 */
-void QMoorie::addInstance(QString hash, QString path)
+void QMoorie::addInstance(QString hash, QString pass, QString path)
 {
-    tInstance.append(new threadInstance(hash, path));
+    tInstance.append(new threadInstance(hash, pass, path));
     tInstance.last()->start();
-    const MoorhuntHash & hashcode (tInstance.last()->hashcode.toStdString());
-    tInstance.last()->filename = QString::fromStdString(hashcode.getFileName());
-    tInstance.last()->size = hashcode.getFileSize();
-    tInstance.last()->totalSegments = hashcode.getNumOfSegments();
+    HashInfo hashcode = HashManager::fromString(tInstance.last()->hash.toStdString());
+    tInstance.last()->filename = QString::fromStdString(hashcode.fileName);
+    tInstance.last()->size = hashcode.fileSize;
+    tInstance.last()->totalSegments = hashcode.numOfSegments;
     tInstance.last()->pobrano = false;
     tInstance.last()->itemRow = tabela->rowCount();
 
@@ -172,6 +178,10 @@ void QMoorie::addInstance(QString hash, QString path)
     tabela->setItem(tInstance.last()->itemRow, 0, nazwaPliku);
     tabela->setItem(tInstance.last()->itemRow, 1, rozmiarPliku);
 }
+
+/**
+* Funkcja odpowiedzialna za wyświetlanie statusu pobierania
+*/
 void QMoorie::refreshStatuses()
 {
 
@@ -223,10 +233,75 @@ void QMoorie::refreshStatuses()
         }
     }
 }
-void QMoorie::setLog()
+
+/**
+* Funkcja odpowiedzialna za wyświetlanie logów
+*/
+void QMoorie::refreshLogs()
 {
-    tLogs.setLogLevel(Zmienne().LLEVEL);
-    tLogs.start();
+    unsigned int logLevel(Zmienne().LLEVEL);
+    logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
+    LogGuiHandle *logh = new LogGuiHandle(static_cast<Log::Level>( logLevel ) );
+    Log::getLog()->addHandle(logh);
+    LogConsoleHandle *logh2 = new LogConsoleHandle(static_cast<Log::Level>( logLevel ) );
+    Log::getLog()->addHandle(logh2);
+
+    while(1)
+    {
+        sleep(2);
+        if(Zmienne().logs != ""){
+            ui->log->append(Zmienne().logs);
+            Zmienne().logs = "";
+        }
+    }
+}
+void QMoorie::loadDownloads()
+{
+
+    QFile file(Zmienne().configPath+"hashcodes");
+    if (file.open(QFile::ReadOnly | QFile::Text))
+    {
+        QString line, hash, pass, path;
+        line = file.readAll();
+        QStringList::Iterator it;
+        QStringList list = line.split("*", QString::SkipEmptyParts);
+        it = list.begin();
+        while(it != list.end())
+        {
+            hash = (*it);
+            ++it;
+            pass = (*it);
+            ++it;
+            path = (*it);
+            if(it!=list.end()) ++it;
+            try {
+                HashInfo hhio = HashManager::fromString(hash.toStdString());
+                addInstance(hash, pass, path);
+            }
+            catch (std::exception &e)
+            {
+                QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
+            }
+        }
+    }
+}
+void QMoorie::saveDownloads()
+{
+    QFile file(Zmienne().configPath+"hashcodes");
+    if (file.open(QFile::WriteOnly | QFile::ReadOnly | QFile::Truncate))
+    {
+        QTextStream strum(&file);
+        strum << "*";
+        for (int i = 0; i < tInstance.size(); ++i)
+        {
+            strum << tInstance.at(i)->hash;
+            strum << "*";
+            strum << tInstance.at(i)->pass;
+            strum << "*";
+            strum << tInstance.at(i)->path;
+            strum << "*";
+        }
+    }
 }
 void QMoorie::aboutDialog()
 {
@@ -274,6 +349,9 @@ void QMoorie::readConfigFile()
     settings.endGroup();
 
     writeConfigFile();
+
+    Zmienne().configPath = settings.fileName();
+    Zmienne().configPath.remove(Zmienne().configPath.lastIndexOf("/")+1,Zmienne().configPath.size());
 }
 void QMoorie::writeConfigFile()
 {
@@ -323,4 +401,17 @@ void QMoorie::exitApp()
 }
 QMoorie::~QMoorie()
 {
+}
+QMoorie::LogGuiHandle::LogGuiHandle( Log::Level lvl): LogHandle(lvl)
+{
+}
+QMoorie::LogGuiHandle::~LogGuiHandle()
+{
+}
+void QMoorie::LogGuiHandle::log(const char *msg)
+{
+    QTime time = QTime::currentTime();
+    Zmienne().logs += "<font color=\"red\"><b>" + time.toString("hh:mm:ss") + "</b></font> - "
+                      + QString::fromUtf8(msg) + "<br/>";
+
 }
