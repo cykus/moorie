@@ -12,7 +12,7 @@
 
 #include "GMail.h"
 #include "../Log.h"
-#include "MailboxFactory.h"
+#include "../MailboxFactory.h"
 
 #include <sstream>
 #include <boost/regex.hpp>
