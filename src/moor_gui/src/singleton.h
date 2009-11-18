@@ -27,9 +27,10 @@ class Singleton {
 // definicja klasy o nazwie Singleton - jest 
 // to nazwa wlasna :)
 public:
-    QString logs;
+    QString logs; //!< Przechowuje logi do czasu wyświetlania w zakładce logi
     QString caption;
-    QString  PATH;
+    QString PATH;
+    QString configPath;
     int LLEVEL, DLEVEL;
     bool KSEGMENTS;
     bool TRAY;

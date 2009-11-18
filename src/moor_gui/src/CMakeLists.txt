@@ -10,7 +10,6 @@ set( QMOORIE_SRCS
     configdialog.cpp
     configurationpage.cpp
     threadinstance.cpp
-    threadlogs.cpp
 )
 set( QMOORIE_MOC_HDRS
     qmoorie.h
@@ -23,7 +22,6 @@ set( QMOORIE_MOC_HDRS
     configdialog.h
     configurationpage.h
     threadinstance.h
-    threadlogs.h
 )
 set( QMOORIE_UIS
     qmoorie.ui
@@ -32,6 +30,10 @@ set( QMOORIE_UIS
 set( QMOORIE_RCS
      application.qrc
 )
+
+find_package(Boost COMPONENTS regex thread filesystem program_options REQUIRED)
+find_package(CURL REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 include( ${QT_USE_FILE} )
 
@@ -46,7 +48,7 @@ include_directories(
     ${QT_INCLUDE_DIR}
     ${QMOORIE_BINARY_DIR}
     ${QMOORIE_SOURCE_DIR}
-    ${MOOR_SOURCE_DIR}/libmoor
+    ${MOOR_SOURCE_DIR}/src/libmoor
 )
 
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR} )
@@ -58,14 +60,21 @@ add_executable( qmoorie
     ${QMOORIE_RC_SRCS}
 )
 link_directories(
-  ${MOOR_BINARY_DIR}/libmoor
+  ${MOOR_BINARY_DIR}/src/libmoor
   /usr/local/lib
 )
 
-target_link_libraries( qmoorie
+target_link_libraries(qmoorie
   ${QT_LIBRARIES}
-  moor 
-  moorie
+  moor
+  mcrypt 
+  mhash 
+  ${CURL_LIBRARIES} 
+  ${OPENSSL_LIBRARIES} 
+  ${Boost_THREAD_LIBRARY} 
+  ${Boost_REGEX_LIBRARY} 
+  ${Boost_FILESYSTEM_LIBRARY} 
+  ${Boost_PROGRAM_OPTIONS_LIBRARY}
 )
 install (TARGETS qmoorie DESTINATION bin)
 
@@ -73,7 +82,6 @@ install (TARGETS qmoorie DESTINATION bin)
 
 install(FILES ../qmoorie.desktop DESTINATION share/applications)
 install(FILES ../qmoorie.menu DESTINATION share/menu)
-
 
 # install icons
 install (FILES images/hi16-app-qmoorie.png DESTINATION "share/icons/hicolor/16x16/apps" RENAME qmoorie.png)

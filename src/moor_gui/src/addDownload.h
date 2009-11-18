@@ -29,23 +29,25 @@
 #include <QLabel>
 #include <QDir>
 #include <QTextEdit>
-#include <MoorhuntHash.h>
-#include "singleton.h"
+#include <HashManager.h>
+ #include "singleton.h"
+#include <iostream>
 
-class addDownload: public QDialog
-{
-Q_OBJECT
- public:
-   QLineEdit *edit;
-   QPushButton *pathButton;
-   QLineEdit *pathEdit;
-   QLabel *label[3];
-   QPushButton *button[2];
-   QTextEdit *text;
-   QHBoxLayout *lay[6];
-   addDownload(QWidget * parent = 0, Qt::WFlags f = 0 );
-public Q_SLOTS:
-void ok();
+ class addDownload: public QDialog
+ {
+    Q_OBJECT
+public:
+    QLineEdit *edit;
+    QPushButton *pathButton;
+    QLineEdit *pathEdit;
+    QLabel *label[3];
+    QPushButton *button[2];
+    QTextEdit *text;
+    QHBoxLayout *lay[6];
+    addDownload(QWidget * parent = 0, Qt::WFlags f = 0 );
+    HashInfo hash;
+private Q_SLOTS:
+    void ok();
 };
 #endif // __ADDDOWNLOAD_H__
 

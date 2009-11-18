@@ -31,12 +31,12 @@
 #include "myTableWidget.h"
 #include "tabledelegate.h"
 #include "threadinstance.h"
-#include "threadlogs.h"
 // moorie
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
-#include <MoorhuntHash.h>
+#include <HashInfo.h>
 #include <Status.h>
+#include <Log.h>
 //
 #include <cmath>
 #include <iomanip>
@@ -73,9 +73,19 @@ class QMoorie:public QMainWindow
     QToolBar *fileToolBar;
 
     Ui::MainWindow *ui;
-    boost::thread *statusesThread;
+    boost::thread *statusesThread; //!< Wątek odpowiedzialny za wyświetlanie statusów
+    boost::thread *logsThread; //!< Wątek odpowiedzialny za wyświetlanie logów
 
     void refreshStatuses();
+    void refreshLogs();
+
+    class LogGuiHandle: public LogHandle
+    {
+    public:
+        LogGuiHandle(Log::Level lvl);
+        virtual ~LogGuiHandle();
+        virtual void log(const char *msg);
+    };
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -84,21 +94,20 @@ public:
     QMoorie(QWidget * parent = 0, Qt::WFlags f = 0 );
     ~QMoorie();
 
-    void addInstance(QString, QString = ""); //!< Tworzymy nową instację pobierania
+    void addInstance(QString, QString, QString = ""); //!< Tworzymy nową instację pobierania
     void createTable(); //!< Tworzy myTableview dla karty pobieranie
     void createToolBars(); //!< Tworzy pasek narzędziowy
     void createActions(); //!< Tworzy akcje dla przycisków
-    void loadDownloads();
-    void readConfigFile();
-    void writeConfigFile();
+    void readConfigFile(); //!< Wczytuje konfigurację z pliku
+    void writeConfigFile(); //!< Zapisuje konfiguracje do pliku
+    void loadDownloads(); //!< Wczytuje listę plików do pobrania z poprzedniej sesji
+    void saveDownloads(); //!< Zapisuje listę plików aktualnie pobieranych
     void setTray();
-    void setLog();
 
     addDownload *dodaj;
-    myTableWidget *tabela;
+    myTableWidget *tabela; //!< Klasa dziedzicząca po QTableWidget
     QVector<threadInstance*> tInstance; //!< Wektor instancji klasy threadInstance
-    threadLogs tLogs; //!< Wątek odpowiedzialny za wyświetlanie logów
-
+    
 public Q_SLOTS:
     void addDialog();
     void aboutDialog();

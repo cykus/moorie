@@ -100,7 +100,7 @@ class LogFileHandle: public LogHandle
 		virtual ~LogFileHandle();
 		virtual void log(const char *msg);
 };
-//! Log handle that outputs log messages to a file
+//! Log handle that outputs log messages to a console
 class LogConsoleHandle: public LogHandle
 {
 	private:

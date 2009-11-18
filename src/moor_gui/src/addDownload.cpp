@@ -65,14 +65,12 @@ addDownload::addDownload(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 }
 void addDownload::ok()
 {
-    MoorhuntHash hash(text->toPlainText().toStdString());
-    if (hash.isValid())
-    {
-        if(hash.checkAccessPassword( edit->text().toStdString()))
-        {
-            accept();
-        }
-        else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));
+    try {
+        hash = HashManager::fromString(text->toPlainText().toStdString());
+        accept();
     }
-    else QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
+    catch (std::exception &e) {
+        QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
+    }
+
 }
