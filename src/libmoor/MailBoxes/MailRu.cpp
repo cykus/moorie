@@ -12,7 +12,7 @@
 
 #include "MailRu.h"
 #include "../Log.h"
-#include "MailboxFactory.h"
+#include "../MailboxFactory.h"
 
 // #include "Downloader.h"
 // #include "MoorieException.h"
