@@ -5,7 +5,6 @@ project(MOOR)
 option(ENABLE_GUI "Kompilacja wraz z Qmoorie")
 
 add_subdirectory(doc)
-add_subdirectory(man)
 add_subdirectory(src)
 
 message(STATUS)
