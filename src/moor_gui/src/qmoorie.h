@@ -34,7 +34,6 @@
 // moorie
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
-#include <HashInfo.h>
 #include <Status.h>
 #include <Log.h>
 //

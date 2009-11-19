@@ -11,6 +11,7 @@
  */
 
 #include "MoorhuntHashDecoder.h"
+
 // #include "Account.h"
 //#include "Util.h"
 //#include "Log.h"
@@ -25,6 +26,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include "MoorhuntHash.h"
 #include "HashUtils.h"
 #include "Utils.h"
 
@@ -60,7 +62,7 @@ const unsigned char ivec[][34] = {
 
 const char *prefixes[] = {"<<", "mh://", NULL};
 
-HashInfo MoorhuntHashDecoder::decode(const std::string& hashcode)
+Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 {
 	int declen;
 	int i;
@@ -91,7 +93,8 @@ HashInfo MoorhuntHashDecoder::decode(const std::string& hashcode)
 			hashin[i++] = '\n';
 	}
 	if (i == 0)
-		return result; // empty hash code
+		return new MoorhuntHash(result); // empty hash code
+
 
 	hashin[i++] = '\n';
 	hashin[i] = 0;
@@ -222,7 +225,7 @@ HashInfo MoorhuntHashDecoder::decode(const std::string& hashcode)
 	}
 
 	delete [] in;
-	return result;
+	return new MoorhuntHash(result);
 }
 
 // bool MoorhuntHash::usesMD5Passwords() const

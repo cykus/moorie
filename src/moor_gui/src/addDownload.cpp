@@ -19,6 +19,9 @@
  */
 #include "addDownload.h"
 
+#include <boost/shared_ptr.hpp>
+#include <HashManager.h>
+
 addDownload::addDownload(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 {
     setWindowIcon( QIcon(":/images/hi16-app-qmoorie.png") );
@@ -65,12 +68,19 @@ addDownload::addDownload(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 }
 void addDownload::ok()
 {
-    try {
-        hash = HashManager::fromString(text->toPlainText().toStdString());
-        accept();
+	try {
+    boost::shared_ptr<Hash> hash(HashManager::fromString(text->toPlainText().toStdString()));
+    if (hash->getInfo().valid)
+    {
+        if(hash->checkAccessPassword( edit->text().toStdString()))
+        {
+            accept();
+        }
+        else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));
     }
-    catch (std::exception &e) {
-        QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
-    }
-
+    else QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
+	}
+	catch (std::exception& e) {
+    QMessageBox::about(this, tr("Błąd"),tr("Nieobsługiwany hashcode!"));
+	}
 }

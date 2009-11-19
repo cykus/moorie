@@ -1,9 +1,8 @@
 #ifndef HASHINFO_H__
 #define HASHINFO_H__
 
-#include <vector>
-#include <list>
 #include <string>
+#include <vector>
 
 struct HashInfo {
 	bool valid; //!< flag indicating whether hash is valid, set on decoding
@@ -25,7 +24,6 @@ struct HashInfo {
 	std::string uploader;
 	std::string comment;
 	std::string hashString; //!< raw hash std::string (base64 encoded)
-	std::string hash; ///< suppplied hash
 };
 
 inline bool operator==(const HashInfo& lhs, const HashInfo& rhs) {

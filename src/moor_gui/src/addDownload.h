@@ -29,7 +29,6 @@
 #include <QLabel>
 #include <QDir>
 #include <QTextEdit>
-#include <HashManager.h>
  #include "singleton.h"
 #include <iostream>
 
@@ -45,7 +44,6 @@ public:
     QTextEdit *text;
     QHBoxLayout *lay[6];
     addDownload(QWidget * parent = 0, Qt::WFlags f = 0 );
-    HashInfo hash;
 private Q_SLOTS:
     void ok();
 };

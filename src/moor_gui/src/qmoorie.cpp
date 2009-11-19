@@ -19,6 +19,8 @@
  */
 #include "qmoorie.h"
 
+#include <boost/shared_ptr.hpp>
+#include <HashManager.h>
 
 QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new Ui::MainWindow)
 {
@@ -162,10 +164,10 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
 {
     tInstance.append(new threadInstance(hash, pass, path));
     tInstance.last()->start();
-    HashInfo hashcode = HashManager::fromString(tInstance.last()->hash.toStdString());
-    tInstance.last()->filename = QString::fromStdString(hashcode.fileName);
-    tInstance.last()->size = hashcode.fileSize;
-    tInstance.last()->totalSegments = hashcode.numOfSegments;
+    boost::shared_ptr<Hash> hashcode(HashManager::fromString((tInstance.last()->hashcode.toStdString())));
+    tInstance.last()->filename = QString::fromStdString(hashcode->getInfo().fileName);
+    tInstance.last()->size = hashcode->getInfo().fileSize;
+    tInstance.last()->totalSegments = hashcode->getInfo().numOfSegments;
     tInstance.last()->pobrano = false;
     tInstance.last()->itemRow = tabela->rowCount();
 

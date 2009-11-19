@@ -1,8 +1,9 @@
-#ifndef HASHDECODER_H
-#define HASHDECODER_H
+#ifndef HASHDECODER_H__
+#define HASHDECODER_H__
 
 #include <string>
-#include "HashInfo.h"
+#include <boost/shared_ptr.hpp>
+#include "Hash.h"
 
 class HashDecoder {
 	public:
@@ -10,11 +11,11 @@ class HashDecoder {
 
 	public:
 		/**
-		 * Decodes supplied hashcode.
-		 * @param hashcode Hash code to decode.
+		 * Decodes supplied hashcode string.
+		 * @param hashcode Hashcode string to decode.
 		 * @return Decoded hash object.
 		 */
-		virtual HashInfo decode(const std::string& hashcode) =0;
+		virtual Hash* decode(const std::string& hashcode) =0;
 };
 
-#endif // HASHDECODER_H
+#endif // HASHDECODER_H__

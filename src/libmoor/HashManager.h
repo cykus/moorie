@@ -2,16 +2,27 @@
 #define HASHMANAGER_H__
 
 #include <list>
-#include "HashInfo.h"
+#include <boost/shared_ptr.hpp>
+#include "Hash.h"
 
 class HashDecoder;
 
 class HashManager {
 	public:
 // 		static std::list<HashInfo> fromFile(const std::string& filename);
-		static HashInfo fromString(const std::string& hashcode);
+		/**
+		 * Creates hash object for specified hashcode.
+		 * @param hashcode Hashcode string.
+		 * @return Hash object.
+		 */
+		static Hash* fromString(const std::string& hashcode);
 
 	private:
+		/**
+		 * Gets decoder for specified hashcode.
+		 * @param hashcode Hashcode string to decode.
+		 * @return Hash decoder.
+		 */
 		static HashDecoder* getHashDecoder(const std::string& hashcode);
 		
 	private:

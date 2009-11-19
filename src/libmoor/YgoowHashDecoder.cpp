@@ -25,6 +25,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include "YgoowHash.h"
 #include "HashUtils.h"
 
 const unsigned char keys[][32] = {
@@ -37,7 +38,7 @@ const unsigned char ivec[][32] = {
 	{0, 0}
 };
 
-HashInfo YgoowHashDecoder::decode(const std::string& hashcode) {
+Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	HashInfo result;
 	string strHash;
 	string str2;
@@ -123,7 +124,7 @@ HashInfo YgoowHashDecoder::decode(const std::string& hashcode) {
 	}
 //	cout << i << endl;
 	if (i == 0)
-		return result; // empty hash code
+		return new YgoowHash(result); // empty hash code
 
 	hashin[i++] = '\n';
 	hashin[i] = 0;
@@ -148,18 +149,18 @@ HashInfo YgoowHashDecoder::decode(const std::string& hashcode) {
 	
 	
 	if (key == NULL || iv == NULL)
-		return result;
+		return new YgoowHash(result);
 
 	if (mcrypt_generic_init(td, key, 32, iv) < 0)
 	{
 		mcrypt_module_close(td);
-		return result;
+		return new YgoowHash(result);
 	}
 	
 	if (mdecrypt_generic(td, in, declen) != 0)
 	{
 		mcrypt_module_close(td);
-		return result;
+		return new YgoowHash(result);
 	}
 //		LOG_BUFFER(Log::Debug, reinterpret_cast<char *>(in), declen);
 	mcrypt_generic_deinit(td);
@@ -168,7 +169,7 @@ HashInfo YgoowHashDecoder::decode(const std::string& hashcode) {
 	
 	result.valid = true;
 	
-	return result;
+	return new YgoowHash(result);
 }
 
 // bool YgoowHash::usesMD5Passwords() const
