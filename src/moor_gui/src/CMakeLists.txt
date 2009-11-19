@@ -35,6 +35,8 @@ find_package(Boost COMPONENTS regex thread filesystem program_options REQUIRED)
 find_package(CURL REQUIRED)
 find_package(OpenSSL REQUIRED)
 
+SET(QT_USE_QTXML TRUE)
+
 include( ${QT_USE_FILE} )
 
 qt4_wrap_ui( QMOORIE_UI_HDRS ${QMOORIE_UIS} )

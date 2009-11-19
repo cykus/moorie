@@ -43,10 +43,6 @@ tInfoAct->setStatusTip(tr("Wyświetla informacje o uploadzie"));
 tPauseAct = new QAction(QIcon(":/images/pause.png"), "Wstrzymaj", this);
 tPauseAct->setStatusTip(tr("Wstrzymuje/Wznawia pobieranie uploadu"));
 tRemoveAct = new QAction(QIcon(":/images/exit.png"), "&Usuń", this);
-//removeAct->setShortcut(tr("Ctrl+X"));
 tRemoveAct->setStatusTip(tr("Usuwa zadanie"));
-
-//QObject::connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
-
 }
 

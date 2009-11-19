@@ -21,6 +21,7 @@
 #define QMOORIE_H
 #include <QtGui>
 #include <QtCore>
+#include <QDomDocument>
 
 #include "ui_qmoorie.h"
 
@@ -116,6 +117,7 @@ public Q_SLOTS:
     void exitApp();
     void toggleVisibility();
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
+    void removeDownload(); //!< Usuwa wybrane pobieranie
 
 };
 #endif

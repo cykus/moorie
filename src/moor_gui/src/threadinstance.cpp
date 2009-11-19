@@ -22,6 +22,7 @@
 
 threadInstance::threadInstance(QString hash, QString pass, QString path)
 {
+    pobrano = false;
     pobranoLS = 0;
     this->hash = hash;
     this->path = path;

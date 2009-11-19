@@ -107,7 +107,7 @@ void QMoorie::toggleVisibility()
      exitAct->setStatusTip(tr("Wyjście z aplikacji"));
      connect(exitAct, SIGNAL(triggered()), this, SLOT(exitApp()));
 
-     connect(tabela->tInfoAct, SIGNAL(triggered()), this, SLOT(infoDialog()));
+     connect(tabela->tRemoveAct, SIGNAL(triggered()), this, SLOT(removeDownload()));
 }
 
  void QMoorie::createToolBars()
@@ -174,9 +174,20 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
     QString fileSize; fileSize.sprintf("%.2f", tInstance.last()->size / 1024 / 1024);
 
     QTableWidgetItem *nazwaPliku = new QTableWidgetItem(tInstance.last()->filename);
-    QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize + " MB");
     tabela->setItem(tInstance.last()->itemRow, 0, nazwaPliku);
+    QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize + " MB");
     tabela->setItem(tInstance.last()->itemRow, 1, rozmiarPliku);
+    QTableWidgetItem *PobranoPliku = new QTableWidgetItem("0 MB");
+    tabela->setItem(tInstance.last()->itemRow, 2, PobranoPliku);
+    QTableWidgetItem *stanPobieraniaPliku = new QTableWidgetItem;
+    stanPobieraniaPliku->setData(Qt::DisplayRole, 0);
+    tabela->setItem(tInstance.last()->itemRow, 3, stanPobieraniaPliku);
+    QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(" KB/s");
+    tabela->setItem(tInstance.last()->itemRow, 4, SzybkoscPobierania);
+    QTableWidgetItem *statusPobierania = new QTableWidgetItem();
+    tabela->setItem(tInstance.last()->itemRow, 5, statusPobierania);
+    QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem();
+    tabela->setItem(tInstance.last()->itemRow, 6, SkrzynkaPobierania);
 }
 
 /**
@@ -188,6 +199,18 @@ void QMoorie::refreshStatuses()
     while(1)
     {
         sleep(2);
+        for (int i = 0; i < tInstance.size(); ++i)
+        {
+            if(tInstance.at(i)->vInstance.downloadDone)
+            {
+                for(int j = 0 ; j < 7; j++ )
+                {
+                    tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 100));
+                }
+                tInstance.remove(i);
+                saveDownloads();
+            }
+        }
         for (int i = 0; i < tInstance.size(); ++i)
         {
             Status status = tInstance.at(i)->vInstance.getStatus();
@@ -221,15 +244,6 @@ void QMoorie::refreshStatuses()
             //qDebug() << status.downloadSegment;
             QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
             tabela->setItem(tInstance.at(i)->itemRow, 6, SkrzynkaPobierania);
-
-            if(tInstance.at(i)->pobrano)
-            {
-                tInstance.remove(i);
-                for(int j = 0 ; j < 7 ; j++ )
-                {
-                    tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 255));//zielony
-                }
-            }
         }
     }
 }
@@ -252,6 +266,18 @@ void QMoorie::refreshLogs()
         if(Zmienne().logs != ""){
             ui->log->append(Zmienne().logs);
             Zmienne().logs = "";
+        }
+    }
+}
+void QMoorie::removeDownload()
+{
+    int row = tabela->currentRow();
+    for (int i = 0; i < tInstance.size(); ++i)
+    {
+        if(tInstance.at(i)->itemRow == row)
+        {
+            //tInstance.remove(i);
+            //saveDownloads();
         }
     }
 }

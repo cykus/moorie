@@ -6,6 +6,7 @@
 CLibMoor::CLibMoor() {
 	mySeg = 0;
         selected = 0;
+        downloadDone = false;
 }
 
 CLibMoor::~CLibMoor() {
@@ -122,7 +123,8 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 		
 		if (tries >= (vector_size / 3)) {
 			LOG(Log::Info, "Nie udalo sie pobrac pliku z zadnej ze skrzynek... Koncze program." );
-			delete myMailBox;
+                        downloadDone = true;
+                        delete myMailBox;
 			break;
 		}
 	} while (cont != true);
@@ -148,11 +150,13 @@ int CLibMoor::startDownload() {
 		} else
 			segValid = 1;
 	} while (mySeg < seg_left);
-	if (segValid == 1)
+        if (segValid == 1){
 		LOG( Log::Info, "Wszystkie segmenty sciagnieto pomyslnie...");
+                downloadDone = true;
+        }
 	return segValid;
 }
 Status CLibMoor::getStatus() {
-        Status s(mySeg, myMailBox->getSpeed(), myMailBox->getBytesRead(), myHash.accounts.at(selected));
-        return s;
+    Status s(mySeg, myMailBox->getSpeed(), myMailBox->getBytesRead(), myHash.accounts.at(selected));
+    return s;
 }

@@ -19,13 +19,14 @@ class CLibMoor {
 		int Dehash(std::string HashCode);
 		int selectMailBox(int MailBox, std::string = "");
 		int startDownload();
+                bool downloadDone;
 		Status getStatus();
 
 	private:
 		HashInfo myHash;
 		CMailBox* myMailBox;
 		int mySeg;
-		int selected;
+                int selected;
 };
 
 #endif
