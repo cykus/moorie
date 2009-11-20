@@ -19,6 +19,8 @@
  */
 #include "addDownload.h"
 
+#include <Hash.h>
+
 addDownload::addDownload(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 {
     setWindowIcon( QIcon(":/images/hi16-app-qmoorie.png") );
