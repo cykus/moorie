@@ -84,6 +84,8 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 		std::string login = myHash->getInfo().accounts.at(selected + 1);
 		std::string passwd = myHash->getInfo().accounts.at(selected + 2);
 		
+		validMailbox = true;
+		
 		myMailBox = MailboxFactory::Instance().Create(mailbox, login, passwd);
 		if (!myMailBox) {
 			LOG(Log::Info, "Blad skrzynki");
