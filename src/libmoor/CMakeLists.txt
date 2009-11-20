@@ -14,4 +14,7 @@ add_library (moor SHARED	Decoder.cpp
 													MailboxFactory.cpp
 													HashManager.cpp
 													HashUtils.cpp
-													Utils.cpp)
+													Utils.cpp
+													MoorhuntHash.cpp
+													YgoowHash.cpp
+													Hash.cpp)

@@ -21,6 +21,7 @@
 #define __ADDDOWNLOAD_H__
 #include <QApplication>
 #include <QDialog>
+#include <QFileDialog>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
@@ -29,8 +30,9 @@
 #include <QLabel>
 #include <QDir>
 #include <QTextEdit>
+#include "singleton.h"
+#include <boost/shared_ptr.hpp>
 #include <HashManager.h>
- #include "singleton.h"
 #include <iostream>
 
  class addDownload: public QDialog
@@ -45,9 +47,9 @@ public:
     QTextEdit *text;
     QHBoxLayout *lay[6];
     addDownload(QWidget * parent = 0, Qt::WFlags f = 0 );
-    HashInfo hash;
 private Q_SLOTS:
     void ok();
+    void setDir();
 };
 #endif // __ADDDOWNLOAD_H__
 

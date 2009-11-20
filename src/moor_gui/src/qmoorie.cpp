@@ -19,7 +19,6 @@
  */
 #include "qmoorie.h"
 
-
 QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new Ui::MainWindow)
 {
     setWindowIcon( QIcon(":/images/hi16-app-qmoorie.png"));
@@ -35,6 +34,7 @@ QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new 
     createToolBars();
     readConfigFile();
 
+    stop = false;
     setTray();
     statusesThread = new boost::thread( boost::bind( &QMoorie::refreshStatuses, this ) );
     logsThread = new boost::thread( boost::bind( &QMoorie::refreshLogs, this ) );
@@ -161,13 +161,13 @@ void QMoorie::addDialog()
 void QMoorie::addInstance(QString hash, QString pass, QString path)
 {
     tInstance.append(new threadInstance(hash, pass, path));
-    tInstance.last()->start();
-    HashInfo hashcode = HashManager::fromString(tInstance.last()->hash.toStdString());
-    tInstance.last()->filename = QString::fromStdString(hashcode.fileName);
-    tInstance.last()->size = hashcode.fileSize;
-    tInstance.last()->totalSegments = hashcode.numOfSegments;
+    boost::shared_ptr<Hash> hashcode(HashManager::fromString((tInstance.last()->hash.toStdString())));
+    tInstance.last()->filename = QString::fromStdString(hashcode->getInfo().fileName);
+    tInstance.last()->size = hashcode->getInfo().fileSize;
+    tInstance.last()->totalSegments = hashcode->getInfo().numOfSegments;
     tInstance.last()->pobrano = false;
     tInstance.last()->itemRow = tabela->rowCount();
+    tInstance.last()->start();
 
     tabela->setRowCount(tabela->rowCount() + 1);
 
@@ -239,12 +239,13 @@ void QMoorie::refreshStatuses()
             tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
 
             QTableWidgetItem *statusPobierania = new QTableWidgetItem(
-                    QString::number(status.downloadSegment) + "/" + QString::number(tInstance.at(i)->totalSegments));
+            QString::number(status.downloadSegment) + "/" + QString::number(tInstance.at(i)->totalSegments));
             tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
             //qDebug() << status.downloadSegment;
             QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
             tabela->setItem(tInstance.at(i)->itemRow, 6, SkrzynkaPobierania);
         }
+
     }
 }
 
@@ -276,15 +277,28 @@ void QMoorie::removeDownload()
     {
         if(tInstance.at(i)->itemRow == row)
         {
-            //tInstance.remove(i);
-            //saveDownloads();
+            tInstance.remove(i);
+            saveDownloads();
         }
+    }
+    for (int i = 0; i < tInstance.size(); ++i)
+    {
+            stop = true;
+            tabela->setRowCount(tabela->rowCount() - 1);
+            tInstance.at(i)->itemRow = i;
+            QTableWidgetItem *nazwaPliku = new QTableWidgetItem(tInstance.last()->filename);
+            tabela->setItem(tInstance.at(i)->itemRow, 0, nazwaPliku);
+            QString fileSize; fileSize.sprintf("%.2f", tInstance.at(i)->size / 1024 / 1024);
+            QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize + " MB");
+            tabela->setItem(tInstance.at(i)->itemRow, 1, rozmiarPliku);
+            stop = false;
+
     }
 }
 void QMoorie::loadDownloads()
 {
 
-    QFile file(Zmienne().configPath+"hashcodes");
+    QFile file(Zmienne().configPath+"hashcodes.txt");
     if (file.open(QFile::ReadOnly | QFile::Text))
     {
         QString line, hash, pass, path;
@@ -300,20 +314,29 @@ void QMoorie::loadDownloads()
             ++it;
             path = (*it);
             if(it!=list.end()) ++it;
-            try {
-                HashInfo hhio = HashManager::fromString(hash.toStdString());
-                addInstance(hash, pass, path);
-            }
-            catch (std::exception &e)
+            try
             {
-                QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
+                boost::shared_ptr<Hash> hhio(HashManager::fromString(hash.toStdString()));
+                if (hhio->getInfo().valid)
+                {
+                    if(hhio->checkAccessPassword(pass.toStdString()))
+                    {
+                        addInstance(hash, pass, path);
+                    }
+                    else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));
+                }
+                else QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
+            }
+            catch (std::exception& e)
+            {
+                QMessageBox::about(this, tr("Błąd"),tr("Nieobsługiwany hashcode!"));
             }
         }
     }
 }
 void QMoorie::saveDownloads()
 {
-    QFile file(Zmienne().configPath+"hashcodes");
+    QFile file(Zmienne().configPath+"hashcodes.txt");
     if (file.open(QFile::WriteOnly | QFile::ReadOnly | QFile::Truncate))
     {
         QTextStream strum(&file);

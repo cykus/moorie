@@ -10,14 +10,13 @@
  * WITHOUT ANY WARRANTY. See GPL for more details.
  */
 
-#ifndef YGOOWHASH_H__
-#define YGOOWHASH_H__
+#ifndef YGOOWHASHDECODER_H__
+#define YGOOWHASHDECODER_H__
 
 #include <string>
 
 #include "Tools.h"
 #include "HashDecoder.h"
-#include "HashInfo.h"
 
 //! Ygoow hashfile data
 class YgoowHashDecoder : public HashDecoder {
@@ -25,8 +24,8 @@ class YgoowHashDecoder : public HashDecoder {
 		~YgoowHashDecoder() {}
 
 	public:
-		virtual HashInfo decode(const std::string& hashcode);
+		virtual Hash* decode(const std::string& hashcode);
 };
 
-#endif // YGOOWHASH_H__
+#endif // YGOOWHASHDECODER_H__
 

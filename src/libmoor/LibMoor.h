@@ -6,7 +6,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "HashInfo.h"
+#include "Hash.h"
 #include "Mailbox.h"
 #include "Status.h"
 
@@ -23,7 +23,7 @@ class CLibMoor {
 		Status getStatus();
 
 	private:
-		HashInfo myHash;
+		boost::shared_ptr<Hash> myHash;
 		CMailBox* myMailBox;
 		int mySeg;
                 int selected;

@@ -10,8 +10,8 @@
  * WITHOUT ANY WARRANTY. See GPL for more details.
  */
 
-#ifndef MOORHUNTHASH_H__
-#define MOORHUNTHASH_H__
+#ifndef MOORHUNTHASHDECODER_H__
+#define MOORHUNTHASHDECODER_H__
 
 #include <string>
 
@@ -23,8 +23,8 @@ class MoorhuntHashDecoder : public HashDecoder {
 		~MoorhuntHashDecoder() {}
 		
 	public:
-		virtual HashInfo decode(const std::string& hashcode);
+		virtual Hash* decode(const std::string& hashcode);
 };
 
-#endif // MOORHUNTHASH_H__
+#endif // MOORHUNTHASHDECODER_H__
 

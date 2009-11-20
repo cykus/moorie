@@ -61,16 +61,35 @@ addDownload::addDownload(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 
     QObject::connect( button[1], SIGNAL(clicked()), this, SLOT(reject()));
     QObject::connect( button[0], SIGNAL(clicked()), this, SLOT(ok()));
+    QObject::connect(pathButton,SIGNAL(clicked()),this,SLOT(setDir()));
+
 
 }
 void addDownload::ok()
 {
     try {
-        hash = HashManager::fromString(text->toPlainText().toStdString());
-        accept();
+        boost::shared_ptr<Hash> hash(HashManager::fromString(text->toPlainText().toStdString()));
+        if (hash->getInfo().valid)
+        {
+            if(hash->checkAccessPassword( edit->text().toStdString()))
+            {
+                accept();
+            }
+            else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));
+        }
+        else QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
     }
-    catch (std::exception &e) {
-        QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
+    catch (std::exception& e)
+    {
+        QMessageBox::about(this, tr("Błąd"),tr("Nieobsługiwany hashcode!"));
     }
-
+}
+void addDownload::setDir()
+{
+    QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
+    QString directory = QFileDialog::getExistingDirectory(this,
+                                 tr("Wybierz folder"),
+                                 "",
+                                 options);
+    if (!directory.isEmpty()) pathEdit->setText(directory);
 }

@@ -34,8 +34,9 @@
 #include "threadinstance.h"
 // moorie
 #include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
-#include <HashInfo.h>
+#include <HashManager.h>
 #include <Status.h>
 #include <Log.h>
 //
@@ -105,6 +106,7 @@ public:
     void saveDownloads(); //!< Zapisuje listę plików aktualnie pobieranych
     void setTray();
 
+    bool stop;
     addDownload *dodaj;
     myTableWidget *tabela; //!< Klasa dziedzicząca po QTableWidget
     QVector<threadInstance*> tInstance; //!< Wektor instancji klasy threadInstance
