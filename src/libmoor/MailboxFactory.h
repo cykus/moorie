@@ -13,12 +13,30 @@ class MailboxFactory {
 	public:
 		/**
 		 * Registers mailbox object creator.
-		 * @param name Name of creator.
+		 * @param name Name of mailbox.
 		 * @param creator Pointer to function that creates mailbox.
 		 * @return True if registered successfuly, false otherwise.
 		 */
 		bool Register(const std::string& name, MailboxCreator creator);
 
+		/**
+		 * Registers single creator for multi mailbox objects.
+		 * Last mailbox name in passed array should be an empty string.
+		 * Registers creator until it's registered for all the mailboxes
+		 * or registration fails.
+		 * @param names Mailboxes' names.
+		 * @param creator Pointer to function that creates mailbox.
+		 * @return True if all registered, false otherwise.
+		 */
+		bool Register(const std::string names[], MailboxCreator creator);
+
+		/**
+		 * Checks if mailbox has been registered.
+		 * @param name Name of mailbox.
+		 * @return True if mailbox creator was found, false otherwise.
+		 */
+		bool Registered(const std::string& name);
+		
 		/**
 		 * Unregisters mailbox object creator.
 		 * @param name Name of creator.
@@ -29,8 +47,9 @@ class MailboxFactory {
 		/**
 		 * Creates specified object.
 		 * @param name Name of a creator.
-		 * @param browser Additional data passed to the object.
-		 * @return Ptr to mailbox object.
+		 * @param username Login for that mailbox.
+		 * @param password Password for that mailbox.
+		 * @return Ptr to mailbox object or NULL.
 		 */
 		CMailBox* Create(const std::string& name,
 		                 const std::string& username,

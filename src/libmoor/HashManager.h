@@ -3,8 +3,8 @@
 
 #include <list>
 #include <boost/shared_ptr.hpp>
-#include "Hash.h"
 
+class Hash;
 class HashDecoder;
 
 class HashManager {

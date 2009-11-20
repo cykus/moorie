@@ -14,8 +14,6 @@
 // #include "Account.h"
 //#include "Util.h"
 //#include "Log.h"
-#include "Decoder.h"
-#include "Mailboxes.h"
 #include <stdlib.h>
 #include <mcrypt.h>
 #include <mhash.h>
@@ -27,6 +25,8 @@
 
 #include "YgoowHash.h"
 #include "HashUtils.h"
+#include "Tools.h"
+#include "Decoder.h"
 
 const unsigned char keys[][32] = {
 	{0x10, 1, 0, 0x51, 0x31, 0xea, 0xc1, 0x2d, 0x63, 0x55, 0x9e, 0xa2, 0x71, 0x31, 0x5f, 0, 0x37, 0x54, 0x95, 6, 50, 50, 50, 0x12, 20, 0x12, 100, 100, 0x51, 0xa9, 0xc5, 0xff},

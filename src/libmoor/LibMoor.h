@@ -16,7 +16,7 @@ class CLibMoor {
 		~CLibMoor();
 
 	public:
-		int Dehash(std::string HashCode);
+		bool Dehash(const std::string& hashcode);
 		int selectMailBox(int MailBox, std::string = "");
 		int startDownload();
                 bool downloadDone;

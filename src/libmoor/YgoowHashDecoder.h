@@ -15,7 +15,6 @@
 
 #include <string>
 
-#include "Tools.h"
 #include "HashDecoder.h"
 
 //! Ygoow hashfile data

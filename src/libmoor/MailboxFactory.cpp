@@ -9,8 +9,25 @@ MailboxFactory& MailboxFactory::Instance() {
 	return *instance_;
 }
 
-bool MailboxFactory::Register(const std::string& name, MailboxCreator creator) {
+bool
+MailboxFactory::Register(const std::string& name, MailboxCreator creator) {
 	return creators_.insert(CreatorMap::value_type(name, creator)).second;
+}
+
+bool
+MailboxFactory::Register(const std::string names[], MailboxCreator creator) {
+	bool result;
+	for (int guard = 0, i = 0; (names[i] != "") && (guard < 10); ++i, ++guard) {
+		result = creators_.insert(CreatorMap::value_type(names[i], creator)).second;
+		if (!result)
+			break;
+	}
+
+	return result;
+}
+
+bool MailboxFactory::Registered(const std::string& name) {
+	return (creators_.find(name) != creators_.end());
 }
 
 bool MailboxFactory::Unregister(const std::string& name) {

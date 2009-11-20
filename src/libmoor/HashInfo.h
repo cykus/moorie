@@ -5,6 +5,13 @@
 #include <vector>
 
 struct HashInfo {
+	
+	struct MboxAccount {
+		std::string name;
+		std::string login;
+		std::string password;
+	};
+	
 	bool valid; //!< flag indicating whether hash is valid, set on decoding
 	char verMaj;
 	char verMin;
@@ -13,7 +20,7 @@ struct HashInfo {
 	unsigned int crc;
 	int numOfSegments;
 	int segmentSize;
-	std::vector<std::string> accounts;
+	std::vector<MboxAccount> accounts;
 	std::vector<int> ids;
 	std::string forWhom;
 	std::string accessPasswd;

@@ -14,9 +14,7 @@
 
 // #include "Account.h"
 //#include "Util.h"
-//#include "Log.h"
-#include "Decoder.h"
-#include "Mailboxes.h"
+#include "Log.h"
 #include <stdlib.h>
 #include <mcrypt.h>
 #include <mhash.h>
@@ -29,7 +27,36 @@
 #include "MoorhuntHash.h"
 #include "HashUtils.h"
 #include "Utils.h"
+#include "Decoder.h"
+#include "MailboxFactory.h"
 
+namespace {
+	// TODO: should this mapping be moved to some out-of-source
+	// configuration file ?
+	const char* getMailboxName(int id) {
+		switch (id) {
+			case 2	:		return "yahoo.com";
+			case 3	:		return "gmail.com";
+			case 4	:		return "o2.pl";
+			case 9	:		return "wp.pl";
+			case 72	:		return "oi.com.br";
+			case 22	:		return "mynet.com";
+			case -27:		return "aol.pl";
+			case -12:		return "aol.de";
+			case -93:		return "gazeta.pl";
+			case -31:		return "gala.net";
+			case 53	:		return "yandex.ru";
+			case 24	:		return "mail.ru";
+			case -29:		return "bigmir.net";
+			case -56:		return "azet.sk";
+			case -86:		return "poczta.onet.pl";
+			case 71	:		return "onet.eu";
+			case 23	:		return "rock.com";
+			default	:		return 0;
+		}
+	}
+}
+		
 const unsigned char keys[][34] = {
 	{'a', 'h', 0x1e, 0x1e, 0x1e, 0x1e, 0x1f, 0x1f, 0x1f, 0x1e, 0x1e, 0x1f, 0x1e, 0x1e, 0x1e, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1e, 0x1e, 0x1e, 0x1f, 0x1e, 0x1e, 0x1f, 0x1f, 0x1f, 0x1f, 0x1e, 0x1f, 0x1e},
 	{'a', 'g', 0xfb, 0xfb, 0xbb, 0xbb, 0xbb, 0xbb, 0xfb, 0xfb, 0xfb, 0xfb, 0xfb, 0xfb, 0xfb, 0xbb, 0xfb, 0xbb, 0xbb, 0xbb, 0xfb, 0xfb, 0xbb, 0xfb, 0xbb, 0xfb, 0xbb, 0xfb, 0xfb, 0xfb, 0xfb, 0xfb, 0xfb, 0xbb},
@@ -157,7 +184,7 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 
 	if (result.valid)
 	{
-		string tmp;
+		std::string tmp;
 		char *src = reinterpret_cast<char *>(in);
 //		char *ptr;
 		std::vector<int> v = split(src, declen);
@@ -169,52 +196,46 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 		else
 		{
 			int numOfMirrors;
-			string id;
+			std::string id;
 
-			result.fileName = string(src, v[1]);
+			result.fileName = std::string(src, v[1]);
 			result.crc = (
 					((unsigned char)src[v[2]]) << 24 |
 					((unsigned char)src[v[2] + 1]) << 16 |
 					((unsigned char)src[v[2] + 2]) << 8 |
 					((unsigned char)src[v[2] + 3])
 			);
-			tmp = string(src + v[4], v[5]);
+			tmp = std::string(src + v[4], v[5]);
 			result.fileSize = atol(tmp.c_str());
-			tmp = string(src + v[6], v[7]); // bool 1
-			tmp = string(src + v[8], v[9]); // bool 2
-			tmp = string(src + v[10], v[11]); // num of segments
+			tmp = std::string(src + v[6], v[7]); // bool 1
+			tmp = std::string(src + v[8], v[9]); // bool 2
+			tmp = std::string(src + v[10], v[11]); // num of segments
 			result.numOfSegments = atoi(tmp.c_str());
-			tmp = string(src + v[12], v[13]); // int
-			tmp = string(src + v[14], v[15]); // int
-			result.accessPasswd = string(src + v[16], v[17]);
-			tmp = string(src + v[18], v[19]); // num of mirrors
+			tmp = std::string(src + v[12], v[13]); // int
+			result.segmentSize = atoi(tmp.c_str());
+			tmp = std::string(src + v[14], v[15]); // int
+			result.accessPasswd = std::string(src + v[16], v[17]);
+			tmp = std::string(src + v[18], v[19]); // num of mirrors
 			numOfMirrors = atoi(tmp.c_str());
 			int offset = 0;
-			//
-			// get accounts
-			for (int i=0; i<numOfMirrors; i++)
-			{
-				offset = 6*i;
-// 				Account::MBoxID id = static_cast<Account::MBoxID>(src[v[20 + offset]]);
-				string login(src + v[22 + offset], v[23 + offset]);
-				string passwd(src + v[24 + offset], v[25 + offset]);
-// 				Account acct(id, login, passwd);
-// 				accounts.push_back(acct);
-//				tmp = string(src[v[20 + offset]]); // id
-				id = getMailboxName(src[v[20 + offset]]);
-				result.accounts.push_back(id);
-				result.accounts.push_back(login);
-				result.accounts.push_back(passwd);
-// 				std::cout << "ID:" << /*(src[v[20 + offset]] & 0xFF)*/   << " ";
-// 				std::cout << " L:" << login << " P:" << passwd << std::endl;
+			for (int i = 0; i < numOfMirrors; ++i, offset = 6 * i) {
+				const char* id = getMailboxName(src[v[20 + offset]]);
+				// Filtering out all mailboxes program is unable to handle!
+				if (id && MailboxFactory::Instance().Registered(id)) {
+					HashInfo::MboxAccount account;
+					account.name = id;
+					account.login = std::string(src + v[22 + offset], v[23 + offset]);
+					account.password = std::string(src + v[24 + offset], v[25 + offset]);
+					result.accounts.push_back(account);
+				}
 			}
-			result.coverURL = string(src + v[26 + offset], v[27 + offset]);
-			result.editPasswd = string(src + v[28 + offset], v[29 + offset]);
-			result.forWhom = string(src + v[30 + offset], v[31 + offset]);
-			result.descURL = string(src + v[32 + offset], v[33 + offset]);
-			result.fullTitle = string(src + v[34 + offset], v[35 + offset]);
-			result.uploader = string(src + v[36 + offset], v[37 + offset]);
-			result.comment = string(src + v[38 + offset], v[39 + offset]);
+			result.coverURL = std::string(src + v[26 + offset], v[27 + offset]);
+			result.editPasswd = std::string(src + v[28 + offset], v[29 + offset]);
+			result.forWhom = std::string(src + v[30 + offset], v[31 + offset]);
+			result.descURL = std::string(src + v[32 + offset], v[33 + offset]);
+			result.fullTitle = std::string(src + v[34 + offset], v[35 + offset]);
+			result.uploader = std::string(src + v[36 + offset], v[37 + offset]);
+			result.comment = std::string(src + v[38 + offset], v[39 + offset]);
 
 			if (result.fileSize <=0 || numOfMirrors <= 0 || result.numOfSegments <=0)
 			{
