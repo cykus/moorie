@@ -11,6 +11,7 @@ add_library (moor SHARED	Decoder.cpp
 													MailBoxes/MailRu.cpp 
 													MailBoxes/GMail.cpp 
 													MailBoxes/Yahoo.cpp 
+													MailBoxes/RockCom.cpp
 													MailboxFactory.cpp
 													HashManager.cpp
 													HashUtils.cpp
