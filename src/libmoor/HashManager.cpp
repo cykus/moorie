@@ -9,7 +9,7 @@ const boost::regex ygoowHashRegex("Ygoow://.*$");
 const boost::regex moorhuntHashRegex("^<<a[a-h].*>>");
 
 Hash* HashManager::fromString(const std::string& hashcode) {
-	HashDecoder* decoder = getHashDecoder(hashcode);
+	boost::shared_ptr<HashDecoder> decoder(getHashDecoder(hashcode));
 	if (!decoder)
 		throw std::exception();
 
