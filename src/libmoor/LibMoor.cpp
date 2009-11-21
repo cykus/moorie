@@ -60,6 +60,8 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 		std::string login = myHash->getInfo().accounts[selected].login;
 		std::string passwd = myHash->getInfo().accounts[selected].password;
 		
+		validMailbox = true;
+		
 		myMailBox = MailboxFactory::Instance().Create(mailbox, login, passwd);
 		if (myMailBox) {
 			LOG(Log::Info, boost::format( "Logowanie do:  %1%" )
