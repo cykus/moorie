@@ -37,6 +37,7 @@ find_package(OpenSSL REQUIRED)
 
 SET(QT_USE_QTXML TRUE)
 
+
 include( ${QT_USE_FILE} )
 
 qt4_wrap_ui( QMOORIE_UI_HDRS ${QMOORIE_UIS} )
@@ -63,7 +64,6 @@ add_executable( qmoorie
 )
 link_directories(
   ${MOOR_BINARY_DIR}/src/libmoor
-  /usr/local/lib
 )
 
 target_link_libraries(qmoorie

@@ -13,3 +13,4 @@ target_link_libraries (moorie moor
 															${Boost_REGEX_LIBRARY} 
 															${Boost_FILESYSTEM_LIBRARY} 
 															${Boost_PROGRAM_OPTIONS_LIBRARY})
+install (TARGETS moorie DESTINATION bin)

@@ -30,7 +30,7 @@ class threadInstance : public QThread
 {
 public:
     threadInstance(QString, QString, QString = "");
-    CLibMoor vInstance; //!< Instancja klasy CLibMoor
+    CLibMoor * Instance; //!< Instancja klasy CLibMoor
 
     void run();
     bool pobrano;

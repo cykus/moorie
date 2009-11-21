@@ -201,7 +201,7 @@ void QMoorie::refreshStatuses()
         sleep(2);
         for (int i = 0; i < tInstance.size(); ++i)
         {
-            if(tInstance.at(i)->vInstance.downloadDone)
+            if(tInstance.at(i)->Instance->downloadDone)
             {
                 for(int j = 0 ; j < 7; j++ )
                 {
@@ -213,7 +213,7 @@ void QMoorie::refreshStatuses()
         }
         for (int i = 0; i < tInstance.size(); ++i)
         {
-            Status status = tInstance.at(i)->vInstance.getStatus();
+            Status status = tInstance.at(i)->Instance->getStatus();
             QString fileSize; fileSize.sprintf("%.2f", (tInstance.at(i)->size - status.bytesRead)  / 1024 / 1024);
 
             QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize + " MB");

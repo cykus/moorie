@@ -12,7 +12,7 @@ CMailBox::CMailBox(const std::string &usr, const std::string &passwd)
 	, scoreNeedsUpdate(true)
 	, validAccount(true)
 	, bytesRead( 0 )
-  , allBytesRead( 0 )
+        , allBytesRead( 0 )
 {
 	handle = curl_easy_init();
 	curl_easy_setopt(handle, CURLOPT_AUTOREFERER, 1);
@@ -208,7 +208,7 @@ std::vector<string> CMailBox::getLinks() const
 }
 
 string CMailBox::getLink(int seg) {
-	int counter; counter = 0;
+        int counter = 0;
 	ostringstream ss;
 	ss << seg;
 	string id = ss.str();
@@ -225,9 +225,9 @@ string CMailBox::getLink(int seg) {
 			counter++;
 
 	} 
-//	cout << counter << " " << segments_links.at(counter) << endl;
-	LOG( Log::Debug, boost::format( "%1% %2%" ) %counter %segments_links.at(counter));
-	return segments_links.at(counter);
+        cout << counter << endl;
+        //LOG( Log::Debug, boost::format( "%1% %2%" ) %counter %segments_links.at(counter));
+        return segments_links.at(1);
 }
 
 int CMailBox::downloadSeg() {

@@ -48,7 +48,7 @@ class CMailBox {
 
 //	mutable mutex speedMutex;
 	posix_time::ptime startTime; //!< Connection start time, used to measure speed
-	unsigned int bytesRead; //!< Number of bytes processed, used to measure speed
+        int bytesRead; //!< Number of bytes processed, used to measure speed
         unsigned int allBytesRead;
 
 	static const int BUFFER_SIZE = 1024*256; //!< Size of temporary buffer (256kB)

@@ -30,7 +30,8 @@ threadInstance::threadInstance(QString hash, QString pass, QString path)
 }
 void threadInstance::run()
 {
-    vInstance.Dehash(hash.toStdString());
-    vInstance.selectMailBox(0, path.toStdString());
+    Instance = new CLibMoor();
+    Instance->Dehash(hash.toStdString());
+    Instance->selectMailBox(0, path.toStdString());
     pobrano = true;
 }

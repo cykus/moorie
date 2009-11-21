@@ -18,3 +18,4 @@ add_library (moor SHARED	Decoder.cpp
 													MoorhuntHash.cpp
 													YgoowHash.cpp
 													Hash.cpp)
+install (TARGETS moor DESTINATION lib)
