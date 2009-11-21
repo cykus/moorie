@@ -225,9 +225,8 @@ string CMailBox::getLink(int seg) {
 			counter++;
 
 	} 
-        cout << counter << endl;
         //LOG( Log::Debug, boost::format( "%1% %2%" ) %counter %segments_links.at(counter));
-        return segments_links.at(1);
+        return segments_links.at(counter);
 }
 
 int CMailBox::downloadSeg() {
