@@ -208,12 +208,12 @@ std::vector<string> CMailBox::getLinks() const
 }
 
 string CMailBox::getLink(int seg) {
-        int counter = 0;
+    int counter = 0;
 	ostringstream ss;
 	ss << seg;
 	string id = ss.str();
 	segNumber = id;
-	boost::regex hreg("\\[" + fileCRC + "\\](.+)\\[" + id + "\\]"); // match "[crc][id]"
+	boost::regex hreg("\\[" + fileCRC + "\\].+\\[" + id + "\\]"); // match "[crc][id]"
 	boost::smatch match; 
 	for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
 	{
@@ -223,7 +223,6 @@ string CMailBox::getLink(int seg) {
 		}
 		else
 			counter++;
-
 	} 
         //LOG( Log::Debug, boost::format( "%1% %2%" ) %counter %segments_links.at(counter));
         return segments_links.at(counter);
