@@ -82,7 +82,7 @@ void MailRuMailbox::getHeadersRequest()
  	page = doGet(url);
 
 	int msgcnt = 0; // number of message headers for current page
-	static int pgcnt = 0;
+	int pgcnt = 0;
 	std::stringstream numstr;
 	boost::match_results<std::string::const_iterator> match;
 
@@ -95,10 +95,9 @@ void MailRuMailbox::getHeadersRequest()
 	std::istringstream pg(match3[1]);
 	int pages;
 	pg >> pages; 
-	pages = pages/25 + 1;
+	pages = pages / 25 + 1;
 //	cout << "match: " << match3[1] << " stron: " << pages;
 	LOG(Log::Debug,boost::format( "match: "+match3[1]+" stron: %d" ) % pages );
-	
 	while (pgcnt < pages) {
 		pgcnt++;
 		numstr.str("");

@@ -213,16 +213,13 @@ std::string CMailBox::getLink(int seg) {
 	ss << seg;
 	std::string id = ss.str();
 	segNumber = id;
-	boost::regex hreg("\\[" + fileCRC + "\\].+\\[" + id + "\\]"); // match "[crc][id]"
-	boost::smatch match; 
+	boost::regex hreg("\\[" + fileCRC + "\\].+?\\[" + id + "\\]"); // match "[crc][id]"
 	for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
 	{
-		if (boost::regex_search(it->subject, match, hreg))
-		{
+		if (boost::regex_search(it->subject, hreg))
 			break;
-		}
 		else
-			counter++;
+			++counter;
 	} 
 	//LOG( Log::Debug, boost::format( "%1% %2%" ) %counter %segments_links.at(counter));
 	return segments_links.at(counter);
@@ -297,14 +294,11 @@ int CMailBox::checkHeaders(int numOfSegments) {
 		std::ostringstream ss;
 		ss << i;
 		std::string id = ss.str();
-		boost::regex hreg("\\[" + fileCRC + "\\](.+)\\[" + id + "\\]"); // match "[crc][id]"
-		boost::smatch match; 
+		boost::regex hreg("\\[" + fileCRC + "\\].+?\\[" + id + "\\]"); // match "[crc][id]"
 		for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
 		{
-			if (boost::regex_search(it->subject, match, hreg))
-			{
-				segments++;
-			}
+			if (boost::regex_search(it->subject, hreg))
+				++segments;
 		} 
 	}
 	return segments;
