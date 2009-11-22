@@ -20,9 +20,9 @@
 class GMailMailbox: public CMailBox
 {
 	private:
-		string auth;
+		std::string auth;
 		int totalEmails;
-		string page;
+		std::string page;
 
 	public:
 		GMailMailbox(const std::string &usr, const std::string &passwd);

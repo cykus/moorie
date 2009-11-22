@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv) {
 	
-	string ygoowhash = "Ygoow://|Static-X Cult of static(2009)Sewol_for_ufs.pl.rar|ac3478d69ac165n4r5r6n\
+	std::string ygoowhash = "Ygoow://|Static-X Cult of static(2009)Sewol_for_ufs.pl.rar|ac3478d69ac165n4r5r6n\
 			p4|==DDpy2jHA8YCJ8VukJZGQS7PITaduwRw-gpgLHSob3VHXwo6QdDv98EEfWz/nNolODiCi4nqMr\
 			8hs3fHd26JekX32IqM3inbpn9KvsPpusVg1ukOzC0/YU5DyN4P9vEeL3OTaeCf6EZM/5iGI90y6zEp\
 			Zkjl27xlR/A3krMeRR50dRBkYIVA5oVLeAb3Egf07sCYwg2JrZDmwg8h-ZhfAaU4OoXCew79GicdMN\

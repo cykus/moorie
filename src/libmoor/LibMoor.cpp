@@ -32,8 +32,8 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 		path += "/";
 	
 	LOG(Log::Info, boost::format("Pobieranie do %1%") %path);
-	string strfile = path + myHash->getInfo().fileName;
-	ifstream myfile (strfile.c_str(), std::ifstream::binary);
+	std::string strfile = path + myHash->getInfo().fileName;
+	std::ifstream myfile (strfile.c_str(), std::ifstream::binary);
 	if (boost::filesystem::exists(strfile)) {
 		int filesize = boost::filesystem::file_size(strfile);
 		if (filesize < myHash->getInfo().fileSize) {

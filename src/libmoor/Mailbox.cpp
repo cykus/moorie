@@ -36,14 +36,14 @@ CMailBox::~CMailBox() {
 		delete [] buffer;
 }
 
-void CMailBox::setFileName(string file) {
+void CMailBox::setFileName(std::string file) {
 	filename = file;
 }
 
 void CMailBox::setFileCRC(int crc) {
-	stringstream ss;
-	ss << setw(8) << setfill('0')  << hex << crc;
-	cout << hex << crc;
+	std::stringstream ss;
+	ss << std::setw(8) << std::setfill('0') << std::hex << crc;
+	std::cout << std::hex << crc;
 	fileCRC = ss.str();
 	boost::to_upper(fileCRC);
 	LOG( Log::Info, boost::format("File CRC: %1%") %fileCRC);
@@ -54,11 +54,11 @@ void CMailBox::setCookie( std::string cookie ) const
 	curl_easy_setopt(handle, CURLOPT_COOKIE, cookie.c_str());
 }
 
-string& CMailBox::doGet(std::string url, bool  header)
+std::string& CMailBox::doGet(std::string url, bool  header)
 {
 //	mutex::scoped_lock lock( speedMutex );
 	bytesRead = 0;
-	startTime = posix_time::microsec_clock::universal_time();
+	startTime = boost::posix_time::microsec_clock::universal_time();
 //	lock.unlock();
 
 	stopFlag = false;
@@ -78,11 +78,11 @@ string& CMailBox::doGet(std::string url, bool  header)
 	return this->result;
 }
 
-string& CMailBox::doPost(std::string url, std::string vars, bool header)
+std::string& CMailBox::doPost(std::string url, std::string vars, bool header)
 {
 //	mutex::scoped_lock lock( speedMutex );
 	bytesRead = 0;
-	startTime = posix_time::microsec_clock::universal_time();
+	startTime = boost::posix_time::microsec_clock::universal_time();
 //	lock.unlock();
 	stopFlag = false;
 	this->url = url;
@@ -97,7 +97,7 @@ string& CMailBox::doPost(std::string url, std::string vars, bool header)
 	if (status != 0)
 	{
 //		cout << curl_easy_strerror(status) << endl;
-		LOG(Log::Error, format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
+		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
 	requestComplete();
 	return this->result;
@@ -109,7 +109,7 @@ void CMailBox::requestComplete()
 //	if (getState() == DownloadIP)
 //		setState(DownloadDone);
 	if(buffer)
-		this->result=string(buffer);
+		this->result = std::string(buffer);
 	else
 		this->result="";
 //	parseResponse();
@@ -202,16 +202,16 @@ std::list<EmailHeader> CMailBox::getHeaders() const
 	return headers;
 }
 
-std::vector<string> CMailBox::getLinks() const
+std::vector<std::string> CMailBox::getLinks() const
 {
 	return segments_links;
 }
 
-string CMailBox::getLink(int seg) {
-    int counter = 0;
-	ostringstream ss;
+std::string CMailBox::getLink(int seg) {
+	int counter = 0;
+	std::ostringstream ss;
 	ss << seg;
-	string id = ss.str();
+	std::string id = ss.str();
 	segNumber = id;
 	boost::regex hreg("\\[" + fileCRC + "\\].+\\[" + id + "\\]"); // match "[crc][id]"
 	boost::smatch match; 
@@ -224,15 +224,15 @@ string CMailBox::getLink(int seg) {
 		else
 			counter++;
 	} 
-        //LOG( Log::Debug, boost::format( "%1% %2%" ) %counter %segments_links.at(counter));
-        return segments_links.at(counter);
+	//LOG( Log::Debug, boost::format( "%1% %2%" ) %counter %segments_links.at(counter));
+	return segments_links.at(counter);
 }
 
 int CMailBox::downloadSeg() {
 	segDownload = true;
 	segOK = false;
 	crcRes.reset();
-	string tmpfile = filename+".seg";
+	std::string tmpfile = filename+".seg";
 	boost::filesystem::remove(tmpfile.c_str());
 	tmp_file = new std::ofstream(tmpfile.c_str(), std::ofstream::binary | std::ofstream::app);
 	return 0;
@@ -241,8 +241,8 @@ int CMailBox::downloadSeg() {
 int CMailBox::downloadSegDone() {
 	segDownload = false;
 	tmp_file->close();
-	string tmpfile = filename+".seg";
-	ifstream in(tmpfile.c_str(), std::ifstream::binary);
+	std::string tmpfile = filename+".seg";
+	std::ifstream in(tmpfile.c_str(), std::ifstream::binary);
 	while (!in.eof()) {
 		in.read(buffer, READ_BUFFER_SIZE);
 		int n = in.gcount();
@@ -250,8 +250,8 @@ int CMailBox::downloadSegDone() {
 	}
 	in.close();
 //	cout << crcRes.checksum() << endl;
-	stringstream ss;
-	ss << setw(8) << setfill('0')  << std::hex << crcRes.checksum();
+	std::stringstream ss;
+	ss << std::setw(8) << std::setfill('0')  << std::hex << crcRes.checksum();
 	segCRC = ss.str();
 //	cout << segCRC << endl;
 	LOG( Log::Info, segCRC);
@@ -275,8 +275,8 @@ int CMailBox::downloadSegDone() {
 	} 
 	
 	if (segOK == true) {
-		ifstream segfile(tmpfile.c_str(), std::ifstream::binary);
-		ofstream myfile(filename.c_str(), std::ofstream::binary | std::ofstream::app);
+		std::ifstream segfile(tmpfile.c_str(), std::ifstream::binary);
+		std::ofstream myfile(filename.c_str(), std::ofstream::binary | std::ofstream::app);
 		while (!segfile.eof()) {
 			segfile.read(buffer, READ_BUFFER_SIZE);
 			int n = segfile.gcount();
@@ -294,9 +294,9 @@ int CMailBox::downloadSegDone() {
 int CMailBox::checkHeaders(int numOfSegments) {
 	int segments = 0;
 	for (int i = 1; i <= numOfSegments; i++) {
-		ostringstream ss;
+		std::ostringstream ss;
 		ss << i;
-		string id = ss.str();
+		std::string id = ss.str();
 		boost::regex hreg("\\[" + fileCRC + "\\](.+)\\[" + id + "\\]"); // match "[crc][id]"
 		boost::smatch match; 
 		for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
@@ -314,8 +314,8 @@ unsigned int CMailBox::getBytesRead() {
 }
 unsigned int CMailBox::getSpeed() const
 {
-        const posix_time::ptime currTime = posix_time::microsec_clock::universal_time();
-        const posix_time::time_duration d = currTime - startTime;
+        const boost::posix_time::ptime currTime = boost::posix_time::microsec_clock::universal_time();
+        const boost::posix_time::time_duration d = currTime - startTime;
         if ( bytesRead > 0 && d.total_seconds() > 0 ) {
                 const double b = ( static_cast<double>( bytesRead ) / d.total_seconds() );
                 return static_cast<int>( b );

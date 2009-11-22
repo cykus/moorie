@@ -30,8 +30,9 @@ namespace {
                                           Register("mail.ru", Create);
 }        
 
-MailRuMailbox::MailRuMailbox(const string &usr, const string &passwd): CMailBox(usr, passwd), totalEmails(0)
-
+MailRuMailbox::MailRuMailbox(const std::string &usr, const std::string &passwd)
+	: CMailBox(usr, passwd), 
+		totalEmails(0)
 {
 }
 
@@ -39,16 +40,16 @@ int MailRuMailbox::loginRequest()
 {
 	
 //	LOG_ENTER("MailRuMailbox::loginRequest");
-	const string vars = string("Login=")
+	const std::string vars = std::string("Login=")
 		+ escape(getUser()) + "&Domain=" + escape("mail.ru") + "&Password="
 		+ escape(getPassword()) + "&level=1";
 //	setState(Mailbox::LoginIP);
 	page = doPost("http://win.mail.ru/cgi-bin/auth", vars,true);
-	smatch match;
+	boost::smatch match;
 //	page = doGet("http://win.mail.ru/cgi-bin/msglist?folder=0");
 
-	regex re("Set-Cookie: (Mpop=.*?;)");
-	if (regex_search(page, match, re))
+	boost::regex re("Set-Cookie: (Mpop=.*?;)");
+	if (boost::regex_search(page, match, re))
 	{	
 		auth = match[1];
 //		LOG(Log::Debug, "auth=" + auth);
@@ -74,7 +75,7 @@ void MailRuMailbox::logoutRequest()
 void MailRuMailbox::getHeadersRequest()
 {
 //	LOG_ENTER("MailRuMailbox::getHeadersRequest");
-	string url("http://win.mail.ru/cgi-bin/msglist?folder=0");
+	std::string url("http://win.mail.ru/cgi-bin/msglist?folder=0");
 	//setState(Mailbox::ReadHeadersIP); // request headers
 // 	totalEmails = 0;
 //     setCookie(auth);
@@ -82,16 +83,16 @@ void MailRuMailbox::getHeadersRequest()
 
 	int msgcnt = 0; // number of message headers for current page
 	static int pgcnt = 0;
-	stringstream numstr;
-	match_results<string::const_iterator> match;
+	std::stringstream numstr;
+	boost::match_results<std::string::const_iterator> match;
 
-	regex re2("<a href=\".*?\" id=\"nextbut\">.*?\n&nbsp;&nbsp;<a");
-	smatch match2;
+	boost::regex re2("<a href=\".*?\" id=\"nextbut\">.*?\n&nbsp;&nbsp;<a");
+	boost::smatch match2;
 
-	regex re3("<td width=10% class=\"rovn tdl\"><img src=http://img.mail.ru/0.gif width=24 height=1><br>(.*?)</td>");
-	smatch match3;
-	regex_search(page,match3,re3);
-	istringstream pg(match3[1]);
+	boost::regex re3("<td width=10% class=\"rovn tdl\"><img src=http://img.mail.ru/0.gif width=24 height=1><br>(.*?)</td>");
+	boost::smatch match3;
+	boost::regex_search(page,match3,re3);
+	std::istringstream pg(match3[1]);
 	int pages;
 	pg >> pages; 
 	pages = pages/25 + 1;
@@ -102,14 +103,14 @@ void MailRuMailbox::getHeadersRequest()
 		pgcnt++;
 		numstr.str("");
 		numstr << pgcnt;
-		string url = "http://win.mail.ru/cgi-bin/msglist?folder=0&page="+numstr.str();
+		std::string url = "http://win.mail.ru/cgi-bin/msglist?folder=0&page="+numstr.str();
 		page = doGet(url);
 
-		regex mheadre("<td class=letavtor title=.*?</a></td>.*?<td class=lettem><a href=\"readmsg([^\"]*)\"[^<>]*>([^<>]*)</a></td>");
+		boost::regex mheadre("<td class=letavtor title=.*?</a></td>.*?<td class=lettem><a href=\"readmsg([^\"]*)\"[^<>]*>([^<>]*)</a></td>");
 	//	const string page = getPage();
-		string::const_iterator pbegin = page.begin();
-		string::const_iterator pend = page.end();
-		while (regex_search(pbegin, pend, match, mheadre, match_default)) {
+		std::string::const_iterator pbegin = page.begin();
+		std::string::const_iterator pend = page.end();
+		while (boost::regex_search(pbegin, pend, match, mheadre, boost::match_default)) {
 			EmailHeader hdr(match[1], match[2]);
 //			cout << match[1] << " " << match[2] << endl;
 //			cout << "Add header: " << hdr.subject << endl;
@@ -128,16 +129,16 @@ void MailRuMailbox::getHeadersRequest()
 
 int MailRuMailbox::downloadRequest(int seg)
 {
-	string mylink = getLink(seg);
+	std::string mylink = getLink(seg);
 //	cout << mylink << endl;
  	setCookie(auth);
  	page = doGet("http://win.mail.ru/cgi-bin/readmsg"+mylink);
 //	regex re("http://a[a-z]*[0-9].mail.ru/cgi-bin/readmsg/.*?&mode=attachment&channel=");
- 	regex re("<a href=\"(http://a[^\"]*/cgi-bin/readmsg/[^\"]*&mode=attachment&channel=)");
+ 	boost::regex re("<a href=\"(http://a[^\"]*/cgi-bin/readmsg/[^\"]*&mode=attachment&channel=)");
 	
-	smatch match;
-	string link;
-	if(regex_search(page,match,re))
+	boost::smatch match;
+	std::string link;
+	if (boost::regex_search(page,match,re))
 	{
 		link=match[1];
 //		cout << link << endl;

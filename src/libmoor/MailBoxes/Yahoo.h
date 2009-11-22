@@ -16,16 +16,14 @@
 #include "../Mailbox.h"
 #include <string>
 
-using namespace std;
-
 //! Mailbox implementation for yahoo.com
 class YahooMailbox: public CMailBox
 {
 	private:
-		string auth;
-		string uvar;
-		string challenge;
-		string mserv;
+		std::string auth;
+		std::string uvar;
+		std::string challenge;
+		std::string mserv;
 		int totalEmails;
 		int curEmail;
 		int pgcnt;

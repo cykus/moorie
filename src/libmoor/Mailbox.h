@@ -17,21 +17,18 @@
 #include "EmailHeader.h"
 #include "Log.h"
 
-using namespace std;
-using namespace boost;
-
 class CMailBox {
 
 	CURL *handle; //!< Connection handle using curl easy interface
-	string url; //!< Current URL
-        string vars; //!< Variables for current POST request (used for CURLOPT_POSTFIELDS)
-	string user; //!< User login
-	string password; //!< User password
-	string filename;
+	std::string url; //!< Current URL
+	std::string vars; //!< Variables for current POST request (used for CURLOPT_POSTFIELDS)
+	std::string user; //!< User login
+	std::string password; //!< User password
+	std::string filename;
 	int bufferPos; //!< Number of bytes written by subsequent writeData calls
 	char *buffer; //!< Temporary buffer for incoming data, size defined by BUFFER_SIZE
-	list<EmailHeader> headers; //!< Email headers read by getHeadersRequest() call
-	vector<string> segments_links;
+	std::list<EmailHeader> headers; //!< Email headers read by getHeadersRequest() call
+	std::vector<std::string> segments_links;
 //      State state; //!< Current state of this Mailbox object
 //	Segment *segment; //!< Currently downloaded Segment
 	int usecnt; //!< Number of times this mailbox was used
@@ -44,10 +41,10 @@ class CMailBox {
 	int uSeq; //!< Unique id of this Mailbox object derived from seq
 	bool stopFlag; //!< stops transfer
 	
-	string result; //Variable that contains result of request
+	std::string result; //Variable that contains result of request
 
 //	mutable mutex speedMutex;
-	posix_time::ptime startTime; //!< Connection start time, used to measure speed
+	boost::posix_time::ptime startTime; //!< Connection start time, used to measure speed
         unsigned int bytesRead; //!< Number of bytes processed, used to measure speed
         unsigned int allBytesRead;
 
@@ -59,21 +56,21 @@ class CMailBox {
 	bool segDownload;
 	bool segOK;
 	boost::crc_32_type crcRes;
-	string segCRC;
-	string segNumber;
-	string fileCRC;
+	std::string segCRC;
+	std::string segNumber;
+	std::string fileCRC;
 	
 	protected:
 		static size_t _writeData(void *buffer, size_t size, size_t nmem, void *ptr);
 		virtual size_t writeData(void *buffer, size_t size, size_t nmem);
 		
-		void setCookie( string ) const;
-		string& doGet(string url, bool header=false);
-		string& doPost(string url, string vars, bool header=false);
-		string getUser() const;
-		string getPassword() const;
-		string escape(string q);
-		string unescape(string q);
+		void setCookie(std::string) const;
+		std::string& doGet(std::string url, bool header=false);
+		std::string& doPost(std::string url, std::string vars, bool header=false);
+		std::string getUser() const;
+		std::string getPassword() const;
+		std::string escape(std::string q);
+		std::string unescape(std::string q);
 		
 		void requestComplete();
 		
@@ -81,19 +78,19 @@ class CMailBox {
 		void addHeaderLink(std::string link);
 		void clearHeaders();
 		
-		string getLink(int seg);
+		std::string getLink(int seg);
 		int downloadSeg();
 		int downloadSegDone();
 
 	public:
 		CMailBox(const std::string &usr, const std::string &passwd);
-		void setFileName(string file);
+		void setFileName(std::string file);
 		void setFileCRC(int crc);
 		virtual int loginRequest() = 0;
 		virtual void getHeadersRequest() = 0;
 		virtual int downloadRequest(int seg) = 0;
-		list<EmailHeader> getHeaders() const;
-		vector<string> getLinks() const;
+		std::list<EmailHeader> getHeaders() const;
+		std::vector<std::string> getLinks() const;
 		int checkHeaders(int numOfSegments);
                 unsigned int getBytesRead();
                 unsigned int getSpeed() const;

@@ -31,14 +31,16 @@ namespace {
 }        
 
 
-RockComMailbox::RockComMailbox(const string &usr, const string &passwd): CMailBox(usr, passwd), totalEmails(0)
+RockComMailbox::RockComMailbox(const std::string &usr, const std::string &passwd)
+	: CMailBox(usr, passwd), 
+		totalEmails(0)
 {
 }
 
 int RockComMailbox::loginRequest()
 {
 // 	LOG_ENTER("RockComMailbox::loginRequest");
-	const string vars = string("show_frame=Enter&action=login&domain=")
+	const std::string vars = std::string("show_frame=Enter&action=login&domain=")
 		+ escape("rock.com")
 		+ "&mail_language=us&longlogin=1&login="
 		+ escape(getUser()) + "&password="
@@ -48,9 +50,9 @@ int RockComMailbox::loginRequest()
 // 	LOG_ENTER(getUser());
 // 	LOG_ENTER(getPassword());
 	page=doPost("http://webmail.rock.com/scripts/common/proxy.main", vars);
-	regex re("a");
-	smatch match;
-	if (regex_search(page, match, re))
+	boost::regex re("a");
+	boost::smatch match;
+	if (boost::regex_search(page, match, re))
 	{
 // 		setState(Mailbox::LoginDone); // logged in
 		auth = match[1];
@@ -72,7 +74,7 @@ void RockComMailbox::logoutRequest()
 void RockComMailbox::getHeadersRequest()
 {
 // 	LOG_ENTER("RockComMailbox::getHeadersRequest");
-	string url("http://mymail.rock.com/scripts/mail/mailbox.mail?folder=INBOX"),page;
+	std::string url("http://mymail.rock.com/scripts/mail/mailbox.mail?folder=INBOX"),page;
 // 	setState(Mailbox::ReadHeadersIP); // request headers
 	totalEmails = 0;
 	pgcnt=0;
@@ -80,12 +82,12 @@ void RockComMailbox::getHeadersRequest()
 	while(1)
 	{
 		//cout << "Read Headers In Progress" << endl;
-		match_results<string::const_iterator> match;
+		boost::match_results<std::string::const_iterator> match;
 //		regex mheadre("<a href=\"/scripts/mail/(.*?) onclick=.+?title=\"(?:<B> )(.*?)(?: </B>)\">");
-		regex mheadre("<a href=\"/scripts/mail/(.*?) onclick=.+?title=\"(?:<B>)*(.*?)(?: </B>)*\">");
-		string::const_iterator pbegin = page.begin();
-		string::const_iterator pend = page.end();
-		while (regex_search(pbegin, pend, match, mheadre, match_default))
+		boost::regex mheadre("<a href=\"/scripts/mail/(.*?) onclick=.+?title=\"(?:<B>)*(.*?)(?: </B>)*\">");
+		std::string::const_iterator pbegin = page.begin();
+		std::string::const_iterator pend = page.end();
+		while (boost::regex_search(pbegin, pend, match, mheadre, boost::match_default))
 		{
 			EmailHeader hdr(match[1], match[2]);
 			//cout << match[2] << endl;
@@ -95,10 +97,10 @@ void RockComMailbox::getHeadersRequest()
 			addHeaderLink(match[1]);
 			pbegin = match[2].second;
 		}
-        regex re2("<a href=\"/scripts/[^<>]*\"><img src=\"http://img1.us4.outblaze.com/rock.com/nextPg.gif\"");
-        smatch match2;
+        boost::regex re2("<a href=\"/scripts/[^<>]*\"><img src=\"http://img1.us4.outblaze.com/rock.com/nextPg.gif\"");
+        boost::smatch match2;
 	
-		if (!regex_search(page,match,re2))
+		if (!boost::regex_search(page,match,re2))
 		{
 // 			setState(Mailbox::ReadHeadersDone);
 			break;
@@ -106,10 +108,10 @@ void RockComMailbox::getHeadersRequest()
 		else
 		{
 			//cout << match[2] << endl;
-			stringstream numstr;
+			std::stringstream numstr;
 			pgcnt++;
 			numstr << pgcnt*50+1;
-			string url = "http://mymail.rock.com/scripts/mail/mailbox.mail?folder=INBOX&order=Newest&.ob=2013874a6a87e3165de301dc859da6acf78d4520&mview=a&mstart="+numstr.str()+";";
+			std::string url = "http://mymail.rock.com/scripts/mail/mailbox.mail?folder=INBOX&order=Newest&.ob=2013874a6a87e3165de301dc859da6acf78d4520&mview=a&mstart="+numstr.str()+";";
 			page=doGet(url);
 		}
 	}
@@ -130,14 +132,14 @@ int RockComMailbox::downloadRequest(int seg)
 // 	setState(Mailbox::DownloadIP);
 // 	setSegment(s);
 // 	doGet("http://mymail.rock.com"+match[1]);
-	string mylink = getLink(seg);
+	std::string mylink = getLink(seg);
 	setCookie(auth);
 	page = doGet("http://mymail.rock.com/scripts/mail/"+mylink);
-	regex re("<A HREF=\"(/getattach/[^\"]*)");
+	boost::regex re("<A HREF=\"(/getattach/[^\"]*)");
 
-	smatch match;
-	string link, downlink;
- 	if(regex_search(page,match,re)) {
+	boost::smatch match;
+	std::string link, downlink;
+ 	if(boost::regex_search(page,match,re)) {
 		link=match[1];
 //		cout << link << endl;
 		downlink = "http://mymail.rock.com"+link;

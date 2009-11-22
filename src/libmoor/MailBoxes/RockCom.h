@@ -21,13 +21,13 @@
 class RockComMailbox: public CMailBox
 {
 	private:
-		string auth;
+		std::string auth;
 		int totalEmails;
 		int pgcnt;
-		string page;
+		std::string page;
 		
 	public:
-		RockComMailbox(const string &usr, const string &passwd);
+		RockComMailbox(const std::string &usr, const std::string &passwd);
 		~RockComMailbox();
 		int loginRequest();
 		void logoutRequest();

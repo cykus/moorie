@@ -29,7 +29,7 @@ namespace {
                                           Register("gmail.com", Create);
 }
 
-GMailMailbox::GMailMailbox(const string &usr, const string &passwd)
+GMailMailbox::GMailMailbox(const std::string &usr, const std::string &passwd)
   : CMailBox(usr, passwd), 
     totalEmails(0)
 {
@@ -38,11 +38,11 @@ GMailMailbox::GMailMailbox(const string &usr, const string &passwd)
 int GMailMailbox::loginRequest()
 {
 //	LOG_ENTER("GMailMailbox::loginRequest");
-	smatch match2;
+	boost::smatch match2;
         page = doGet("https://www.google.com/accounts/ServiceLoginAuth");
-        regex re3("name=\"GALX\"[\n].*?value=\"([a-zA-Z0-9_*[-]*]*)\"");
-        regex_search(page, match2, re3);
-        const string vars = string("&continue=")
+        boost::regex re3("name=\"GALX\"[\n].*?value=\"([a-zA-Z0-9_*[-]*]*)\"");
+        boost::regex_search(page, match2, re3);
+        const std::string vars = std::string("&continue=")
 		+ escape("http://mail.google.com/mail/?")
                 + "&service=mail&rm=false&GALX="
                 + escape(match2[1]) + "&Email="
@@ -52,16 +52,16 @@ int GMailMailbox::loginRequest()
 	
 	page = doPost("https://www.google.com/accounts/ServiceLoginAuth", vars);
 
-	regex re("url=&#39;(.+)&");
-	regex re2("&amp;");
-	regex authre("auth=([\\w\\d_-]+)");
-	smatch match;
-	if (regex_search(page, match, re))
+	boost::regex re("url=&#39;(.+)&");
+	boost::regex re2("&amp;");
+	boost::regex authre("auth=([\\w\\d_-]+)");
+	boost::smatch match;
+	if (boost::regex_search(page, match, re))
 	{
-		string url = match[1];
-		regex_replace(url, re2, "&");
+		std::string url = match[1];
+		boost::regex_replace(url, re2, "&");
 		url = unescape(url);
-		if (regex_search(url, match, authre))
+		if (boost::regex_search(url, match, authre))
 			auth = match[1];
 //		LOG(Log::Debug, "auth=" + auth);
 		return 0;
@@ -80,22 +80,22 @@ void GMailMailbox::logoutRequest()
 void GMailMailbox::getHeadersRequest()
 {
 //	LOG_ENTER("GMailMailbox::getHeadersRequest");
-	string url("https://mail.google.com/mail/?ui=html&auth=");
+	std::string url("https://mail.google.com/mail/?ui=html&auth=");
 
 	totalEmails = 0;
 	page = doGet(url + auth);
 
 	int msgcnt = 0; // number of message headers for current page
 
-	match_results<string::const_iterator> match;
-	regex mheadre("type=\"checkbox\".+?value=\"(.+?)\".+?<a.+?(?:</font>)+\\s*(?:<b>)*(.+?)(?:<)");
+	boost::match_results<std::string::const_iterator> match;
+	boost::regex mheadre("type=\"checkbox\".+?value=\"(.+?)\".+?<a.+?(?:</font>)+\\s*(?:<b>)*(.+?)(?:<)");
 
-	while(regex_search(page,match,mheadre)) {
+	while(boost::regex_search(page,match,mheadre)) {
 	//	const string page = getPage();
-		string::const_iterator pbegin = page.begin();
-		string::const_iterator pend = page.end();
+		std::string::const_iterator pbegin = page.begin();
+		std::string::const_iterator pend = page.end();
 		msgcnt = 0;
-		while (regex_search(pbegin, pend, match, mheadre, match_default))
+		while (boost::regex_search(pbegin, pend, match, mheadre, boost::match_default))
 		{
 			EmailHeader hdr(match[1], match[2]);
 			addHeader(hdr);
@@ -108,10 +108,10 @@ void GMailMailbox::getHeadersRequest()
 		}
 		else
 		{
-			stringstream numstr;
+			std::stringstream numstr;
 			totalEmails += msgcnt;
 			numstr << totalEmails;
-			string url = "https://mail.google.com/mail/?ui=html&st=" + numstr.str();
+			std::string url = "https://mail.google.com/mail/?ui=html&st=" + numstr.str();
 			page = doGet(url);
 		}
 	}
@@ -120,7 +120,7 @@ void GMailMailbox::getHeadersRequest()
 
 int GMailMailbox::downloadRequest(int seg)
 {
-	string mylink = getLink(seg);
+	std::string mylink = getLink(seg);
 //	page = doGet();
 	std::string link = "https://mail.google.com/mail/?realattid=file0&attid=0.1&disp=attd&view=att&th=" + mylink;
 //	LOG(Log::Debug, link);
