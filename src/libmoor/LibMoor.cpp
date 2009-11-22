@@ -73,24 +73,21 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 				LOG(Log::Info, "Sprawdzanie listy segmentow...");
 				myMailBox->getHeadersRequest();
 				int segments = myMailBox->checkHeaders(myHash->getInfo().numOfSegments);
-				if (segments > mySeg) {
+				if (segments == 0) {
+					LOG(Log::Info, "Found none segments at all.");
+				}
+				else if (segments <= mySeg) {
+					LOG(Log::Info, "Found none new segments.");
+				}
+				// (segments >= myHash->getInfo().numOfSegments)
+				else if (segments > mySeg) {
 					LOG(Log::Info, "Found new segments. Downloading...");
 					if (startDownload() == 0) {
 						LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %mySeg );
 					}
 				}
-// 				if (segments == 0) {
-// 					LOG(Log::Info, "Nie znaleziono zadnego segmentu...");
-// 				} else if (segments >= myHash->getInfo().numOfSegments) {
-// 					LOG(Log::Info, "Znaleziono wszystkie segmenty, zaczynam pobieranie");
-// 					if (startDownload() == 0) {
-// 						LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %segments );
-// 					}
-// 				} else {
-// 					LOG(Log::Info, boost::format( "Znaleziono %1%/%2% segmentow. Kontynuowac? " ) %segments %myHash->getInfo().numOfSegments);
-// 					break;
-// 				}
-			} else {
+			} 
+			else {
 				LOG(Log::Info, "Logowanie nie powiodlo sie..." );
 			}
 		}
