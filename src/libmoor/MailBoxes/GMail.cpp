@@ -99,6 +99,7 @@ void GMailMailbox::getHeadersRequest()
 		{
 			EmailHeader hdr(match[1], match[2]);
 			addHeader(hdr);
+			addHeaderLink(match[1]);
 			pbegin = match[2].second;
 			++msgcnt;
 		}
