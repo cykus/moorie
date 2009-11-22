@@ -196,7 +196,6 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 		else
 		{
 			int numOfMirrors;
-			std::string id;
 
 			result.fileName = std::string(src, v[1]);
 			result.crc = (
@@ -218,7 +217,8 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 			tmp = std::string(src + v[18], v[19]); // num of mirrors
 			numOfMirrors = atoi(tmp.c_str());
 			int offset = 0;
-			for (int i = 0; i < numOfMirrors; ++i, offset = 6 * i) {
+			for (int i = 0; i < numOfMirrors; ++i) {
+				offset = 6 * i;
 				const char* id = getMailboxName(src[v[20 + offset]]);
 				// Filtering out all mailboxes program is unable to handle!
 				if (id && MailboxFactory::Instance().Registered(id)) {
@@ -230,12 +230,12 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 				}
 			}
 			result.coverURL = std::string(src + v[26 + offset], v[27 + offset]);
-			result.editPasswd = std::string(src + v[28 + offset], v[29 + offset]);
-			result.forWhom = std::string(src + v[30 + offset], v[31 + offset]);
-			result.descURL = std::string(src + v[32 + offset], v[33 + offset]);
-			result.fullTitle = std::string(src + v[34 + offset], v[35 + offset]);
-			result.uploader = std::string(src + v[36 + offset], v[37 + offset]);
-			result.comment = std::string(src + v[38 + offset], v[39 + offset]);
+ 			result.editPasswd = std::string(src + v[28 + offset], v[29 + offset]);
+ 			result.forWhom = std::string(src + v[30 + offset], v[31 + offset]);
+ 			result.descURL = std::string(src + v[32 + offset], v[33 + offset]);
+ 			result.fullTitle = std::string(src + v[34 + offset], v[35 + offset]);
+ 			result.uploader = std::string(src + v[36 + offset], v[37 + offset]);
+ 			result.comment = std::string(src + v[38 + offset], v[39 + offset]);
 
 			if (result.fileSize <=0 || numOfMirrors <= 0 || result.numOfSegments <=0)
 			{
