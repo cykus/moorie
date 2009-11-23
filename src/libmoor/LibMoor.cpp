@@ -115,7 +115,7 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 
 int CLibMoor::startDownload() {
 	bool segValid = true;
-	while (segValid && (mySeg <= myHash->getInfo().numOfSegments)) {
+        while (segValid && (mySeg < myHash->getInfo().numOfSegments)) {
 		mySeg++;
 		LOG(Log::Info, boost::format( "Sciaganie segmentu: %1%/%2%" )
 		               %mySeg

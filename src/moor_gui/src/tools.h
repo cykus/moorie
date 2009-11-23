@@ -17,31 +17,11 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef THREADINSTANCE_H
-#define THREADINSTANCE_H
-#include <QtCore>
-#include <QThread>
-#include <QTime>
+#ifndef TOOLS_H
+#define TOOLS_H
 
-#include <LibMoor.h>
-#include <iostream>
+#include <QString>
 
-class threadInstance : public QThread
-{
-public:
-    threadInstance(QString, QString, QString = "");
-    CLibMoor * Instance; //!< Instancja klasy CLibMoor
+QString fileSize(quint64);
 
-    void run();
-    bool pobrano;
-    quint64 size; //!< rozmiar pliku
-    int totalSegments; //!< liczba wszystkich segmentów
-    unsigned int itemRow; //!< Nr. wiersza w tabeli
-    quint64 pobranoLS; //!< Ile pobrano w poprzedniej sesji
-    QString hash; //!< hashcode pliku
-    QString path; //!< Ścieżka pobierania pliku
-    QString pass; //!< hasło pliku
-    QString filename; //!< nazwa pliku
-};
-
-#endif // THREADINSTANCE_H
+#endif

@@ -32,6 +32,7 @@
 #include "myTableWidget.h"
 #include "tabledelegate.h"
 #include "threadinstance.h"
+#include "tools.h"
 // moorie
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
@@ -106,6 +107,7 @@ public:
     void saveDownloads(); //!< Zapisuje listę plików aktualnie pobieranych
     void setTray();
 
+    quint64 allBytesRead;
     bool stop;
     addDownload *dodaj;
     myTableWidget *tabela; //!< Klasa dziedzicząca po QTableWidget

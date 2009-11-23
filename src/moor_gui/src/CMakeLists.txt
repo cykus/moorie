@@ -10,6 +10,7 @@ set( QMOORIE_SRCS
     configdialog.cpp
     configurationpage.cpp
     threadinstance.cpp
+    tools.cpp
 )
 set( QMOORIE_MOC_HDRS
     qmoorie.h
@@ -18,10 +19,8 @@ set( QMOORIE_MOC_HDRS
     tabledelegate.h
     infoDialog.h
     myTableWidget.h
-    singleton.h
     configdialog.h
     configurationpage.h
-    threadinstance.h
 )
 set( QMOORIE_UIS
     qmoorie.ui

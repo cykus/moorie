@@ -171,7 +171,6 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
 
     tabela->setRowCount(tabela->rowCount() + 1);
 
-    QString fileSize; fileSize.sprintf("%.2f", tInstance.last()->size / 1024 / 1024);
     QFileInfo fileInfo;
     if((path.lastIndexOf("/") > 0) && (path.size() > 1))fileInfo.setFile(tInstance.last()->path+"/"+tInstance.last()->filename);
     else fileInfo.setFile(tInstance.last()->path+tInstance.last()->filename);
@@ -181,14 +180,14 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
 
     QTableWidgetItem *nazwaPliku = new QTableWidgetItem(tInstance.last()->filename);
     tabela->setItem(tInstance.last()->itemRow, 0, nazwaPliku);
-    QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize + " MB");
+    QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(tInstance.last()->size));
     tabela->setItem(tInstance.last()->itemRow, 1, rozmiarPliku);
-    QTableWidgetItem *PobranoPliku = new QTableWidgetItem("0 MB");
+    QTableWidgetItem *PobranoPliku = new QTableWidgetItem("?");
     tabela->setItem(tInstance.last()->itemRow, 2, PobranoPliku);
     QTableWidgetItem *stanPobieraniaPliku = new QTableWidgetItem;
     stanPobieraniaPliku->setData(Qt::DisplayRole, 0);
     tabela->setItem(tInstance.last()->itemRow, 3, stanPobieraniaPliku);
-    QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(" KB/s");
+    QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("?");
     tabela->setItem(tInstance.last()->itemRow, 4, SzybkoscPobierania);
     QTableWidgetItem *statusPobierania = new QTableWidgetItem();
     tabela->setItem(tInstance.last()->itemRow, 5, statusPobierania);
@@ -201,9 +200,10 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
 */
 void QMoorie::refreshStatuses()
 {
-    unsigned int allBytesReadSession = 0;
+
     while(1)
     {
+        quint64 allBytesReadSession = 0;
         sleep(2);
         for (int i = 0; i < tInstance.size(); ++i)
         {
@@ -222,10 +222,9 @@ void QMoorie::refreshStatuses()
         {
             Status status = tInstance.at(i)->Instance->getStatus();
 
-            QString fileSize; fileSize.sprintf("%.2f", (tInstance.at(i)->size - tInstance.at(i)->pobranoLS - status.bytesRead)  / 1024 / 1024);
             allBytesReadSession += status.bytesRead;
 
-            QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize + " MB");
+            QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize(tInstance.at(i)->size - tInstance.at(i)->pobranoLS - status.bytesRead));
             tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
             int percentDownloaded = 100.0f * (status.bytesRead + tInstance.at(i)->pobranoLS)  / tInstance.at(i)->size;
             QTableWidgetItem *stanPobieraniaPliku = new QTableWidgetItem;
@@ -254,9 +253,15 @@ void QMoorie::refreshStatuses()
             QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
             tabela->setItem(tInstance.at(i)->itemRow, 6, SkrzynkaPobierania);
         }
-        QString fileSize; fileSize.sprintf("%.2f", allBytesReadSession  / 1024 / 1024);
-        ui->allBytesReadSession->setText(fileSize+" MB");
-
+        ui->allBytesReadSession->setText(fileSize(allBytesReadSession));
+        ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
+        QSettings settings;
+        if(settings.isWritable())
+        {
+            settings.beginGroup("VARIABLES_QMOORIE");
+            settings.setValue("allBytesRead", allBytesRead+allBytesReadSession);
+            settings.endGroup();
+        }
     }
 }
 
@@ -428,6 +433,9 @@ void QMoorie::readConfigFile()
     header->resizeSection( 4, settings.value("tabela_column_4", 65).toInt() );
     header->resizeSection( 5, settings.value("tabela_column_5", 120).toInt() );
     header->resizeSection( 6, settings.value("tabela_column_6", 100).toInt() );
+    settings.endGroup();
+    settings.beginGroup("VARIABLES_QMOORIE");
+    allBytesRead = settings.value("allBytesRead", 0).toUInt() ;
     settings.endGroup();
 
     writeConfigFile();
