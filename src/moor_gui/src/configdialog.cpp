@@ -25,7 +25,7 @@
 
 ConfigDialog::ConfigDialog()
 {
-    setWindowIcon( QIcon(":/images/hi16-app-qmoorie.png") );
+    setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png") );
     setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Ustawienia programu");
 
     warning = new QLabel;

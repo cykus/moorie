@@ -58,7 +58,12 @@ int GMailMailbox::loginRequest()
 	boost::smatch match;
 	if (boost::regex_search(page, match, re))
 	{
-		std::string url = match[1];
+                std::string url = match[1];
+                if(url.find("answer=40695") != std::string::npos)
+                {
+                    LOG(Log::Info, "Niestety, konto zostało wyłączone.");
+                    return 1;
+                }
 		boost::regex_replace(url, re2, "&");
 		url = unescape(url);
 		if (boost::regex_search(url, match, authre))

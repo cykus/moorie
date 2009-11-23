@@ -22,7 +22,7 @@
 InfoDialog::InfoDialog(QMoorie* parent)
 {
 
-    setWindowIcon( QIcon(":/images/hi16-app-qmoorie.png") );
+    setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png") );
     setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Konfiguracja");
 
     info[0] = new QLabel(tr("Tytuł: "));

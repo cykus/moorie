@@ -23,7 +23,7 @@
 
 addDownload::addDownload(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 {
-    setWindowIcon( QIcon(":/images/hi16-app-qmoorie.png") );
+    setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png") );
     setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Dodaj pobieranie");
     QSize size(500,250);
     resize(size);

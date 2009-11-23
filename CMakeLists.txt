@@ -23,7 +23,7 @@ MACRO (APPEND_CMAKE_INSTALL_RPATH RPATH_DIRS)
   ENDFOREACH ( RPATH_DIR )
 ENDMACRO ( APPEND_CMAKE_INSTALL_RPATH )
 
-APPEND_CMAKE_INSTALL_RPATH("/opt/lib/;/usr/local/lib")
+APPEND_CMAKE_INSTALL_RPATH("/opt/lib;/usr/local/lib")
 
 option(ENABLE_GUI "Kompilacja wraz z Qmoorie")
 

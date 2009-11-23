@@ -21,7 +21,7 @@
 
 QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new Ui::MainWindow)
 {
-    setWindowIcon( QIcon(":/images/hi16-app-qmoorie.png"));
+    setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png"));
     setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Hashcode Downloader");
 
     ui->setupUi(this);
@@ -79,9 +79,9 @@ void QMoorie::toggleVisibility()
  void QMoorie::createActions()
  {
 
-     addAct = new QAction(QIcon(":/images/add.png"), tr("&Dodaj"), this);
+     addAct = new QAction(QIcon(":/images/add.png"), tr("&Nowy"), this);
      addAct->setShortcut(tr("Ctrl+N"));
-     addAct->setStatusTip(tr("Rozpoczyna pobieranie nowego pliku"));
+     addAct->setStatusTip(tr("Dodanie nowego pliku"));
      connect(addAct, SIGNAL(triggered()), this, SLOT(addDialog()));
 
      settingsAct = new QAction(QIcon(":images/tool2.png"),tr("&Ustawienia"),this);
@@ -90,19 +90,19 @@ void QMoorie::toggleVisibility()
      connect(settingsAct, SIGNAL(triggered()), this ,SLOT(showSettings()));
 
      playAct = new QAction(QIcon(":images/play.png"),tr("&Wznów"),this);
-     playAct -> setStatusTip(tr("Wznawia pobieranie"));
+     playAct -> setStatusTip(tr("Wznowienie pobierania"));
 
      pauseAct = new QAction(QIcon(":images/pause.png"),tr("Wstrzymaj"),this);
-     pauseAct -> setStatusTip(tr("Wstrzymuje pobieranie"));
+     pauseAct -> setStatusTip(tr("Wstrzymanie pobierania"));
 
      removeAct = new QAction(QIcon(":images/remove.png"),tr("&Usuń"),this);
-     removeAct -> setStatusTip(tr("Usuwa pobierany plik"));
+     removeAct -> setStatusTip(tr("Usunięcie pobierania"));
 
      aboutAct = new QAction(QIcon(":/images/help_about.png"), tr("&O programie"), this);
-     aboutAct->setStatusTip(tr("Pokaż informacje o aplikacji"));
+     aboutAct->setStatusTip(tr("Informacje o aplikacji"));
      connect(aboutAct, SIGNAL(triggered()), this, SLOT(aboutDialog()));
 
-     exitAct = new QAction(QIcon(":/images/exit.png"), tr("Wyjście"), this);
+     exitAct = new QAction(QIcon(":/images/exit.png"), tr("Zakończ"), this);
      exitAct->setShortcut(tr("Ctrl+Q"));
      exitAct->setStatusTip(tr("Wyjście z aplikacji"));
      connect(exitAct, SIGNAL(triggered()), this, SLOT(exitApp()));
@@ -209,6 +209,13 @@ void QMoorie::refreshStatuses()
         {
             if(tInstance.at(i)->Instance->downloadDone)
             {
+                QTableWidgetItem *PobranoPliku = new QTableWidgetItem("0.00 MB");
+                tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
+                QTableWidgetItem *stanPobieraniaPliku = new QTableWidgetItem;
+                stanPobieraniaPliku->setData(Qt::DisplayRole, 100);
+                tabela->setItem(tInstance.at(i)->itemRow, 3, stanPobieraniaPliku);
+                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
+                tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
                 for(int j = 0 ; j < 7; j++ )
                 {
                     tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 100));
@@ -253,14 +260,17 @@ void QMoorie::refreshStatuses()
             QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
             tabela->setItem(tInstance.at(i)->itemRow, 6, SkrzynkaPobierania);
         }
-        ui->allBytesReadSession->setText(fileSize(allBytesReadSession));
-        ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
-        QSettings settings;
-        if(settings.isWritable())
+        if(tInstance.size())
         {
-            settings.beginGroup("VARIABLES_QMOORIE");
-            settings.setValue("allBytesRead", allBytesRead+allBytesReadSession);
-            settings.endGroup();
+            ui->allBytesReadSession->setText(fileSize(allBytesReadSession));
+            ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
+            QSettings settings;
+            if(settings.isWritable())
+            {
+                settings.beginGroup("VARIABLES_QMOORIE");
+                settings.setValue("allBytesRead", allBytesRead+allBytesReadSession);
+                settings.endGroup();
+            }
         }
     }
 }

@@ -11,7 +11,6 @@
         <file>images/config.png</file>
         <file>images/update.png</file>
         <file>images/qtlogo.png</file>
-        <file>images/hi16-app-qmoorie.png</file>
         <file>images/hi64-app-qmoorie.png</file>
     </qresource>
 </RCC>
