@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("Qmoorie");
     app.setOrganizationName("Moorie Team");
     app.setOrganizationDomain("moorie.mahho.net");
-    app.setApplicationVersion ("SVN");
+    app.setApplicationVersion ("GIT("+QDate::currentDate().toString("yyyyMMdd")+")");
     app.setQuitOnLastWindowClosed(true);
     Q_INIT_RESOURCE(application);
     QMoorie * mw = new QMoorie();

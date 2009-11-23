@@ -172,6 +172,12 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
     tabela->setRowCount(tabela->rowCount() + 1);
 
     QString fileSize; fileSize.sprintf("%.2f", tInstance.last()->size / 1024 / 1024);
+    QFileInfo fileInfo;
+    if((path.lastIndexOf("/") > 0) && (path.size() > 1))fileInfo.setFile(tInstance.last()->path+"/"+tInstance.last()->filename);
+    else fileInfo.setFile(tInstance.last()->path+tInstance.last()->filename);
+
+    if(fileInfo.exists()) tInstance.last()->pobranoLS = fileInfo.size();
+    else tInstance.last()->pobranoLS = 0;
 
     QTableWidgetItem *nazwaPliku = new QTableWidgetItem(tInstance.last()->filename);
     tabela->setItem(tInstance.last()->itemRow, 0, nazwaPliku);
@@ -195,7 +201,7 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
 */
 void QMoorie::refreshStatuses()
 {
-
+    unsigned int allBytesReadSession = 0;
     while(1)
     {
         sleep(2);
@@ -211,14 +217,17 @@ void QMoorie::refreshStatuses()
                 saveDownloads();
             }
         }
+
         for (int i = 0; i < tInstance.size(); ++i)
         {
             Status status = tInstance.at(i)->Instance->getStatus();
-            QString fileSize; fileSize.sprintf("%.2f", (tInstance.at(i)->size - status.bytesRead)  / 1024 / 1024);
+
+            QString fileSize; fileSize.sprintf("%.2f", (tInstance.at(i)->size - tInstance.at(i)->pobranoLS - status.bytesRead)  / 1024 / 1024);
+            allBytesReadSession += status.bytesRead;
 
             QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize + " MB");
             tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
-            int percentDownloaded = 100.0f * status.bytesRead  / tInstance.at(i)->size;
+            int percentDownloaded = 100.0f * (status.bytesRead + tInstance.at(i)->pobranoLS)  / tInstance.at(i)->size;
             QTableWidgetItem *stanPobieraniaPliku = new QTableWidgetItem;
             stanPobieraniaPliku->setData(Qt::DisplayRole, percentDownloaded);
             tabela->setItem(tInstance.at(i)->itemRow, 3, stanPobieraniaPliku);
@@ -245,6 +254,8 @@ void QMoorie::refreshStatuses()
             QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
             tabela->setItem(tInstance.at(i)->itemRow, 6, SkrzynkaPobierania);
         }
+        QString fileSize; fileSize.sprintf("%.2f", allBytesReadSession  / 1024 / 1024);
+        ui->allBytesReadSession->setText(fileSize+" MB");
 
     }
 }
@@ -297,59 +308,81 @@ void QMoorie::removeDownload()
 }
 void QMoorie::loadDownloads()
 {
+    QDomDocument dokument_xml;
+    QFile dokument(Zmienne().configPath+"hashcodes.xml");
+    dokument.open( QIODevice::ReadOnly );
+    dokument_xml.setContent( &dokument );
+    dokument.close();
 
-    QFile file(Zmienne().configPath+"hashcodes.txt");
-    if (file.open(QFile::ReadOnly | QFile::Text))
+    QDomNode downloads;
+    downloads = dokument_xml.documentElement();
+
+    QDomNode download, item;
+    download = downloads.firstChild();
+
+    while(!download.isNull())
     {
-        QString line, hash, pass, path;
-        line = file.readAll();
-        QStringList::Iterator it;
-        QStringList list = line.split("*", QString::SkipEmptyParts);
-        it = list.begin();
-        while(it != list.end())
+        QDomElement hash,pass,path;
+
+        item = download.namedItem("hash");
+        hash = item.toElement();
+        item = download.namedItem("pass");
+        pass = item.toElement();
+        item = download.namedItem("path");
+        path = item.toElement();
+        try
         {
-            hash = (*it);
-            ++it;
-            pass = (*it);
-            ++it;
-            path = (*it);
-            if(it!=list.end()) ++it;
-            try
+            boost::shared_ptr<Hash> hhio(HashManager::fromString(hash.text().toStdString()));
+            if (hhio->getInfo().valid)
             {
-                boost::shared_ptr<Hash> hhio(HashManager::fromString(hash.toStdString()));
-                if (hhio->getInfo().valid)
+                if(hhio->checkAccessPassword(pass.text().toStdString()))
                 {
-                    if(hhio->checkAccessPassword(pass.toStdString()))
-                    {
-                        addInstance(hash, pass, path);
-                    }
-                    else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));
+                    addInstance(hash.text(), pass.text(), path.text());
                 }
-                else QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
-            }
-            catch (std::exception& e)
-            {
-                QMessageBox::about(this, tr("Błąd"),tr("Nieobsługiwany hashcode!"));
-            }
+                else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));
+                }
+            else QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
         }
+        catch (std::exception& e)
+        {
+            QMessageBox::about(this, tr("Błąd"),tr("Nieobsługiwany hashcode!"));
+        }
+        download = download.nextSibling();
     }
 }
 void QMoorie::saveDownloads()
 {
-    QFile file(Zmienne().configPath+"hashcodes.txt");
-    if (file.open(QFile::WriteOnly | QFile::ReadOnly | QFile::Truncate))
+    QDomDocument dokument_xml;
+    QDomElement downloads, download, hash,pass,path;
+    QDomText val;
+
+    downloads = dokument_xml.createElement( "downloads" );
+    dokument_xml.appendChild(downloads);
+
+    for(int i = 0; i < tInstance.size(); ++i) {
+        download = dokument_xml.createElement( "download" );
+        downloads.appendChild(download);
+
+        hash = dokument_xml.createElement( "hash");
+        download.appendChild(hash);
+        val = dokument_xml.createTextNode(tInstance.at(i)->hash);
+        hash.appendChild(val);
+
+        pass = dokument_xml.createElement( "pass");
+        download.appendChild(pass);
+        val = dokument_xml.createTextNode(tInstance.at(i)->pass);
+        pass.appendChild(val);
+
+        path = dokument_xml.createElement( "path");
+        download.appendChild(path);
+        val = dokument_xml.createTextNode(tInstance.at(i)->path);
+        path.appendChild(val);
+    }
+    QFile dokument(Zmienne().configPath+"hashcodes.xml");
+    if(dokument.open(QFile::WriteOnly))
     {
-        QTextStream strum(&file);
-        strum << "*";
-        for (int i = 0; i < tInstance.size(); ++i)
-        {
-            strum << tInstance.at(i)->hash;
-            strum << "*";
-            strum << tInstance.at(i)->pass;
-            strum << "*";
-            strum << tInstance.at(i)->path;
-            strum << "*";
-        }
+        QTextStream ts(&dokument);
+        ts << dokument_xml.toString();
     }
 }
 void QMoorie::aboutDialog()
