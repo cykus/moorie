@@ -39,8 +39,8 @@ int OnetMailbox::loginRequest()
 	std::string domain("poczta.onet.pl");
 	page=doGet("http://lajt.onet.pl/poczta");
 	const std::string vars = std::string("login=")
-		+ escape( usr) + escape("@"+domain) + "&password="
-		+ escape(passwd) + "&app_id=1&submit=OK";
+                + escape(getUser()) + escape("@"+domain) + "&password="
+                + escape(getPassword()) + "&app_id=1&submit=OK";
 	page=doPost("http://lajt.onet.pl/secure/index.html", vars,true);
 	page=doGet("http://lajt.onet.pl/poczta");
 	if (page.find(">Wyloguj <span ")>20)
