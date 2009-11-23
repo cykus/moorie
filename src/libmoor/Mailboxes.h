@@ -9,6 +9,7 @@
 #include "MailBoxes/MailRu.h"
 #include "MailBoxes/GMail.h"
 #include "MailBoxes/Yahoo.h"
+#include "MailBoxes/Onet.h"
 
 enum MBoxID {
 	Walla        = 0x01,
