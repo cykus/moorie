@@ -54,6 +54,8 @@ int main(int argc, char **argv) {
                 logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
                 LogFileHandle *logh = new LogFileHandle( "moorie.log", static_cast<Log::Level>( logLevel ) );
                 Log::getLog()->addHandle(logh);
+                LogConsoleHandle *logh2 = new LogConsoleHandle(static_cast<Log::Level>( logLevel ) );
+                Log::getLog()->addHandle(logh2);
         }
 	if (vars.count("password"))
 	{
