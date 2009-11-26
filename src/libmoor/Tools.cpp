@@ -58,3 +58,13 @@ string Rot13(string str)
 	}
 	return str2;
 }
+
+std::string rot13(const std::string& str) {
+	std::string result = "";
+
+	for (int i = 0; i < str.size(); ++i) {
+		result += static_cast<char>(str[i] - 1 / (~(~(str[i]) | 32) / 13 * 2 - 11) * 13);
+	}
+
+	return result;
+}

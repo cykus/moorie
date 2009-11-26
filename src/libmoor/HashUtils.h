@@ -11,6 +11,8 @@
  */
 std::string md5(const std::string& data);
 
+std::string sha1(unsigned char data);
+
 std::vector<int> split(const char* str, int len);
 
 void splitToVec(const char* str, int len, std::vector<int>& result);

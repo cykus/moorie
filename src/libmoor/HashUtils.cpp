@@ -5,6 +5,8 @@
 #include <boost/scoped_array.hpp>
 #include <boost/format.hpp>
 
+#include "StringUtils.h"
+
 std::string md5(const std::string& data) {
 	// TODO: make it static (?)
 	MHASH mh = mhash_init(MHASH_MD5);
@@ -22,6 +24,20 @@ std::string md5(const std::string& data) {
 	}
 	
 	return std::string(); //TODO
+}
+
+std::string sha1(unsigned char data) {
+	MHASH mh = mhash_init(MHASH_SHA1);
+
+	if (mh != MHASH_FAILED) {
+		uint32_t hash_size = mhash_get_block_size(MHASH_SHA1);
+		boost::scoped_array<unsigned char> sha1(new unsigned char[hash_size]);
+		mhash(mh, &data, 1);
+		mhash_deinit(mh, sha1.get());
+		return hashToStr(sha1.get(), hash_size);
+	}
+
+	return std::string();
 }
 
 std::vector<int> split(const char* str, int len)
