@@ -48,8 +48,8 @@ int OiComBrMailbox::loginRequest()
 // 	setState(Mailbox::LoginIP);
 	page=doPost("http://webmail.oi.com.br/mail/redirect.php",vars);
 	
-	regex re("http://webmail.oi.com.br/mail/redirect.php");
-	smatch match;
+        boost::regex re("http://webmail.oi.com.br/mail/redirect.php");
+        boost::smatch match;
 	
 	if(regex_search(page,match,re))
 	{
@@ -90,9 +90,9 @@ void OiComBrMailbox::getHeadersRequest()
 	std::string page;
 // 	setState(Mailbox::ReadHeadersIP); // request headers
 	page=doGet("http://webmail.oi.com.br/mail/mailbox.php?mailbox=INBOX");
-	regex re("<b>Mensagens:</b>[^\\(\\)]*\\(([0-9]*) total");
-	smatch match;
-	regex_search(page,match,re);
+        boost::regex re("<b>Mensagens:</b>[^\\(\\)]*\\(([0-9]*) total");
+        boost::smatch match;
+        boost::regex_search(page,match,re);
 	std::stringstream myint;
 	std::stringstream(match[1]) >> totalEmails;
 	for(curEmail=1;(curEmail-1)*20<totalEmails;curEmail++)
@@ -100,10 +100,10 @@ void OiComBrMailbox::getHeadersRequest()
 		myint.str("");
 		myint << curEmail;
 		page=doGet("http://webmail.oi.com.br/mail/mailbox.php?page="+myint.str());
-		re=regex("<a href=\"([^\"]*)\" title=\"([^\"]*)\" id=\"subject");
+                re=boost::regex("<a href=\"([^\"]*)\" title=\"([^\"]*)\" id=\"subject");
 		std::string::const_iterator pbegin = page.begin();
 		std::string::const_iterator pend = page.end();
-		while (regex_search(pbegin, pend, match, re, match_default))
+                while (boost::regex_search(pbegin, pend, match, re, boost::match_default))
 		{
 			EmailHeader hdr(match[1], match[2]);
 // 			LOG(Log::Debug,"Subject: "+match[2]);
@@ -120,20 +120,20 @@ void OiComBrMailbox::getHeadersRequest()
 int OiComBrMailbox::downloadRequest(int seg)
 {
 	std::string mylink = getLink(seg);
-	cout << mylink << endl;
+        std::cout << mylink << std::endl;
 	setCookie(auth);
 	std::string page = doGet("http://webmail.oi.com.br"+mylink);
 //	regex re("http://a[a-z]*[0-9].mail.ru/cgi-bin/readmsg/.*?&mode=attachment&channel=");
-	regex re("<a href=\"(/services/download/[^\"]*)");
+        boost::regex re("<a href=\"(/services/download/[^\"]*)");
 	
-	smatch match;
-	string link;
+        boost::smatch match;
+        std::string link;
 	if(regex_search(page,match,re))
 	{
 		link=match[1];
 		LOG(Log::Debug, link);
-		string dlink = "http://webmail.oi.com.br"+link;
-		erase_all(dlink,"amp;");
+                std::string dlink = "http://webmail.oi.com.br"+link;
+                boost::erase_all(dlink,"amp;");
 		downloadSeg();
 		doGet(dlink);
 		if (downloadSegDone() == 0)

@@ -296,6 +296,7 @@ int CMailBox::checkHeaders(int numOfSegments) {
 		ss << i;
 		std::string id = ss.str();
 		boost::regex hreg("\\[" + fileCRC + "\\].+?\\[" + id + "\\]"); // match "[crc][id]"
+                boost::smatch match;
 		for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
 		{
 			if (boost::regex_search(it->subject, match, hreg))
@@ -307,7 +308,7 @@ int CMailBox::checkHeaders(int numOfSegments) {
 		
 	}
 	lost = numOfSegments - segments;
-        LOG( Log::Info, boost::format("Brakujących segmentow: %1%") %lost);
+	LOG( Log::Info, boost::format("Brakujących segmentow: %1%") %lost);
 	return segments;
 }
 unsigned int CMailBox::getBytesRead() {

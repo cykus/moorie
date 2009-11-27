@@ -10,14 +10,14 @@
  * WITHOUT ANY WARRANTY. See GPL for more details.
  */
 
-#ifndef __OICOMBR_H
-#define __OICOMBR_H
+#ifndef __MYNET_H
+#define __MYNET_H
 
 #include "../Mailbox.h"
 #include <string>
 
-//! Mailbox implementation for yahoo.com
-class OiComBrMailbox: public CMailBox
+
+class MyNetMailbox: public CMailBox
 {
 	private:
                 std::string auth;
@@ -29,8 +29,8 @@ class OiComBrMailbox: public CMailBox
 		int pgcnt;
 
 	public:
-                OiComBrMailbox(const std::string &usr, const std::string &passwd);
-		~OiComBrMailbox();
+                MyNetMailbox(const std::string &usr, const std::string &passwd);
+		~MyNetMailbox();
 		int loginRequest();
 		void logoutRequest();
 		void getHeadersRequest();

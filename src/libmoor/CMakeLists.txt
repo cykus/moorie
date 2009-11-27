@@ -14,6 +14,7 @@ add_library (moor SHARED	Decoder.cpp
 													MailBoxes/RockCom.cpp
 													MailBoxes/Onet.cpp
 													MailBoxes/OiComBr.cpp
+													MailBoxes/MyNet.cpp
 													MailboxFactory.cpp
 													HashManager.cpp
 													HashUtils.cpp
