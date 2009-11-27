@@ -45,7 +45,17 @@ enum MBoxID {
 	PocztaOnet= -86,
 	OnetEu    = 71,
 	GmxCom    = 70,
-	RockCom   = 23
+        RockCom   = 23,
+        MaiboxHu  = 87,
+        HotmailCom= -28,
+        InterfreeIt = -124,
+        TiscaliIt = -100,
+        VivapolskaTv= -11,
+        WippiesCom= 125,
+        GdeRu= -9,
+        KlikniCz= -65,
+        LivedoorCom= -30,
+        OneindiaIn= 55
 };
 
 std::string getMailboxName(int id);
