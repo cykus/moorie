@@ -43,7 +43,7 @@ int MailRuMailbox::loginRequest()
 		+ escape(getUser()) + "&Domain=" + escape("mail.ru") + "&Password="
 		+ escape(getPassword()) + "&level=1";
 //	setState(Mailbox::LoginIP);
-//	page = doPost("http://win.mail.ru/cgi-bin/auth", vars,true);
+	page = doPost("http://win.mail.ru/cgi-bin/auth", vars,true);
 	smatch match;
 //	page = doGet("http://win.mail.ru/cgi-bin/msglist?folder=0");
 

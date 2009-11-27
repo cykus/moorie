@@ -47,12 +47,12 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 	}
 
 	int vector_size = myHash->getInfo().accounts.size();
-	for (int i = 0; i < vector_size; ++i) {
+	/*for (int i = 0; i < vector_size; ++i) {
 		LOG(Log::Debug, boost::format( "%1%. ID: %2% L: %3% P: %4%" ) %i
 										%myHash->getInfo().accounts[i].name
 										%myHash->getInfo().accounts[i].login
 										%myHash->getInfo().accounts[i].password);
-	}
+	}*/
 
 	int tries = 1;
 	while (tries <= myHash->getInfo().accounts.size()) {
