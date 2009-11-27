@@ -41,6 +41,7 @@ int GoogleAppsMailbox::loginRequest()
     domain = "gazeta.pl";
     boost::smatch match2;
 
+	
     page = doGet("https://www.google.com/a/"+domain);
     boost::regex re3("name=\"GALX\"[\n].*?value=\"([a-zA-Z0-9_*[-]*]*)\"");
     boost::regex_search(page, match2, re3);
@@ -55,10 +56,12 @@ int GoogleAppsMailbox::loginRequest()
     page = doPost("https://www.google.com/a/"+domain+"/LoginAction2?service=mail",vars,true);
     
     //LOG(Log::Info,"page :"+ page);
-        boost::regex re("url=&#39;(.+)&");
+		std::string username = getUser();
+        boost::regex re(username);
         boost::regex re2("&amp;");
         boost::regex authre("auth=([\\w\\d_-]+)");
         boost::smatch match;
+		
         if (boost::regex_search(page, match, re))
         {
                 std::string url = match[1];
@@ -88,43 +91,44 @@ void GoogleAppsMailbox::logoutRequest()
 void GoogleAppsMailbox::getHeadersRequest()
 {
 //	LOG_ENTER( "GoogleAppsMailbox::getHeadersRequest " + domain );
-//	string url("https://mail.google.com/a/"+domain+"/?AuthEventSource=SSO&husr="+escape(getUser()+"@"+domain)+"&ui=html&auth=");
+	std::string url("https://mail.google.com/a/"+domain+"/?AuthEventSource=SSO&husr="+escape(getUser()+"@"+domain)+"&ui=html&auth=");
 //	setState(Mailbox::ReadHeadersIP); // request headers
-//	totalEmails = 0;
-//	page = doGet(url + auth);
-//
-//	int msgcnt = 0; // number of message headers for current page
-//
-//	match_results<string::const_iterator> match;
-//	regex mheadre("type=\"checkbox\".+?value=\"(.+?)\".+?<a.+?(?:</font>)+\\s*(?:<b>)*(.+?)(?:<)");
-//
-//	while(regex_search(page,match,mheadre)) {
-//	//	const string page = getPage();
-//		string::const_iterator pbegin = page.begin();
-//		string::const_iterator pend = page.end();
-//		msgcnt = 0;
-//		while (regex_search(pbegin, pend, match, mheadre, match_default))
-//		{
-//			EmailHeader hdr(match[1], match[2]);
-//			LOG(Log::Debug, "Found header: " + hdr.subject);
-//			addHeader(hdr);
-//			pbegin = match[2].second;
-//			++msgcnt;
-//		}
-//		if (msgcnt == 0)
-//		{
+	totalEmails = 0;
+	page = doGet(url + auth);
+
+	int msgcnt = 0; // number of message headers for current page
+
+	boost::match_results<std::string::const_iterator> match;
+	boost::regex mheadre("type=\"checkbox\".+?value=\"(.+?)\".+?<a.+?(?:</font>)+\\s*(?:<b>)*(.+?)(?:<)");
+
+	while(regex_search(page,match,mheadre)) {
+	//	const string page = getPage();
+		std::string::const_iterator pbegin = page.begin();
+		std::string::const_iterator pend = page.end();
+		msgcnt = 0;
+		while (boost::regex_search(pbegin, pend, match, mheadre, boost::match_default))
+		{
+			EmailHeader hdr(match[1], match[2]);
+// 			LOG(Log::Debug, "Found header: " + hdr.subject);
+ 			addHeader(hdr);
+			addHeaderLink(match[1]);
+			pbegin = match[2].second;
+			++msgcnt;
+		}
+		if (msgcnt == 0)
+		{
 //			LOG(Log::Debug, format("Total headers = %d") % totalEmails);
-//			setState(Mailbox::ReadHeadersDone);
-//		}
-//		else
-//		{
-//			stringstream numstr;
-//			totalEmails += msgcnt;
-//			numstr << totalEmails;
-//			string url = "https://mail.google.com/a/"+domain+"/?ui=html&st=" + numstr.str();
-//			page = doGet(url);
-//		}
-//	}
+// 			setState(Mailbox::ReadHeadersDone);
+		}
+		else
+		{
+			std::stringstream numstr;
+			totalEmails += msgcnt;
+			numstr << totalEmails;
+			std::string url = "https://mail.google.com/a/"+domain+"/?ui=html&st=" + numstr.str();
+			page = doGet(url);
+		}
+	}
 //	setState(Mailbox::ReadHeadersDone);
 }
 
@@ -133,7 +137,7 @@ int GoogleAppsMailbox::downloadRequest(int seg)
         std::string mylink = getLink(seg);
 //	page = doGet();
         std::string link = "https://mail.google.com/a/"+domain+"/?realattid=file0&attid=0.1&disp=attd&view=att&th=" + mylink;
-//	LOG(Log::Debug, link);
+		LOG(Log::Debug, link);
         downloadSeg();
         doGet(link);
         if (downloadSegDone() == 0) return 0;
