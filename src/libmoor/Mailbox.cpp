@@ -311,7 +311,7 @@ int CMailBox::checkHeaders(int numOfSegments) {
 		
 	}
 	lost = numOfSegments - segments;
-	LOG( Log::Info, boost::format("Brakuj±cych segmentow: %1%") %lost);
+	LOG( Log::Info, boost::format("BrakujÄ…cych segmentow: %1%") %lost);
 	return segments;
 }
 unsigned int CMailBox::getBytesRead() {
