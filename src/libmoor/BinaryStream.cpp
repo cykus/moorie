@@ -2,13 +2,11 @@
 
 #include <cassert>
 
-BinaryStream::BinaryStream(uint8_t* data,
-													 uint32_t size,
-													 bool ownership)
-	:	ownership_(ownership),
-		data_(data),
-		size_(size),
-		read_ptr_(0)
+BinaryStream::BinaryStream(uint8_t* data, uint32_t size, bool ownership)
+	: ownership_(ownership),
+	  data_(data),
+	  size_(size),
+	  read_ptr_(0)
 {
 }
 
@@ -17,12 +15,11 @@ BinaryStream::~BinaryStream() {
 		delete [] data_;
 }
 
-uint8_t*
-BinaryStream::readBytes(uint32_t size) {
-	assert(read_ptr_ + size < size_);
+uint8_t* BinaryStream::readBytes(uint32_t read) {
+	assert(read_ptr_ + read < size_);
 
-	uint8_t* result = new uint8_t[size];
-	for (uint32_t j = 0; j < size && read_ptr_ < size_; ++j, ++read_ptr_)
+	uint8_t* result = new uint8_t[read];
+	for (uint32_t j = 0; j < read && read_ptr_ < size_; ++j, ++read_ptr_)
 		result[j] = data_[read_ptr_];
 
 	return result;
@@ -59,11 +56,11 @@ uint64_t BinaryStream::readUInt64() {
 std::string BinaryStream::readString() {
 	assert(read_ptr_ < (size_ - 1));
 
-	std::string result = "";
-	do {
+	std::string result;
+	while (data_[read_ptr_] != '\0' && read_ptr_ < (size_ - 1)) {
 		result += static_cast<char>(data_[read_ptr_]);
 		++read_ptr_;
-	} while (data_[read_ptr_] != '\0' && read_ptr_ < (size_ - 1));
+	}
 
 	return result;
 }

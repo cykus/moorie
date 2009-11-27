@@ -5,20 +5,26 @@
 #include <sstream>
 #include <cstdio>
 
+// TODO: when "isRegex == false" some other inlined and more efficient
+// algorithm should be used.
 std::string strReplace(const std::string& baseString,
                        const std::string& needle,
-                       const std::string& replacement) {
-	boost::regex re(needle);
+                       const std::string& replacement,
+                       bool isRegex) {
+	boost::regex re(needle, (isRegex ? boost::regex_constants::normal
+		                               : boost::regex_constants::literal));
 	return boost::regex_replace(baseString, re, replacement);
 }
 
 std::string strReplace(const std::string& baseString,
                        const char* needles[],
-                       const char* replacements[]) {
+                       const char* replacements[],
+                       bool isRegex) {
 	std::string result = baseString;
 	unsigned int i = 0;
 	while (needles[i] != 0) {
-		boost::regex re(needles[i]);
+		boost::regex re(needles[i], (isRegex ? boost::regex_constants::normal
+		                                     : boost::regex_constants::literal));
 		result = boost::regex_replace(result, re, replacements[i]);
 		++i;
 	}
@@ -47,7 +53,8 @@ std::vector<std::string> strSplit(const std::string& baseString,
 int strToInt(const std::string& baseString) {
 	int result = 0;
 	std::istringstream ss(baseString);
-	ss >> result;
+	if (!(ss >> result))
+		throw std::bad_cast();
 
 	return result;
 }
@@ -55,21 +62,11 @@ int strToInt(const std::string& baseString) {
 std::string intToStr(int value) {
 	std::string result;
 	std::ostringstream os(result);
-	os << value;
+ 	if (!(os << value))
+ 		throw std::bad_cast();
 
 	return result;
 }
-
-// std::string hashToStr(unsigned char* data, unsigned int size) {
-// 	std::string result;
-// 	for (unsigned int i = 0; i < size; ++i) {
-// 		char ch[2] = {0};
-// 		sprintf(ch, "%.2x", data[i]);
-// 		result += ch;
-// 	}
-// 
-// 	return result;
-// }
 
 std::string hashToStr(unsigned char* data, unsigned int size) {
 	std::stringstream ss;

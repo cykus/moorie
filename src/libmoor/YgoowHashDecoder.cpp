@@ -27,33 +27,21 @@
 #include "Utils.h"
 #include "BinaryStream.h"
 
-// const unsigned char key[] = {
-// 	0x10, 1, 0, 0x51, 0x31, 0xea, 0xc1, 0x2d, 0x63, 0x55, 0x9e,
-// 	0xa2, 0x71, 0x31, 0x5f, 0, 0x37, 0x54, 0x95, 6, 50, 50, 50,
-// 	0x12, 20, 0x12, 100, 100, 0x51, 0xa9, 0xc5, 0xff
-// };
-// 
-// const unsigned char iv[] = {
-// 	0x10, 1, 1, 0x11, 0x31, 20, 0x15, 0xe1, 0x79, 0xa7, 0x92, 20,
-// 	0x2a, 0x63, 0x56, 0x85, 0xe4, 50, 180, 170, 0xf4, 0x3a, 0x36,
-// 	0x2e, 0x1c, 0xb3, 0xe4, 0x3a, 0, 0x56, 0x15, 0x77
-// };
-const char* needles[] = {"\\~", "\\{", "\\}", "=", "<", "\\?", "\\[YKP\\]:", 0};
+const char* needles[] = {"~", "{", "}", "=", "<", "?", "[YKP]:", 0};
 const char* replacements[] = {"*", "-", ".", "0", "1", "2", "[KontoPomocnicze]:", 0};
-
 
 Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	HashInfo result;
 	std::string hash = hashcode;
-	
+
 	hash = strReplace(hash, "\r\n", "");
 	hash = strReplace(hash, "\n", "");
 	hash = strReplace(hash, "ygoow://", "Ygoow://");
 	
-	std::string str = hash.substr(strReplace(hash, "Ygoow://\\|", "").find('|') + 9);
+	std::string str = hash.substr(strReplace(hash, "Ygoow://|", "").find('|') + 9);
 	str = strReplace(str, " ", "");
-	str = strReplace(str, "\\-", "+");
-	hash = hash.erase(strReplace(hash, "Ygoow://\\|", "").find('|') + 9) + str;
+	str = strReplace(str, "-", "+");
+	hash = hash.substr(0, strReplace(hash, "Ygoow://|", "").find('|') + 9) + str;
 
 	std::vector<std::string> hashArray = strSplit(hash, '|');
 
@@ -63,14 +51,14 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	std::string str3;
 	std::string str4;
 	std::string str5;
-	if (hashArray.size() == 7) {		
+	if (hashArray.size() == 7) {
 		str2 = hashArray.at(2);
 		str3 = hashArray.at(3);
 		str4 = hashArray.at(4);
 		str5 = strReplace(hashArray.at(5), "-", "+");
 	}
 	else {
-		str5 = strReplace(hashArray.at(3), "\\-", "+");
+		str5 = strReplace(hashArray.at(3), "-", "+");
 		str5 = strReplace(str5, "HStAAZQAAzg79/4nj7GSaF", "==");
 		str5 = strReplace(str5, "58aDDAAChGASu=gaQsfAI9", "=");
 		str2 = hashArray.at(2).substr(0, 10);
@@ -125,7 +113,8 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	unsigned int data_size = 0;
 	unsigned char* data = base64_decode(reverted.c_str(), reverted.size(), &data_size);
 	decrypt(&data, data_size, key, iv);
-
+	
+	// taking ownership of 'data' buffer!
 	BinaryStream stream(data, data_size, true);
 	result.crc = stream.readUInt32();
 	result.fileSize = stream.readInt64();
@@ -140,49 +129,40 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	boost::scoped_array<unsigned char> d_passwd(stream.readBytes(16));
 	result.accessPasswd = hashToStr(d_passwd.get());
 	std::cerr << "DownloadPassword = " << result.accessPasswd << std::endl;
-	
 	boost::scoped_array<unsigned char> e_passwd(stream.readBytes(16));
 	result.editPasswd = hashToStr(e_passwd.get());
 	std::cerr << "EditPassword = "<< result.editPasswd << std::endl;
 
 	/* MAIL BOXES */
 	int mboxes_size = stream.readInt32();
-	unsigned char* mboxes = stream.readBytes(mboxes_size);
-	std::string array = "";
-	for (unsigned int i = 0; i < mboxes_size; ++i) {
-		array += static_cast<char>(mboxes[i]);
-	}
+	boost::scoped_array<unsigned char> mboxes_data(stream.readBytes(mboxes_size));
+	std::string mboxes_raw(mboxes_data.get(), (mboxes_data.get() + mboxes_size));
 
 	// Drawing.Parse
-	std::string mboxes_r(array.rbegin(), array.rend());
-	std::string mboxes_ = "";
-	for (unsigned int i = 0; i < mboxes_r.size(); ++i) {
-		mboxes_ += (char)((unsigned char)mboxes_r[i] + 50);
-	}
-	//mboxes_ = strReplace(strReplace(strReplace(strReplace(strReplace(strReplace(strReplace(mboxes_, "\\~", "*"), "\\{", "-"), "\\}", "."), "=", "0"), "<", "1"), "\\?", "2"), "\\[YKP\\]:", "[KontoPomocnicze]:");
-	mboxes_ = strReplace(mboxes_, needles, replacements);
+	std::string mboxes_rev(mboxes_raw.rbegin(), mboxes_raw.rend());
+	std::string mboxes = "";
+	for (size_t i = 0; i < mboxes_rev.size(); ++i)
+		mboxes += mboxes_rev[i] + 50;
+	mboxes = strReplace(mboxes, needles, replacements);
 	// End: Drawing.Parse
 
-	std::vector<std::string> mboxes_sp = strSplit(mboxes_, '|');
-	for (unsigned int i = 0; i < mboxes_sp.size(); i+=2) {
+	std::vector<std::string> mboxes_sp = strSplit(mboxes, '|');
+	for (size_t i = 0; i < mboxes_sp.size(); i+=2) {
 		std::vector<std::string> mbox = strSplit(mboxes_sp.at(i), '@');
 		std::string server = mbox.at(1);
-		std::string login = mbox.at(0);
+		std::string login = strReplace(mbox.at(0), "*", "|");
 		std::string password = mboxes_sp.at(i+1);
 		std::cerr << "SERVER = " << server << ", LOGIN = " << login
 		          << ", PASSWD = " << password << std::endl;
 	}
-
+	// TODO: sort mboxes based on login containing [KontoPomocnicze]: literal.
+	
 	/* SIZES */
 	int sizes = stream.readInt32();
-	for (unsigned int z = 0; z < result.numOfSegments && (z * 3) < sizes; ++z) {
-		int size = (
-			stream.readByte() |
-			stream.readByte() << 8 |
-			stream.readByte() << 16 |
-			0 << 24
-		);
-		std::cerr << std::dec << "Size of chunk #" << z + 1 << " = " << size << std::endl;
+	for (unsigned int i = 0; i < result.numOfSegments && (i * 3) < sizes; ++i) {
+		int size = (stream.readByte() | stream.readByte() << 8 |
+		            stream.readByte() << 16 | 0 << 24);
+		std::cerr << std::dec << "Size of chunk #" << i + 1 << " = " << size << std::endl;
 	}
 
 	/* ADDITINAL DATA */
@@ -193,62 +173,3 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 
 	return new YgoowHash(result);
 }
-
-// bool YgoowHash::usesMD5Passwords() const
-// {
-// 	return ( verMaj == 'a' && ( verMin == 'g' || verMin == 'h' ) );
-// }
-
-// bool YgoowHash::checkAccessPassword( const std::string & pass ) const
-// {
-// 	if ( !isAccessPasswordProtected() ) {
-// 		return true;
-// 	}
-// 	if ( usesMD5Passwords() ) {
-// 		return getMD5( pass ) == accessPasswd;
-// 	}
-// 	return pass == accessPasswd;
-// }
-
-// bool YgoowHash::checkEditPassword( const std::string & pass ) const
-// {
-// 	if ( usesMD5Passwords() ) {
-// 		return getMD5( pass ) == editPasswd;
-// 	}
-// 	return pass == editPasswd;
-// }
-
-
-// bool YgoowHash::read(std::ifstream &f)
-// {
-//         const boost::regex re("^\\s*#");
-// 	std::string hashStr;
-// 	while (f.good())
-// 	{
-// 		std::string line;
-// 		getline(f, line);
-// 		if (boost::regex_search(line, re))
-// 			continue;
-// 		hashStr += line;
-// 		if (line.find(">>") != std::string::npos)
-// 		{
-// //			LOG(Log::Debug, "Found Ygoow hash");
-// 			decode(hashStr);
-// 			hashStr = "";
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
-
-// std::list<YgoowHash> YgoowHash::fromFile(std::ifstream &f)
-// {
-// 	std::list<YgoowHash> mh;
-// 	while (f.good())
-// 	{
-// 		YgoowHash h;
-// 		if (h.read(f))
-// 			mh.push_back(h);
-// 	}
-// 	return mh;
-// }

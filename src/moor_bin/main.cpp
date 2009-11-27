@@ -87,13 +87,13 @@ int main(int argc, char **argv) {
 	
         try
         {
-            boost::shared_ptr<Hash> hhash(HashManager::fromString(hash));
+            boost::shared_ptr<Hash> hhash(HashManager::fromString(hash)); // TODO: double parsed hash here1
             if (hhash->getInfo().valid)
             {
                 if(hhash->checkAccessPassword(pass))
                 {
                     Instance = new CLibMoor();
-                    Instance -> Dehash(hash);
+                    Instance -> Dehash(hash); // TODO: double parsed hash here2
                     Instance -> selectMailBox(0,path);
                 }
                 else std::cerr << "Hasło nieprawidłowe" << std::endl;

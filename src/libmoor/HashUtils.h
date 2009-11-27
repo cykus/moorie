@@ -11,6 +11,11 @@
  */
 std::string md5(const std::string& data);
 
+/**
+ * Calculates SHA1 sum from a single byte.
+ * @param data Data to calculate checksum for.
+ * @return Checksum in hex.
+ */
 std::string sha1(unsigned char data);
 
 std::vector<int> split(const char* str, int len);
