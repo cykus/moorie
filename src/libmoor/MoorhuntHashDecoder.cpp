@@ -34,10 +34,12 @@ namespace {
 	// TODO: should this mapping be moved to some out-of-source
 	// configuration file ?
 	const char* getMailboxName(int id) {
+// 		LOG(Log::Debug, boost::format( "ID: %1%. " ) %id);
 		switch (id) {
 			case 2	:		return "yahoo.com";
 			case 3	:		return "gmail.com";
 			case 4	:		return "o2.pl";
+			case 5  :		return "lajt.hu";
 			case 9	:		return "wp.pl";
 			case 72	:		return "oi.com.br";
 			case 22	:		return "mynet.com";
@@ -52,6 +54,17 @@ namespace {
 			case -86:		return "poczta.onet.pl";
 			case 71	:		return "onet.eu";
 			case 23	:		return "rock.com";
+			case 87 :		return "mailbox.hu";
+			case -28:		return "hotmail.com";
+			case -124:		return "interfree.it";
+			case -100:		return "tiscali.it";
+			case -11:		return "vivapolska.tv";
+			case 125:		return "wippies.com";
+			case -9 :		return "gde.ru";
+			case -65:		return "klikni.cz";
+			case -30:		return "livedoor.com";
+			case 55 :		return "oneindia.in";
+			
 			default	:		return 0;
 		}
 	}

@@ -27,7 +27,7 @@ APPEND_CMAKE_INSTALL_RPATH("/opt/lib;/usr/local/lib")
 
 option(ENABLE_GUI "Kompilacja wraz z Qmoorie")
 
-add_subdirectory(doc)
+
 add_subdirectory(src)
 
 message(STATUS)
