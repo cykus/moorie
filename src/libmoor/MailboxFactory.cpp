@@ -17,7 +17,7 @@ MailboxFactory::Register(const std::string& name, MailboxCreator creator) {
 bool
 MailboxFactory::Register(const std::string names[], MailboxCreator creator) {
 	bool result;
-	for (int guard = 0, i = 0; (names[i] != "") && (guard < 10); ++i, ++guard) {
+	for (unsigned int i = 0; !names[i].empty(); ++i) {
 		result = creators_.insert(CreatorMap::value_type(names[i], creator)).second;
 		if (!result)
 			break;

@@ -24,27 +24,24 @@ namespace {
   {
     return new GoogleAppsMailbox(username, password);
   }
-  const bool registered = MailboxFactory::Instance().
-                                          Register("gala.net", Create);
-  const bool registered1 = MailboxFactory::Instance().
-                                          Register("gazeta.pl", Create);
-  const bool registered2 = MailboxFactory::Instance().
-                                          Register("mailbox.hu", Create);
-  const bool registered3 = MailboxFactory::Instance().
-                                          Register("vivapolska.tv", Create);
-  const bool registered4 = MailboxFactory::Instance().
-                                          Register("gde.ru", Create);
-  const bool registered5 = MailboxFactory::Instance().
-                                          Register("klikni.cz", Create);
-  const bool registered6 = MailboxFactory::Instance().
-                                          Register("livedoor.com", Create);
-  const bool registered7 = MailboxFactory::Instance().
-                                          Register("oneindia.in", Create);
-  const bool registerer8 = MailboxFactory::Instance().
-                                          Register("bigmir.net", Create);
 }
 
-GoogleAppsMailbox::GoogleAppsMailbox(const std::string &usr, const std::string &passwd)
+const std::string c_names[] = {
+	"gala.net",
+	"gazeta.pl",
+	"mailbox.hu",
+	"vivapolska.tv",
+	"gde.ru",
+	"klikni.cz",
+	"livedoor.com",
+	"oneindia.in",
+	"bigmir.net",
+	std::string()
+};
+const bool registered = MailboxFactory::Instance().Register(c_names, Create);
+
+GoogleAppsMailbox::GoogleAppsMailbox(const std::string &usr, const std::string
+&passwd)
   : CMailBox(usr, passwd),
   totalEmails( 0 )
 {
