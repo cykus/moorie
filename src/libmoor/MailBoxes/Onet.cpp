@@ -25,6 +25,8 @@ namespace {
   
   const bool registered = MailboxFactory::Instance().
                                           Register("poczta.onet.pl", Create);
+
+
 }   
 
 OnetMailbox::OnetMailbox(const std::string &usr, const std::string &passwd)

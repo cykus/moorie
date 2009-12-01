@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
         std::string pass; // moorhunt password
 	std::string hash;
         std::string path = "";
-        unsigned int logLevel( 0 );
+        unsigned int logLevel( 3 );
 	
 	boost::program_options::options_description desc("Moorie 0.2 (C)by Moorie Team (http://moorie.mahho.net/) \n\nOptions");
 	desc.add_options()
@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 			("shash,s",	    boost::program_options::value<std::string>(), "Hash string")
 			("password,p",      boost::program_options::value<std::string>(), "Hash password")
                         ("path,u",      boost::program_options::value<std::string>(), "Download path")
-			("log-level,l",     boost::program_options::value<unsigned int>( &logLevel )->default_value( 0 ), "Log level (0-8)")
+                        ("log-level,l",     boost::program_options::value<unsigned int>( &logLevel )->default_value( 3 ), "Log level (0-8)")
 			("version",         "Show version information")
 			("help,h",          "Show help");
 	boost::program_options::variables_map vars;
