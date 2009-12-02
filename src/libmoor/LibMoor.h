@@ -18,6 +18,9 @@ class CLibMoor {
 		int startDownload();
 		Status getStatus();
 
+	public:
+		bool downloadDone;
+
 	private:
 		/** 
 		 * Gets number of last downloaded segment.
@@ -31,7 +34,6 @@ class CLibMoor {
 		CMailBox* myMailBox;
 		int mySeg;
 		int selected;
-		bool downloadDone;
 };
 
 #endif
