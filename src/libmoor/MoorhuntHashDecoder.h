@@ -15,7 +15,6 @@
 
 #include <string>
 
-//#include <MailSystem/Account.h>
 #include "HashDecoder.h"
 
 class MoorhuntHashDecoder : public HashDecoder {
