@@ -11,9 +11,7 @@
  */
 
 #include "YgoowHashDecoder.h"
-// #include "Account.h"
-//#include "Util.h"
-//#include "Log.h"
+
 #include <boost/scoped_array.hpp>
 #include <sstream>
 #include <iomanip>
@@ -43,6 +41,7 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	str = strReplace(str, "-", "+");
 	hash = hash.substr(0, strReplace(hash, "Ygoow://|", "").find('|') + 9) + str;
 
+	result.hashString = hash;
 	std::vector<std::string> hashArray = strSplit(hash, '|');
 
 	char ch = 'a';
@@ -149,27 +148,33 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	std::vector<std::string> mboxes_sp = strSplit(mboxes, '|');
 	for (size_t i = 0; i < mboxes_sp.size(); i+=2) {
 		std::vector<std::string> mbox = strSplit(mboxes_sp.at(i), '@');
-		std::string server = mbox.at(1);
-		std::string login = strReplace(mbox.at(0), "*", "|");
-		std::string password = mboxes_sp.at(i+1);
-		std::cerr << "SERVER = " << server << ", LOGIN = " << login
-		          << ", PASSWD = " << password << std::endl;
+		HashInfo::MboxAccount account;
+		account.name = mbox.at(1);
+		account.login = strReplace(mbox.at(0), "*", "|");
+		account.password = mboxes_sp.at(i+1);
+		result.accounts.push_back(account);
+		std::cerr << "SERVER = " << account.name << ", LOGIN = " << account.login
+		          << ", PASSWD = " << account.password << std::endl;
 	}
 	// TODO: sort mboxes based on login containing [KontoPomocnicze]: literal.
 	
 	/* SIZES */
 	int sizes = stream.readInt32();
-	for (unsigned int i = 0; i < result.numOfSegments && (i * 3) < sizes; ++i) {
+	for (unsigned int i = 0; i < result.numOfSegments; ++i) {
 		int size = (stream.readByte() | stream.readByte() << 8 |
 		            stream.readByte() << 16 | 0 << 24);
+		result.segmentSizes.push_back(size);
 		std::cerr << std::dec << "Size of chunk #" << i + 1 << " = " << size << std::endl;
 	}
 
 	/* ADDITINAL DATA */
 	std::vector<std::string> adds = strSplit(stream.readString(), '|');
-	std::cerr << "For = " << adds.at(0) << std::endl;
-	std::cerr << "Uploader = " << adds.at(1) << std::endl;
-	std::cerr << "Comment = " << adds.at(2) << std::endl;
+	result.forWhom = adds.at(0);
+	result.uploader = adds.at(1);
+	result.comment = adds.at(2);
+	std::cerr << "For = " << result.forWhom << std::endl;
+	std::cerr << "Uploader = " << result.uploader << std::endl;
+	std::cerr << "Comment = " << result.comment << std::endl;
 
 	return new YgoowHash(result);
 }
