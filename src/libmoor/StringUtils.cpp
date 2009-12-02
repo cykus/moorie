@@ -60,12 +60,11 @@ int strToInt(const std::string& baseString) {
 }
 
 std::string intToStr(int value) {
-	std::string result;
-	std::ostringstream os(result);
+	std::ostringstream os;
  	if (!(os << value))
  		throw std::bad_cast();
 
-	return result;
+	return os.str();
 }
 
 std::string hashToStr(unsigned char* data, unsigned int size) {
