@@ -78,7 +78,7 @@ class BinaryStream {
 
 		/**
 		 * Gets string from stream.
-		 * Reads buffer until it encounters end of string (\0).
+		 * Reads buffer until it encounters end of string.
 		 * @attention Buffer should have at least one byte left otherwise assertion
 		 *            is called.
 		 * @return Read string.
