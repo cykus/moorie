@@ -176,5 +176,6 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	std::cerr << "Uploader = " << result.uploader << std::endl;
 	std::cerr << "Comment = " << result.comment << std::endl;
 
+	result.valid = true; // TODO: add required checks before setting it!
 	return new YgoowHash(result);
 }
