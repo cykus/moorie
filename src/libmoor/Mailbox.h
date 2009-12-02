@@ -87,12 +87,16 @@ class CMailBox {
 		void setFileName(std::string file);
 		void setFileCRC(int crc);
 		virtual int loginRequest() = 0;
+		/**
+		 * Gets upload headers from specific mailbox.
+		 */
 		virtual void getHeadersRequest() = 0;
 		virtual int downloadRequest(int seg) = 0;
 		std::list<EmailHeader> getHeaders() const;
 		std::vector<std::string> getLinks() const;
 		/**
-		 * @deprecated
+		 * @deprecated Use CMailBox::countAvailableSegments() instead.
+		 * @see countAvailableSegments()
 		 */
 		int checkHeaders(int numOfSegments);
 
@@ -100,6 +104,8 @@ class CMailBox {
 		 * Gets number of available segments for current mailbox.
 		 * @param segment Segment number to start counting from.
 		 * @return Number of available segments.
+		 * @remarks getHeadersRequest() must be run beforehand.
+		 * @see getHeadersRequest()
 		 */
 		unsigned int countAvailableSegments(unsigned int segment);
 		unsigned int getBytesRead();

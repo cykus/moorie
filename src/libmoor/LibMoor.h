@@ -19,6 +19,14 @@ class CLibMoor {
 		Status getStatus();
 
 	private:
+		/** 
+		 * Gets number of last downloaded segment.
+		 * @param filePath Path to downloaded file.
+		 * @return Last downloaded segment.
+		 */
+		unsigned int getLastSegment(const std::string& filePath);
+
+	private:
 		boost::shared_ptr<Hash> myHash;
 		CMailBox* myMailBox;
 		int mySeg;

@@ -33,19 +33,10 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 	if((path.find_last_of("/") != 0) && (path.length() > 1))
 		path += "/";
 	
-	LOG(Log::Info, boost::format("Pobieranie do %1%") %path);
-	std::string strfile = path + myHash->getInfo().fileName;
-	std::ifstream myfile (strfile.c_str(), std::ifstream::binary);
-	if (boost::filesystem::exists(strfile)) {
-		int filesize = boost::filesystem::file_size(strfile);
-		if (filesize < myHash->getInfo().fileSize) {
-			mySeg = filesize / myHash->getInfo().segmentSize;
-			LOG(Log::Info, boost::format("Kontynuuje pobieranie pliku: %1%   Segment: %2%") %strfile %mySeg);
-		}
-		else {
-			LOG(Log::Info, "Plik pobrano w calosci, przerywam...");
-			return 1;
-		}
+	mySeg = getLastSegment(path + myHash->getInfo().fileName);
+	if (mySeg == myHash->getInfo().numOfSegments) {
+		LOG(Log::Info, "Plik pobrano w calosci, przerywam...");
+		return 1;
 	}
 
 	int vector_size = myHash->getInfo().accounts.size();
@@ -61,8 +52,6 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 		std::string mailbox = myHash->getInfo().accounts[selected].name;
 		std::string login = myHash->getInfo().accounts[selected].login;
 		std::string passwd = myHash->getInfo().accounts[selected].password;
-		
-//		validMailbox = true;
 		
 		myMailBox = MailboxFactory::Instance().Create(mailbox, login, passwd);
 		if (myMailBox) {
@@ -107,13 +96,12 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 		++tries;
 	}
 			
-//	myMailBox -> Login();
 	return 0;
 }
 
 int CLibMoor::startDownload() {
 	bool segValid = true;
-        while (segValid && (mySeg < myHash->getInfo().numOfSegments)) {
+	while (segValid && (mySeg < myHash->getInfo().numOfSegments)) {
 		mySeg++;
 		LOG(Log::Info, boost::format( "Sciaganie segmentu: %1%/%2%" )
 		               %mySeg
@@ -138,4 +126,24 @@ Status CLibMoor::getStatus() {
 	Status s(mySeg, myMailBox->getSpeed(), myMailBox->getBytesRead(),
 	         myHash->getInfo().accounts[selected].name);
 	return s;
+}
+
+unsigned int CLibMoor::getLastSegment(const std::string& filePath) {
+	unsigned int segment = 0;
+	if (boost::filesystem::exists(filePath)) {
+		unsigned int filesize = boost::filesystem::file_size(filePath);
+		if (myHash->getInfo().segmentSize != 0) {
+			segment = filesize / myHash->getInfo().segmentSize;
+		}
+		else {
+			int currSize = 0;
+			std::vector<int>::const_iterator it = myHash->getInfo().segmentSizes.begin();
+			for (; it != myHash->getInfo().segmentSizes.end(); ++it) {
+				if ((currSize += *it) < filesize)	break;
+				else ++segment;
+			}
+		}
+	}
+
+	return segment;
 }
