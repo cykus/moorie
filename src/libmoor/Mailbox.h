@@ -91,9 +91,19 @@ class CMailBox {
 		virtual int downloadRequest(int seg) = 0;
 		std::list<EmailHeader> getHeaders() const;
 		std::vector<std::string> getLinks() const;
+		/**
+		 * @deprecated
+		 */
 		int checkHeaders(int numOfSegments);
-                unsigned int getBytesRead();
-                unsigned int getSpeed() const;
+
+		/**
+		 * Gets number of available segments for current mailbox.
+		 * @param segment Segment number to start counting from.
+		 * @return Number of available segments.
+		 */
+		unsigned int countAvailableSegments(unsigned int segment);
+		unsigned int getBytesRead();
+		unsigned int getSpeed() const;
 		virtual ~CMailBox();
     
   private:

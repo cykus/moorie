@@ -15,12 +15,13 @@ add_library (moor SHARED	Decoder.cpp
 													MailBoxes/Onet.cpp
 													MailBoxes/OiComBr.cpp
 													MailBoxes/MyNet.cpp
-                                                                                                        MailBoxes/GoogleApps.cpp
+													MailBoxes/GoogleApps.cpp
 													MailboxFactory.cpp
 													HashManager.cpp
 													HashUtils.cpp
 													Utils.cpp
 													MoorhuntHash.cpp
 													YgoowHash.cpp
-													Hash.cpp)
+													Hash.cpp
+													StringUtils.cpp)
 install (TARGETS moor DESTINATION lib${LIB_SUFFIX})

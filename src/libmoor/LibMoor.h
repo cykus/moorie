@@ -1,10 +1,7 @@
 #ifndef _LIBMOOR_H_
 #define _LIBMOOR_H_
 
-#include <iostream>
 #include <string>
-#include <cstring>
-#include <cstdlib>
 
 #include "Hash.h"
 #include "Mailbox.h"
@@ -17,16 +14,16 @@ class CLibMoor {
 
 	public:
 		bool Dehash(const std::string& hashcode);
-		int selectMailBox(int MailBox, std::string = "");
+		int selectMailBox(int MailBox, std::string path = "");
 		int startDownload();
-                bool downloadDone;
 		Status getStatus();
 
 	private:
 		boost::shared_ptr<Hash> myHash;
 		CMailBox* myMailBox;
 		int mySeg;
-                int selected;
+		int selected;
+		bool downloadDone;
 };
 
 #endif
