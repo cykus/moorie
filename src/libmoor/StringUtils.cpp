@@ -61,8 +61,8 @@ int strToInt(const std::string& baseString) {
 
 std::string intToStr(int value) {
 	std::ostringstream os;
- 	if (!(os << value))
- 		throw std::bad_cast();
+	if (!(os << value))
+		throw std::bad_cast();
 
 	return os.str();
 }

@@ -1,5 +1,7 @@
 #include "LibMoor.h"
 
+#include <iostream>
+
 #include "Log.h"
 #include "MailboxFactory.h"
 #include "HashManager.h"
@@ -72,15 +74,11 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 				LOG(Log::Info, "Zalogowano pomyslnie...");
 				LOG(Log::Info, "Sprawdzanie listy segmentow...");
 				myMailBox->getHeadersRequest();
-				int segments = myMailBox->checkHeaders(myHash->getInfo().numOfSegments);
+				unsigned int segments = myMailBox->countAvailableSegments(mySeg);
 				if (segments == 0) {
-					LOG(Log::Info, "Found none segments at all.");
-				}
-				else if (segments <= mySeg) {
 					LOG(Log::Info, "Found none new segments.");
 				}
-				// (segments >= myHash->getInfo().numOfSegments)
-				else if (segments > mySeg) {
+				else {
 					LOG(Log::Info, "Found new segments. Downloading...");
 					if (startDownload() == 0) {
 						LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %mySeg );

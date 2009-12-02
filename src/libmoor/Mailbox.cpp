@@ -1,5 +1,7 @@
 #include "Mailbox.h"
 
+#include "StringUtils.h"
+
 CMailBox::CMailBox(const std::string &usr, const std::string &passwd)
 	: user(usr)
 	, password(passwd)
@@ -296,7 +298,7 @@ int CMailBox::checkHeaders(int numOfSegments) {
 		ss << i;
 		std::string id = ss.str();
 		boost::regex hreg("\\[" + fileCRC + "\\].+?\\[" + id + "\\]"); // match "[crc][id]"
-                boost::smatch match;
+		boost::smatch match;
 		for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
 		{
 			if (boost::regex_search(it->subject, match, hreg))
@@ -311,6 +313,24 @@ int CMailBox::checkHeaders(int numOfSegments) {
 	LOG( Log::Info, boost::format("Brakujących segmentow: %1%") %lost);
 	return segments;
 }
+
+unsigned int
+CMailBox::countAvailableSegments(unsigned int segment) {
+	unsigned int segments = 0;
+	boost::regex re("\\[" + fileCRC + "\\].+?\\[(\\d+)\\]");
+	boost::smatch match;
+	std::list<EmailHeader>::const_iterator it = headers.begin();
+	for (; it != headers.end(); ++it) {
+		if (boost::regex_search(it->subject, match, re)) {
+			if ((match.size() == 2) && match[1].matched &&
+					(strToInt(match[1].str()) >= segment)) // > czy >= (co z segmentem 0? - czy segmenty sa oznaczane od 0 czy 1 ?
+					++segments;
+		}
+	}
+
+	return segments;
+}
+
 unsigned int CMailBox::getBytesRead() {
         return allBytesRead;
 }
