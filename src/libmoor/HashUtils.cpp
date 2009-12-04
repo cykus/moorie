@@ -7,49 +7,38 @@
 
 #include "StringUtils.h"
 
-std::string md5(const std::string& data) {
-	// TODO: make it static (?)
-	MHASH mh = mhash_init(MHASH_MD5);
-	
-	if (mh != MHASH_FAILED) {
-		boost::scoped_array<unsigned char> md5hash(new unsigned char[mhash_get_block_size(MHASH_MD5)]);
-		mhash(mh, data.c_str(), data.size());
-		mhash_deinit(mh, md5hash.get());
-		std::stringstream ss;
-		// TODO get rid of boost::format
-		for (unsigned int i = 0; i < mhash_get_block_size( MHASH_MD5 ); i++) {
-			ss <<  ( boost::format( "%02x" ) % static_cast<unsigned int>( md5hash[i] ) );
+namespace {
+	std::string hash(hashid id, const std::string& data) {
+		MHASH td = mhash_init(id);
+
+		if (td != MHASH_FAILED) {
+			uint32_t hash_size = mhash_get_block_size(id);
+			boost::scoped_array<unsigned char> hash(new unsigned char[hash_size]);
+			mhash(td, data.c_str(), data.size());
+			mhash_deinit(td, hash.get());
+			return hashToStr(hash.get(), hash_size);
 		}
-		return ss.str();
+
+		return std::string();
 	}
-	
-	return std::string(); //TODO
+}
+
+std::string md5(const std::string& data) {
+	return hash(MHASH_MD5, data);
 }
 
 std::string sha1(unsigned char data) {
-	MHASH mh = mhash_init(MHASH_SHA1);
-
-	if (mh != MHASH_FAILED) {
-		uint32_t hash_size = mhash_get_block_size(MHASH_SHA1);
-		boost::scoped_array<unsigned char> sha1(new unsigned char[hash_size]);
-		mhash(mh, &data, 1);
-		mhash_deinit(mh, sha1.get());
-		return hashToStr(sha1.get(), hash_size);
-	}
-
-	return std::string();
+	return hash(MHASH_SHA1, std::string() + static_cast<char>(data));
 }
 
-std::vector<int> split(const char* str, int len)
-{
+std::vector<int> split(const char* str, int len) {
 	std::vector<int> result;
 	splitToVec(str, len, result);
 
 	return result;
 }
 
-void splitToVec(const char* str, int len, std::vector<int>& result)
-{
+void splitToVec(const char* str, int len, std::vector<int>& result) {
 	const char delim = '|';
 	int begin = 0;
 	int i = 0;
@@ -69,4 +58,13 @@ void splitToVec(const char* str, int len, std::vector<int>& result)
 		}
 		++i;
 	}
+}
+
+std::string hashToStr(unsigned char* data, unsigned int size) {
+	std::stringstream ss;
+	boost::format fmtr("%02x");
+	for (unsigned int i = 0; i < size; ++i)
+		ss << fmtr % static_cast<unsigned int>(data[i]);
+
+	return ss.str();
 }

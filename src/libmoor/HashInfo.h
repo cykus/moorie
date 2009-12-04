@@ -42,8 +42,8 @@ struct HashInfo {
 	 * @see segmentSize
 	 */
 	std::vector<int> segmentSizes;
-	
-	std::vector<MboxAccount> accounts;
+
+	std::vector<MboxAccount> accounts; ///< Mailboxes data.
 	std::string forWhom;
 	std::string accessPasswd; ///< Download password for this hash.
 	std::string editPasswd;   ///< Password required to edit this hash.

@@ -5,21 +5,23 @@
 #include <sstream>
 #include <cstdio>
 
+namespace str {
+
 // TODO: when "isRegex == false" some other inlined and more efficient
 // algorithm should be used.
-std::string strReplace(const std::string& baseString,
-                       const std::string& needle,
-                       const std::string& replacement,
-                       bool isRegex) {
+std::string replace(const std::string& baseString,
+                    const std::string& needle,
+                    const std::string& replacement,
+                    bool isRegex) {
 	boost::regex re(needle, (isRegex ? boost::regex_constants::normal
 		                               : boost::regex_constants::literal));
 	return boost::regex_replace(baseString, re, replacement);
 }
 
-std::string strReplace(const std::string& baseString,
-                       const char* needles[],
-                       const char* replacements[],
-                       bool isRegex) {
+std::string replace(const std::string& baseString,
+                    const char* needles[],
+                    const char* replacements[],
+                    bool isRegex) {
 	std::string result = baseString;
 	unsigned int i = 0;
 	while (needles[i] != 0) {
@@ -28,12 +30,12 @@ std::string strReplace(const std::string& baseString,
 		result = boost::regex_replace(result, re, replacements[i]);
 		++i;
 	}
-	
+
 	return result;
 }
 
-std::vector<std::string> strSplit(const std::string& baseString,
-                                  const char delim) {
+std::vector<std::string> split(const std::string& baseString,
+                               const char delim) {
 	std::vector<std::string> result;
   unsigned int pos = 0, start = 0;
   while ((pos = baseString.find(delim, start)) != std::string::npos) {
@@ -50,7 +52,7 @@ std::vector<std::string> strSplit(const std::string& baseString,
 	return result;
 }
 
-int strToInt(const std::string& baseString) {
+int toInt(const std::string& baseString) {
 	int result = 0;
 	std::istringstream ss(baseString);
 	if (!(ss >> result))
@@ -59,7 +61,7 @@ int strToInt(const std::string& baseString) {
 	return result;
 }
 
-std::string intToStr(int value) {
+std::string parse(int value) {
 	std::ostringstream os;
 	if (!(os << value))
 		throw std::bad_cast();
@@ -67,11 +69,4 @@ std::string intToStr(int value) {
 	return os.str();
 }
 
-std::string hashToStr(unsigned char* data, unsigned int size) {
-	std::stringstream ss;
-	boost::format fmtr("%02x");
-	for (unsigned int i = 0; i < size; ++i)
-		ss << fmtr % static_cast<unsigned int>(data[i]);
-
-	return ss.str();
 }

@@ -1,11 +1,13 @@
 #include "HashManager.h"
 
 #include <boost/regex.hpp>
+#include <boost/shared_ptr.hpp>
+
 #include "HashDecoder.h"
 #include "MoorhuntHashDecoder.h"
 #include "YgoowHashDecoder.h"
 
-const boost::regex ygoowHashRegex("Ygoow://.*$");
+const boost::regex ygoowHashRegex("^[yY]goow://.*$");
 const boost::regex moorhuntHashRegex("^<<a[a-h].*?>>$");
 
 Hash* HashManager::fromString(const std::string& hashcode) {

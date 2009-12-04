@@ -323,7 +323,7 @@ CMailBox::countAvailableSegments(unsigned int segment) {
 	for (; it != headers.end(); ++it) {
 		if (boost::regex_search(it->subject, match, re)) {
 			if ((match.size() == 2) && match[1].matched &&
-					(strToInt(match[1].str()) > segment)) // > czy >= (co z segmentem 0? - czy segmenty sa oznaczane od 0 czy 1 ?
+					(str::toInt(match[1].str()) > segment)) // > czy >= (co z segmentem 0? - czy segmenty sa oznaczane od 0 czy 1 ?
 					++segments;
 		}
 	}

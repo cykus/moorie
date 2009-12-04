@@ -2,7 +2,7 @@
 #define HASHMANAGER_H__
 
 #include <list>
-#include <boost/shared_ptr.hpp>
+#include <string>
 
 class Hash;
 class HashDecoder;

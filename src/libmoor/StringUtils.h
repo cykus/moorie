@@ -1,9 +1,12 @@
 #ifndef STRINGUTILS_H__
 #define STRINGUTILS_H__
 
+/** @file */
+
 #include <string>
 #include <vector>
 
+namespace str {
 /**
  * Replaces every @c needle occurance in @c baseString to @c replacemenet.
  * @param baseString String to parse.
@@ -12,10 +15,10 @@
  * @param isRegex If needle should be evaluated as regular expression.
  * @return Replaced string.
  */
-std::string strReplace(const std::string& baseString,
-                       const std::string& needle,
-                       const std::string& replacement,
-                       bool isRegex = false);
+std::string replace(const std::string& baseString,
+                    const std::string& needle,
+                    const std::string& replacement,
+                    bool isRegex = false);
 
 /**
  * Replaces every one of @c needles occurance in @c baseString to appropriate
@@ -26,10 +29,10 @@ std::string strReplace(const std::string& baseString,
  * @param isRegex If needle should be evaluated as regular expression.
  * @return Replaced string.
  */
-std::string strReplace(const std::string& baseString,
-                       const char* needles[],
-                       const char* replacements[],
-                       bool isRegex = false);
+std::string replace(const std::string& baseString,
+                    const char* needles[],
+                    const char* replacements[],
+                    bool isRegex = false);
 
 /**
  * Split string by supplied deliminator.
@@ -37,8 +40,8 @@ std::string strReplace(const std::string& baseString,
  * @param delim Deliminator to split by.
  * @return Vector of splitted strings.
  */
-std::vector<std::string> strSplit(const std::string& baseString,
-                                  const char delim);
+std::vector<std::string> split(const std::string& baseString,
+                               const char delim);
 
 /**
  * Parses string to integer.
@@ -46,22 +49,15 @@ std::vector<std::string> strSplit(const std::string& baseString,
  * @throw std::bad_cast Unable to parse.
  * @return Parsed value.
  */
-int strToInt(const std::string& baseString);
+int toInt(const std::string& baseString);
 
 /**
  * Parses integer to string.
- * @param value value to parse.
+ * @param value Value to parse.
  * @throw std::bad_cast Unable to parse.
  * @return Parsed string.
  */
-std::string intToStr(int value);
-
-/**
- * Formats data as string consisting of hex values.
- * @param data Data to format.
- * @param size Size of data.
- * @return Formatted string.
- */
-std::string hashToStr(unsigned char* data, unsigned int size = 16);
+std::string parse(int value);
+}
 
 #endif // STRINGUTILS_H__

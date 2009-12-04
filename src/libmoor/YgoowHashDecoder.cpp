@@ -13,8 +13,6 @@
 #include "YgoowHashDecoder.h"
 
 #include <boost/scoped_array.hpp>
-#include <sstream>
-#include <iomanip>
 #include <iostream>
 
 #include "YgoowHash.h"
@@ -22,7 +20,6 @@
 #include "Tools.h"
 #include "Decoder.h"
 #include "StringUtils.h"
-#include "Utils.h"
 #include "BinaryStream.h"
 #include "MailboxFactory.h"
 
@@ -33,17 +30,17 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	HashInfo result;
 	std::string hash = hashcode;
 
-	hash = strReplace(hash, "\r\n", "");
-	hash = strReplace(hash, "\n", "");
-	hash = strReplace(hash, "ygoow://", "Ygoow://");
+	hash = str::replace(hash, "\r\n", "");
+	hash = str::replace(hash, "\n", "");
+	hash = str::replace(hash, "ygoow://", "Ygoow://");
 	
-	std::string str = hash.substr(strReplace(hash, "Ygoow://|", "").find('|') + 9);
-	str = strReplace(str, " ", "");
-	str = strReplace(str, "-", "+");
-	hash = hash.substr(0, strReplace(hash, "Ygoow://|", "").find('|') + 9) + str;
+	std::string str = hash.substr(str::replace(hash, "Ygoow://|", "").find('|') + 9);
+	str = str::replace(str, " ", "");
+	str = str::replace(str, "-", "+");
+	hash = hash.substr(0, str::replace(hash, "Ygoow://|", "").find('|') + 9) + str;
 
 	result.hashString = hash;
-	std::vector<std::string> hashArray = strSplit(hash, '|');
+	std::vector<std::string> hashArray = str::split(hash, '|');
 
 	char ch = 'a';
 
@@ -55,27 +52,28 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 		str2 = hashArray.at(2);
 		str3 = hashArray.at(3);
 		str4 = hashArray.at(4);
-		str5 = strReplace(hashArray.at(5), "-", "+");
+		str5 = str::replace(hashArray.at(5), "-", "+");
 	}
 	else {
-		str5 = strReplace(hashArray.at(3), "-", "+");
-		str5 = strReplace(str5, "HStAAZQAAzg79/4nj7GSaF", "==");
-		str5 = strReplace(str5, "58aDDAAChGASu=gaQsfAI9", "=");
+		str5 = str::replace(hashArray.at(3), "-", "+");
+		str5 = str::replace(str5, "HStAAZQAAzg79/4nj7GSaF", "==");
+		str5 = str::replace(str5, "58aDDAAChGASu=gaQsfAI9", "=");
 		str2 = hashArray.at(2).substr(0, 10);
 		str3 = hashArray.at(2).substr(11, 2);
 		str4 = hashArray.at(2).substr(13);
 		ch = hashArray.at(2).substr(10, 1)[0];
 	}
 	result.fileName = hashArray.at(1);
-	
+
 	int num = 0;
 	for (int i = 1; i <= 9; ++i) {
-		std::string str6 = sha1(i + '0'); // reading char of this int
+		// change int value into ascii representation
+		std::string str6 = sha1(i + '0');
 		if ((str6.substr(0, 10) == str2) && (str6.substr(30, 10) == rot13(str4)))
 			num = i;
 	}
 
-	int num4 = 0x18 - (strToInt(str3) + num);
+	int num4 = 0x18 - (str::toInt(str3) + num);
 	std::string str5_r = rot13(str5);
 	std::string reverted(str5_r.rbegin(), str5_r.rend());
 
@@ -83,7 +81,7 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	if (km == 0) km = 1;
 	int im = (num % 10) / num;
 	if (im == 0) im = 1;
-	
+
 	unsigned char key[] = {
 		(im * 2), (0xff - ((km * km) / 2)), (0x4b + ((km * km) / 2)),
 		(((30 - km) + 12) * 2), (km * 2), (0x84 + (km * 2)), (0xe4 / km),
@@ -112,15 +110,15 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	unsigned int data_size = 0;
 	unsigned char* data = base64_decode(reverted.c_str(), reverted.size(), &data_size);
 	decrypt(&data, data_size, key, iv);
-	
+	// Take ownership of 'data' buffer!
+	BinaryStream stream(data, data_size, true);
+
 	if (ch == 'c') {
-		// taking ownership of 'data' buffer!
-		BinaryStream stream(data, data_size, true);
 		result.crc = stream.readUInt32();
 		result.fileSize = stream.readInt64();
 		result.numOfSegments = stream.readUInt16();
 		result.segmentSize = stream.readInt32();
-		// Passwords are encrypted as fallows: first SHA1 sum is generated then all
+		// Passwords are encrypted as follows: first SHA1 sum is generated then all
 		// its bytes are reversed and finally MD5 is calculated.
 		boost::scoped_array<unsigned char> d_passwd(stream.readBytes(16));
 		result.accessPasswd = hashToStr(d_passwd.get());
@@ -137,16 +135,17 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 		std::string mboxes = "";
 		for (size_t i = 0; i < mboxes_rev.size(); ++i)
 			mboxes += mboxes_rev[i] + 50;
-		mboxes = strReplace(mboxes, needles, replacements);
+		mboxes = str::replace(mboxes, needles, replacements);
 		// End: Drawing.Parse
 
-		std::vector<std::string> mboxes_sp = strSplit(mboxes, '|');
+		std::vector<std::string> mboxes_sp = str::split(mboxes, '|');
 		for (size_t i = 0; i < mboxes_sp.size(); i+=2) {
-			std::vector<std::string> mbox = strSplit(mboxes_sp.at(i), '@');
+			std::vector<std::string> mbox = str::split(mboxes_sp.at(i), '@');
+			// Omit unsupported mailboxes!
 			if (MailboxFactory::Instance().Registered(mbox.at(1))) {
 				HashInfo::MboxAccount account;
-				account.name     = mbox.at(1);
-				account.login    = strReplace(mbox.at(0), "*", "|");
+				account.name = mbox.at(1);
+				account.login = str::replace(mbox.at(0), "*", "|");
 				account.password = mboxes_sp.at(i+1);
 				result.accounts.push_back(account);
 			}
@@ -162,7 +161,7 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 		}
 
 		/* ADDITINAL DATA */
-		std::vector<std::string> adds = strSplit(stream.readString(), '|');
+		std::vector<std::string> adds = str::split(stream.readString(), '|');
 		result.forWhom = adds.at(0);
 		result.uploader = adds.at(1);
 		result.comment = adds.at(2);

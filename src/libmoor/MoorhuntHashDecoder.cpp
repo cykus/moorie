@@ -26,7 +26,6 @@
 
 #include "MoorhuntHash.h"
 #include "HashUtils.h"
-#include "Utils.h"
 #include "Decoder.h"
 #include "MailboxFactory.h"
 
@@ -67,6 +66,17 @@ namespace {
 			
 			default	:		return 0;
 		}
+	}
+
+	unsigned char* getVerByte(const unsigned char data[][34],
+                            unsigned char vermaj,
+                            unsigned char vermin)
+	{
+		for (int i = 0; data[i][0]; ++i)
+			if ((data[i][0] == vermaj) && (data[i][1] == vermin))
+				return const_cast<unsigned char*>(&data[i][2]);
+
+		return 0;
 	}
 }
 		
@@ -169,8 +179,8 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 		if (td == MCRYPT_FAILED)
 			break;
 
-		unsigned char* key = const_cast<unsigned char*>(getVerByte(keys, result.verMaj, result.verMin));
-		unsigned char* iv = const_cast<unsigned char*>(getVerByte(ivec, result.verMaj, result.verMin));
+		unsigned char* key = getVerByte(keys, result.verMaj, result.verMin);
+		unsigned char* iv = getVerByte(ivec, result.verMaj, result.verMin);
 
 		if (key == NULL || iv == NULL)
 			break;
