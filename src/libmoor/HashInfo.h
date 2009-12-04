@@ -23,9 +23,9 @@ struct HashInfo {
 	char verMaj;
 	char verMin;
 	std::string fileName; //!< Downloaded file name (as provided in hashfile).
-	long fileSize;  ///< Size of the upload.
-	unsigned int crc;  ///< Control checksum.
-	int numOfSegments;  ///< Number of segments the upload was splitted into.
+	long fileSize;        ///< Size of the upload.
+	unsigned int crc;     ///< Control checksum.
+	int numOfSegments;    ///< Number of segments the upload was splitted into.
 
 	/**
 	 * Stores size of segments.
@@ -38,21 +38,27 @@ struct HashInfo {
 
 	/**
 	 * Stores sizes of each segment.
-	 * This member is set if segments are of different sizes.
+	 * This member is set only if segments are of different sizes.
 	 * @see segmentSize
 	 */
 	std::vector<int> segmentSizes;
 	
 	std::vector<MboxAccount> accounts;
 	std::string forWhom;
-	std::string accessPasswd;
-	std::string editPasswd;
+	std::string accessPasswd; ///< Download password for this hash.
+	std::string editPasswd;   ///< Password required to edit this hash.
 	std::string coverURL;
 	std::string descURL;
 	std::string fullTitle;
 	std::string uploader;
 	std::string comment;
 	std::string hashString; //!< raw hash std::string (base64 encoded)
+
+	/** 
+	 * Creates hash info object.
+	 * Sets basic fields to default values, such as #valid to @c false.
+	 */
+	HashInfo() : valid(false) {}
 };
 
 /**

@@ -24,6 +24,7 @@
 #include "StringUtils.h"
 #include "Utils.h"
 #include "BinaryStream.h"
+#include "MailboxFactory.h"
 
 const char* needles[] = {"~", "{", "}", "=", "<", "?", "[YKP]:", 0};
 const char* replacements[] = {"*", "-", ".", "0", "1", "2", "[KontoPomocnicze]:", 0};
@@ -66,7 +67,6 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 		ch = hashArray.at(2).substr(10, 1)[0];
 	}
 	result.fileName = hashArray.at(1);
-	std::cerr << "FileName = " << result.fileName << std::endl;
 	
 	int num = 0;
 	for (int i = 1; i <= 9; ++i) {
@@ -113,69 +113,63 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	unsigned char* data = base64_decode(reverted.c_str(), reverted.size(), &data_size);
 	decrypt(&data, data_size, key, iv);
 	
-	// taking ownership of 'data' buffer!
-	BinaryStream stream(data, data_size, true);
-	result.crc = stream.readUInt32();
-	result.fileSize = stream.readInt64();
-	result.numOfSegments = stream.readUInt16();
-	result.segmentSize = stream.readInt32();
-	std::cerr << "CRC = " << result.crc << std::endl;
-	std::cerr << "FileSize = " << result.fileSize << std::endl;
-	std::cerr << "NumOfSegments = " << result.numOfSegments << std::endl;
-	std::cerr << "SegmentSize = " << result.segmentSize << std::endl;
-	// Passwords are encrypted as fallows: first SHA1 sum is generated then all
-	// its bytes are reversed and finally MD5 is calculated.
-	boost::scoped_array<unsigned char> d_passwd(stream.readBytes(16));
-	result.accessPasswd = hashToStr(d_passwd.get());
-	std::cerr << "DownloadPassword = " << result.accessPasswd << std::endl;
-	boost::scoped_array<unsigned char> e_passwd(stream.readBytes(16));
-	result.editPasswd = hashToStr(e_passwd.get());
-	std::cerr << "EditPassword = "<< result.editPasswd << std::endl;
+	if (ch == 'c') {
+		// taking ownership of 'data' buffer!
+		BinaryStream stream(data, data_size, true);
+		result.crc = stream.readUInt32();
+		result.fileSize = stream.readInt64();
+		result.numOfSegments = stream.readUInt16();
+		result.segmentSize = stream.readInt32();
+		// Passwords are encrypted as fallows: first SHA1 sum is generated then all
+		// its bytes are reversed and finally MD5 is calculated.
+		boost::scoped_array<unsigned char> d_passwd(stream.readBytes(16));
+		result.accessPasswd = hashToStr(d_passwd.get());
+		boost::scoped_array<unsigned char> e_passwd(stream.readBytes(16));
+		result.editPasswd = hashToStr(e_passwd.get());
 
-	/* MAIL BOXES */
-	int mboxes_size = stream.readInt32();
-	boost::scoped_array<unsigned char> mboxes_data(stream.readBytes(mboxes_size));
-	std::string mboxes_raw(mboxes_data.get(), (mboxes_data.get() + mboxes_size));
+		/* MAIL BOXES */
+		int mboxes_size = stream.readInt32();
+		boost::scoped_array<unsigned char> mboxes_data(stream.readBytes(mboxes_size));
+		std::string mboxes_raw(mboxes_data.get(), (mboxes_data.get() + mboxes_size));
 
-	// Drawing.Parse
-	std::string mboxes_rev(mboxes_raw.rbegin(), mboxes_raw.rend());
-	std::string mboxes = "";
-	for (size_t i = 0; i < mboxes_rev.size(); ++i)
-		mboxes += mboxes_rev[i] + 50;
-	mboxes = strReplace(mboxes, needles, replacements);
-	// End: Drawing.Parse
+		// Drawing.Parse
+		std::string mboxes_rev(mboxes_raw.rbegin(), mboxes_raw.rend());
+		std::string mboxes = "";
+		for (size_t i = 0; i < mboxes_rev.size(); ++i)
+			mboxes += mboxes_rev[i] + 50;
+		mboxes = strReplace(mboxes, needles, replacements);
+		// End: Drawing.Parse
 
-	std::vector<std::string> mboxes_sp = strSplit(mboxes, '|');
-	for (size_t i = 0; i < mboxes_sp.size(); i+=2) {
-		std::vector<std::string> mbox = strSplit(mboxes_sp.at(i), '@');
-		HashInfo::MboxAccount account;
-		account.name = mbox.at(1);
-		account.login = strReplace(mbox.at(0), "*", "|");
-		account.password = mboxes_sp.at(i+1);
-		result.accounts.push_back(account);
-		std::cerr << "SERVER = " << account.name << ", LOGIN = " << account.login
-		          << ", PASSWD = " << account.password << std::endl;
+		std::vector<std::string> mboxes_sp = strSplit(mboxes, '|');
+		for (size_t i = 0; i < mboxes_sp.size(); i+=2) {
+			std::vector<std::string> mbox = strSplit(mboxes_sp.at(i), '@');
+			if (MailboxFactory::Instance().Registered(mbox.at(1))) {
+				HashInfo::MboxAccount account;
+				account.name     = mbox.at(1);
+				account.login    = strReplace(mbox.at(0), "*", "|");
+				account.password = mboxes_sp.at(i+1);
+				result.accounts.push_back(account);
+			}
+		}
+		// TODO: sort mboxes based on login containing [KontoPomocnicze]: literal.
+
+		/* SIZES */
+		int sizes = stream.readInt32();
+		for (unsigned int i = 0; i < result.numOfSegments && (i * 3) < sizes; ++i) {
+			int size = (stream.readByte() | stream.readByte() << 8 |
+					stream.readByte() << 16 | 0 << 24);
+			result.segmentSizes.push_back(size);
+		}
+
+		/* ADDITINAL DATA */
+		std::vector<std::string> adds = strSplit(stream.readString(), '|');
+		result.forWhom = adds.at(0);
+		result.uploader = adds.at(1);
+		result.comment = adds.at(2);
+
+		result.valid = true; // TODO: add required checks before setting it!
 	}
-	// TODO: sort mboxes based on login containing [KontoPomocnicze]: literal.
-	
-	/* SIZES */
-	int sizes = stream.readInt32();
-	for (unsigned int i = 0; i < result.numOfSegments; ++i) {
-		int size = (stream.readByte() | stream.readByte() << 8 |
-		            stream.readByte() << 16 | 0 << 24);
-		result.segmentSizes.push_back(size);
-		std::cerr << std::dec << "Size of chunk #" << i + 1 << " = " << size << std::endl;
-	}
 
-	/* ADDITINAL DATA */
-	std::vector<std::string> adds = strSplit(stream.readString(), '|');
-	result.forWhom = adds.at(0);
-	result.uploader = adds.at(1);
-	result.comment = adds.at(2);
-	std::cerr << "For = " << result.forWhom << std::endl;
-	std::cerr << "Uploader = " << result.uploader << std::endl;
-	std::cerr << "Comment = " << result.comment << std::endl;
-
-	result.valid = true; // TODO: add required checks before setting it!
 	return new YgoowHash(result);
 }
+
