@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
         std::string pass; // moorhunt password
 	std::string hash;
         std::string path = "";
-        unsigned int logLevel( 3 );
+        unsigned int logLevel( 8 );
 	
 	boost::program_options::options_description desc("Moorie 0.2 (C)by Moorie Team (http://moorie.mahho.net/) \n\nOptions");
 	desc.add_options()

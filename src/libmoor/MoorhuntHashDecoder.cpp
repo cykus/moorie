@@ -34,7 +34,7 @@ namespace {
 	// TODO: should this mapping be moved to some out-of-source
 	// configuration file ?
 	const char* getMailboxName(int id) {
-// 		LOG(Log::Debug, boost::format( "ID: %1%. " ) %id);
+//  		LOG(Log::Debug, boost::format( "ID: %1%. " ) %id);
 		switch (id) {
 			case 2	:		return "yahoo.com";
 			case 3	:		return "gmail.com";
@@ -64,6 +64,7 @@ namespace {
 			case -65:		return "klikni.cz";
 			case -30:		return "livedoor.com";
 			case 55 :		return "oneindia.in";
+			case -69:		return "libero.it";
 			
 			default	:		return 0;
 		}
