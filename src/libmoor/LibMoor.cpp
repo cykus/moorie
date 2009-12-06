@@ -48,7 +48,7 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 	}*/
 
 	int tries = 1;
-	while (tries <= myHash->getInfo().accounts.size()) {
+	while (tries <= myHash->getInfo().accounts.size() && downloadDone == false) {
 		std::string mailbox = myHash->getInfo().accounts[selected].name;
 		std::string login = myHash->getInfo().accounts[selected].login;
 		std::string passwd = myHash->getInfo().accounts[selected].password;
@@ -115,7 +115,7 @@ int CLibMoor::startDownload() {
 	}
 	
 	if (segValid) {
-		LOG(Log::Info, "Wszystkie segmenty sciagnieto pomyslnie...");
+		LOG(Log::Info, "Wszystkie segmenty sciagnieto pomyslnie... Koncze pobieranie.");
 		downloadDone = true;
 	}
 	
