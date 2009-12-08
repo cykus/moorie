@@ -70,7 +70,7 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 				else {
 					LOG(Log::Info, "Found new segments. Downloading...");
 					if (startDownload() == 0) {
-						LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %mySeg );
+						LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %(mySeg + 1) );
 					}
 				}
 			} 
@@ -101,15 +101,17 @@ int CLibMoor::selectMailBox(int MailBox, std::string path) {
 
 int CLibMoor::startDownload() {
 	bool segValid = true;
+	int curSeg = mySeg;
 	while (segValid && (mySeg < myHash->getInfo().numOfSegments)) {
-		mySeg++;
+		++curSeg;
 		LOG(Log::Info, boost::format( "Sciaganie segmentu: %1%/%2%" )
-		               %mySeg
+		               %curSeg
 		               %myHash->getInfo().numOfSegments);
-		for (int i = 0, segValid = false; i < segDownloadTries; ++i) {
-			if (myMailBox->downloadRequest(mySeg) == 0) {
+		segValid = false;
+		for (int i = 0; i < segDownloadTries && !segValid; ++i) {
+			if (myMailBox->downloadRequest(curSeg) == 0) {
 				segValid = true;
-		    break;
+				mySeg = curSeg;
 			}
 		}
 	}
