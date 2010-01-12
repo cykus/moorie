@@ -17,16 +17,23 @@ class CLibMoor {
 
 	public:
 		bool Dehash(const std::string& hashcode);
-		int selectMailBox(int MailBox, std::string = "");
+		int selectDownloadMailBox(int MailBox, std::string = "");
 		int startDownload();
-                bool downloadDone;
+        bool downloadDone;
+		bool uploadDone;
 		Status getStatus();
+
+		// upload
+		int selectUploadMailBox(int mailbox);
+		int splitFile(std::string filename, int size);
+		int startUpload();
 
 	private:
 		boost::shared_ptr<Hash> myHash;
 		CMailBox* myMailBox;
 		int mySeg;
-                int selected;
+        int selected;
+		short int uploadMailbox;
 };
 
 #endif

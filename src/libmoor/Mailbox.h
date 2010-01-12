@@ -40,7 +40,7 @@ class CMailBox {
         bool validAccount; //!< Flag indicating whether this is valid mailbox
 	int uSeq; //!< Unique id of this Mailbox object derived from seq
 	bool stopFlag; //!< stops transfer
-	
+
 	std::string result; //Variable that contains result of request
 
 //	mutable mutex speedMutex;
@@ -50,7 +50,7 @@ class CMailBox {
 
 	static const int BUFFER_SIZE = 1024*256; //!< Size of temporary buffer (256kB)
 	static const int READ_BUFFER_SIZE = 8192;
-	
+
 	// zmienne dla segmentow
 	std::ofstream *tmp_file;
 	bool segDownload;
@@ -59,11 +59,11 @@ class CMailBox {
 	std::string segCRC;
 	std::string segNumber;
 	std::string fileCRC;
-	
+
 	protected:
 		static size_t _writeData(void *buffer, size_t size, size_t nmem, void *ptr);
 		virtual size_t writeData(void *buffer, size_t size, size_t nmem);
-		
+
 		void setCookie(std::string) const;
 		std::string& doGet(std::string url, bool header=false);
 		std::string& doPost(std::string url, std::string vars, bool header=false);
@@ -71,13 +71,13 @@ class CMailBox {
 		std::string getPassword() const;
 		std::string escape(std::string q);
 		std::string unescape(std::string q);
-		
+
 		void requestComplete();
-		
+
 		void addHeader(const EmailHeader &hdr);
 		void addHeaderLink(std::string link);
 		void clearHeaders();
-		
+
 		std::string getLink(int seg);
 		int downloadSeg();
 		int downloadSegDone();
@@ -95,7 +95,7 @@ class CMailBox {
                 unsigned int getBytesRead();
                 unsigned int getSpeed() const;
 		virtual ~CMailBox();
-    
+
   private:
     CMailBox(const CMailBox&);
     CMailBox& operator=(const CMailBox&);

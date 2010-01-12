@@ -22,9 +22,9 @@ struct EmailHeader
 	std::string uniqueId; //!< Unique id of the message
 
 	EmailHeader(const std::string& id, const std::string& subj)
-    : uniqueId(id) 
-	{ 
-    subject = decode(subj); 
+    : uniqueId(id)
+	{
+    subject = decode(subj);
   }
 
     private:

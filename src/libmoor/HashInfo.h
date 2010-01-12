@@ -5,13 +5,13 @@
 #include <vector>
 
 struct HashInfo {
-	
+
 	struct MboxAccount {
 		std::string name;
 		std::string login;
 		std::string password;
 	};
-	
+
 	bool valid; //!< flag indicating whether hash is valid, set on decoding
 	char verMaj;
 	char verMin;

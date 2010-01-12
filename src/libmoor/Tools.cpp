@@ -1,13 +1,13 @@
-#include "Tools.h" 
+#include "Tools.h"
 
 string& str_replace(const string &search, const string &replace, string &subject)
 {
     string buffer;
-    
+
     int sealeng = search.length();
     int strleng = subject.length();
 
-    if (sealeng==0) 
+    if (sealeng==0)
         return subject;//no change
 
     for(int i=0, j=0; i<strleng; j=0 )

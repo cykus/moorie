@@ -46,9 +46,9 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	string str4;
 	string str5;
 	strHash = hashcode;
-	
+
 	MCRYPT td;
-	
+
 	/*
 	for (int i = 0; i < strHash.length(); i++) {
 		if (strHash[i] == '\n')
@@ -60,7 +60,7 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	}
 
 	strHash.erase(0, 9);
-	
+
 	string hashin[10];
 	int j; j=0;
 	for (int i = 0; i < strHash.length(); i++) {
@@ -69,11 +69,11 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 		}
 		hashin[j] += strHash[i];
 	}
-	
+
 	fileName = hashin[0]; // strArray[1]
 	str5 = hashin[2];
 	int declen = str5.length();
-	
+
 	string array = Rot13(str5);
  	cout << endl << endl << array<< endl;
 	std::reverse(array.begin(), array.end());
@@ -82,7 +82,7 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	unsigned char *in = unbase64(const_cast<char *>(array.c_str()), strlen(array.c_str()));
 	cout << in << endl;
 	*/
-	
+
 	string myhashin[10];
 	int j; j=0;
 	for (int i = 0; i < hashcode.length(); i++) {
@@ -91,15 +91,15 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 		}
 		myhashin[j] += hashcode[i];
 	}
-	
+
 	strHash = myhashin[3];
  	strHash = Rot13(strHash);
-	
+
 	int declen;
 	int i;
 	int hpos;
-	
-	
+
+
 //	cout << endl << endl << array<< endl;
 	std::reverse(strHash.begin(), strHash.end());
 
@@ -128,8 +128,8 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 
 	hashin[i++] = '\n';
 	hashin[i] = 0;
-	
-	
+
+
 	result.hashString = std::string(&hashin[0]);
 	std::cout << result.hashString << std::endl;
 
@@ -146,8 +146,8 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	unsigned char *iv = const_cast<unsigned char*>(&ivec[0][0]);
 
 	std::cout << " KEY: " << key << " IV: " << iv << std::endl;
-	
-	
+
+
 	if (key == NULL || iv == NULL)
 		return new YgoowHash(result);
 
@@ -156,7 +156,7 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 		mcrypt_module_close(td);
 		return new YgoowHash(result);
 	}
-	
+
 	if (mdecrypt_generic(td, in, declen) != 0)
 	{
 		mcrypt_module_close(td);
@@ -166,9 +166,9 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	mcrypt_generic_deinit(td);
 	mcrypt_module_close(td);
 	std::cout << in << " " << declen << std::endl;
-	
+
 	result.valid = true;
-	
+
 	return new YgoowHash(result);
 }
 

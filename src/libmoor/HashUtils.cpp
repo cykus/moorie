@@ -8,7 +8,7 @@
 std::string md5(const std::string& data) {
 	// TODO: make it static (?)
 	MHASH mh = mhash_init(MHASH_MD5);
-	
+
 	if (mh != MHASH_FAILED) {
 		boost::scoped_array<unsigned char> md5hash(new unsigned char[mhash_get_block_size(MHASH_MD5)]);
 		mhash(mh, data.c_str(), data.size());
@@ -20,7 +20,7 @@ std::string md5(const std::string& data) {
 		}
 		return ss.str();
 	}
-	
+
 	return std::string(); //TODO
 }
 

@@ -189,7 +189,7 @@ void CMailBox::addHeader(const EmailHeader &hdr)
 
 void CMailBox::addHeaderLink(std::string link)
 {
-	segments_links.push_back(link);	
+	segments_links.push_back(link);
 }
 
 void CMailBox::clearHeaders()
@@ -220,7 +220,7 @@ std::string CMailBox::getLink(int seg) {
 			break;
 		else
 			++counter;
-	} 
+	}
 	//LOG( Log::Debug, boost::format( "%1% %2%" ) %counter %segments_links.at(counter));
 	return segments_links.at(counter);
 }
@@ -259,7 +259,7 @@ int CMailBox::downloadSegDone() {
 //	string id = ss.str();
 	boost::to_upper(segCRC);
 	boost::regex hreg("\\[" + fileCRC + "\\]\\[" + segCRC + "\\]\\[" + segNumber + "\\]"); // match "[crc][id]"
-	boost::smatch match; 
+	boost::smatch match;
 	for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
 	{
 		if (boost::regex_search(it->subject, match, hreg))
@@ -269,8 +269,8 @@ int CMailBox::downloadSegDone() {
 			LOG( Log::Info, "Seg CRC OK");
 			break;
 		}
-	} 
-	
+	}
+
 	if (segOK == true) {
 		std::ifstream segfile(tmpfile.c_str(), std::ifstream::binary);
 		std::ofstream myfile(filename.c_str(), std::ofstream::binary | std::ofstream::app);
@@ -301,11 +301,11 @@ int CMailBox::checkHeaders(int numOfSegments) {
 		{
 			if (boost::regex_search(it->subject, match, hreg))
 			{
-				segments++; 
+				segments++;
 				break;
 			}
-		} 
-		
+		}
+
 	}
 	lost = numOfSegments - segments;
 	LOG( Log::Info, boost::format("Brakujących segmentow: %1%") %lost);
