@@ -24,7 +24,7 @@ class CLibMoor {
 		Status getStatus();
 
 		// upload
-		int selectUploadMailBox(int mailbox);
+		int selectUploadMailBox(int mailbox, std::string login, std::string passwd);
 		int splitFile(std::string filename, int size);
 		int startUpload();
 
@@ -32,8 +32,14 @@ class CLibMoor {
 		boost::shared_ptr<Hash> myHash;
 		CMailBox* myMailBox;
 		int mySeg;
+
+		// upload
         int selected;
-		short int uploadMailbox;
+		int segments;
+		std::string myUploadMailbox;
+		std::string myLogin;
+		std::string myPasswd;
+
 };
 
 #endif

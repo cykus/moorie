@@ -137,9 +137,11 @@ int CLibMoor::startDownload() {
 	return segValid;
 }
 
-int CLibMoor::selectUploadMailBox(int mailbox) {
-	uploadMailbox = mailbox;
-	LOG(Log::Debug, boost::format("Wybieranie skrzynki %1%") % mailbox);
+int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd) {
+// 	myUploadMailbox = getMailboxName(id);
+	// TODO - wybieranie skrzynki po id;
+	myLogin = login;
+	myPasswd = passwd;
 	return 0;
 }
 
@@ -147,16 +149,17 @@ int CLibMoor::splitFile(std::string filename, int size) {
 	LOG(Log::Info, boost::format("Dzielenie pliku %1% na segmenty") % filename);
 	int mysegsize = size*1024*1024;
 	int bytes = 0; int read = 0;
-	int seg = 1;
+	segments = 1;
 	char buffer[1024];
 	std::stringstream ss;
-	ss << filename << "." << seg;
+	ss << filename << "." << segments;
 	std::cout << ss.str() << std::endl;
 
 	char ch;
 
 	std::ifstream in(filename.c_str(), std::ifstream::binary);
 	std::ofstream *out = new std::ofstream(ss.str().c_str(), std::ios::out | std::ofstream::binary);
+	LOG(Log::Debug, boost::format( "Seg: %1%" )	%segments);
 
 	while (!in.eof()) {
 		in.read(buffer, 1024);
@@ -166,20 +169,34 @@ int CLibMoor::splitFile(std::string filename, int size) {
 
 		if (bytes == mysegsize) {
 			bytes = 0;
-			seg++;
+			segments++;
 			delete out;
  			ss.str("");
-			ss << filename << "." << seg;
+			ss << filename << "." << segments;
 			out = new std::ofstream(ss.str().c_str(), std::ios::out | std::ofstream::binary);
-			std::cout << ss.str() << std::endl;
+			LOG(Log::Debug, boost::format( "Seg: %1%" )	%segments);
 		}
 	}
-// 	boost::filesystem::remove(tmpfile.c_str());
 	return 0;
 
 }
 
 int CLibMoor::startUpload() {
+	LOG(Log::Info, boost::format("Zaczynam upload"));
+
+	myMailBox = MailboxFactory::Instance().Create("mail.ru", myLogin, myPasswd); // TODO - zmienic "mail.ru" na wybrana skrzynke
+	if (myMailBox) {
+// 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) myUploadMailbox);
+		LOG(Log::Info, boost::format( "Logowanie do: mail.ru") );
+		if (myMailBox->loginRequest() == 0) {
+			for (int i=1; i <= segments; i++) {
+				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
+			}
+			LOG(Log::Info, boost::format( "Upload OK!" ));
+		} else
+			LOG(Log::Info, boost::format( "Logowanie nie powiodlo sie, przerywam." ));
+	}
+
 	return 0;
 }
 

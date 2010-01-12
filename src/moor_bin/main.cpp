@@ -128,8 +128,9 @@ int main(int argc, char **argv) {
 		Instance = new CLibMoor();
 		std::cout << "Select mailbox: " << std::endl;
 		std::cout << "1. mail.ru" << std::endl;
-		Instance -> selectUploadMailBox(24); // wybieramy mail.ru
+		Instance -> selectUploadMailBox(24, "moorie", "moorietest"); // wybieramy mail.ru
 		Instance -> splitFile(upload_filename, 7);
+		Instance -> startUpload();
 
 		try
 		{
