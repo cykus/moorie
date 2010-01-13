@@ -146,6 +146,7 @@ int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd)
 }
 
 int CLibMoor::splitFile(std::string filename, int size) {
+	myUploadFilename = filename;
 	LOG(Log::Info, boost::format("Dzielenie pliku %1% na segmenty") % filename);
 	int mysegsize = size*1024*1024;
 	int bytes = 0; int read = 0;
@@ -154,8 +155,6 @@ int CLibMoor::splitFile(std::string filename, int size) {
 	std::stringstream ss;
 	ss << filename << "." << segments;
 	std::cout << ss.str() << std::endl;
-
-	char ch;
 
 	std::ifstream in(filename.c_str(), std::ifstream::binary);
 	std::ofstream *out = new std::ofstream(ss.str().c_str(), std::ios::out | std::ofstream::binary);
@@ -184,6 +183,8 @@ int CLibMoor::splitFile(std::string filename, int size) {
 int CLibMoor::startUpload() {
 	LOG(Log::Info, boost::format("Zaczynam upload"));
 
+	std::stringstream ss;
+
 	myMailBox = MailboxFactory::Instance().Create("mail.ru", myLogin, myPasswd); // TODO - zmienic "mail.ru" na wybrana skrzynke
 	if (myMailBox) {
 // 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) myUploadMailbox);
@@ -191,8 +192,11 @@ int CLibMoor::startUpload() {
 		if (myMailBox->loginRequest() == 0) {
 			for (int i=1; i <= segments; i++) {
 				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
+				ss.str("");
+				ss << myUploadFilename << "." << i;
+				myMailBox->uploadRequest(ss.str());
 			}
-			LOG(Log::Info, boost::format( "Upload OK!" ));
+			LOG(Log::Info, boost::format( "Upload zakonczony!" ));
 		} else
 			LOG(Log::Info, boost::format( "Logowanie nie powiodlo sie, przerywam." ));
 	}

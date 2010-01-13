@@ -17,20 +17,20 @@
 #include "../MailboxFactory.h"
 
 namespace {
-  CMailBox* Create(const std::string& username, 
-                   const std::string& password) 
+  CMailBox* Create(const std::string& username,
+                   const std::string& password)
   {
     return new OnetMailbox(username, password);
   }
-  
+
   const bool registered = MailboxFactory::Instance().
                                           Register("poczta.onet.pl", Create);
 
 
-}   
+}
 
 OnetMailbox::OnetMailbox(const std::string &usr, const std::string &passwd)
-	: CMailBox(usr, passwd), 
+	: CMailBox(usr, passwd),
 		totalEmails(0)
 {
 }
@@ -130,6 +130,11 @@ int OnetMailbox::downloadRequest(int seg/*const EmailHeader &hdr, Segment *s*/)
 	else
 		return 1;
 }
+
+int OnetMailbox::uploadRequest(std::string filename)
+{
+}
+
 
 OnetMailbox::~OnetMailbox()
 {

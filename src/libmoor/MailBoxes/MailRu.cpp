@@ -18,27 +18,27 @@
 // #include "MoorieException.h"
 #include <sstream>
 #include <boost/regex.hpp>
-        
+
 namespace {
-  CMailBox* Create(const std::string& username, 
-                   const std::string& password) 
+  CMailBox* Create(const std::string& username,
+                   const std::string& password)
   {
     return new MailRuMailbox(username, password);
   }
-  
+
   const bool registered = MailboxFactory::Instance().
                                           Register("mail.ru", Create);
-}        
+}
 
 MailRuMailbox::MailRuMailbox(const std::string &usr, const std::string &passwd)
-	: CMailBox(usr, passwd), 
+	: CMailBox(usr, passwd),
 		totalEmails(0)
 {
 }
 
 int MailRuMailbox::loginRequest()
 {
-	
+
 //	LOG_ENTER("MailRuMailbox::loginRequest");
 	const std::string vars = std::string("Login=")
 		+ escape(getUser()) + "&Domain=" + escape("mail.ru") + "&Password="
@@ -50,7 +50,7 @@ int MailRuMailbox::loginRequest()
 
 	boost::regex re("Set-Cookie: (Mpop=.*?;)");
 	if (boost::regex_search(page, match, re))
-	{	
+	{
 		auth = match[1];
 //		LOG(Log::Debug, "auth=" + auth);
 //		setState(Mailbox::LoginDone); // logged in
@@ -94,7 +94,7 @@ void MailRuMailbox::getHeadersRequest()
 	boost::regex_search(page,match3,re3);
 	std::istringstream pg(match3[1]);
 	int pages;
-	pg >> pages; 
+	pg >> pages;
 	pages = pages / 25 + 1;
 //	cout << "match: " << match3[1] << " stron: " << pages;
 	LOG(Log::Debug,boost::format( "match: "+match3[1]+" stron: %d" ) % pages );
@@ -122,7 +122,7 @@ void MailRuMailbox::getHeadersRequest()
 		}
 //		LOG(Log::Debug, ".");
 	}
-	
+
 //	setState(Mailbox::ReadHeadersDone); */
 }
 
@@ -134,7 +134,7 @@ int MailRuMailbox::downloadRequest(int seg)
  	page = doGet("http://win.mail.ru/cgi-bin/readmsg"+mylink);
 //	regex re("http://a[a-z]*[0-9].mail.ru/cgi-bin/readmsg/.*?&mode=attachment&channel=");
  	boost::regex re("<a href=\"(http://a[^\"]*/cgi-bin/readmsg/[^\"]*&mode=attachment&channel=)");
-	
+
 	boost::smatch match;
 	std::string link;
 	if (boost::regex_search(page,match,re))
@@ -153,6 +153,16 @@ int MailRuMailbox::downloadRequest(int seg)
 	}
 
 }
+
+int MailRuMailbox::uploadRequest(std::string filename) {
+	LOG(Log::Debug, boost::format( "uploadRequest" ));
+	std::string url("http://win.mail.ru/cgi-bin/sentmsg?compose");
+	page = doGet(url);
+
+	std::cout << page << std::endl;
+	return 0;
+}
+
 
 MailRuMailbox::~MailRuMailbox()
 {

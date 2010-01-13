@@ -25,7 +25,7 @@ class RockComMailbox: public CMailBox
 		int totalEmails;
 		int pgcnt;
 		std::string page;
-		
+
 	public:
 		RockComMailbox(const std::string &usr, const std::string &passwd);
 		~RockComMailbox();
@@ -33,6 +33,7 @@ class RockComMailbox: public CMailBox
 		void logoutRequest();
 		void getHeadersRequest();
 		int downloadRequest(int seg);
+		int uploadRequest(std::string filename);
 
 		void parseResponse();
 };

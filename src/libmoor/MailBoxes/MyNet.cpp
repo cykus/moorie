@@ -18,17 +18,17 @@
 // #include "MoorieException.h"
 #include <sstream>
 #include <boost/regex.hpp>
-        
+
 namespace {
-	CMailBox* Create(const std::string& username, 
-					 const std::string& password) 
+	CMailBox* Create(const std::string& username,
+					 const std::string& password)
 	{
 		return new MyNetMailbox(username, password);
 	}
-  
+
 	const bool registered = MailboxFactory::Instance().
 			Register("mynet.com", Create);
-}  
+}
 
 MyNetMailbox::MyNetMailbox(const std::string &usr, const std::string &passwd): CMailBox(usr, passwd), totalEmails(0)
 {
@@ -59,7 +59,7 @@ int MyNetMailbox::loginRequest()
 // 		setState(Mailbox::LoginError); //login failure
 // 		throw MoorieException("Login failed");
 		return 1;
-	} 
+	}
 // 	setState(Mailbox::LoginDone);
         boost::smatch match;
 	//regex re("Location: (http[^\r\n]*)");
@@ -115,11 +115,11 @@ int MyNetMailbox::downloadRequest(int seg)
 {
 // 	LOG_ENTER("MyNetMailbox::downloadRequest");
         std::string page,dlink;
-	
+
         std::string id = getLink(seg);
 	page=doGet(mserv+"rbody2.php?mailbox=INBOX.Posta_kutusu&passed_id="+id);
 	dlink=mserv+"download.php?absolute_dl=true&passed_id="+id+"&mailbox=INBOX.Posta_kutusu&ent_id=2";
-	
+
 	LOG(Log::Debug, dlink);
 	downloadSeg();
 	doGet(dlink);
@@ -133,6 +133,11 @@ int MyNetMailbox::downloadRequest(int seg)
 	else
 		return 1;
 }
+
+int MyNetMailbox::uploadRequest(std::string filename)
+{
+}
+
 
 MyNetMailbox::~MyNetMailbox()
 {

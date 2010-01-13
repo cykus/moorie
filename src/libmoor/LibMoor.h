@@ -34,6 +34,7 @@ class CLibMoor {
 		int mySeg;
 
 		// upload
+		std::string myUploadFilename;
         int selected;
 		int segments;
 		std::string myUploadMailbox;

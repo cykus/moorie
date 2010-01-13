@@ -56,7 +56,7 @@ int GoogleAppsMailbox::loginRequest()
     domain = "gazeta.pl";
     boost::smatch match2;
 
-	
+
     page = doGet("https://www.google.com/a/"+domain);
     boost::regex re3("name=\"GALX\"[\n].*?value=\"([a-zA-Z0-9_*[-]*]*)\"");
     boost::regex_search(page, match2, re3);
@@ -69,14 +69,14 @@ int GoogleAppsMailbox::loginRequest()
                 +"&Passwd="+escape(getPassword())
                 +"&rmShown=1";
     page = doPost("https://www.google.com/a/"+domain+"/LoginAction2?service=mail",vars,true);
-    
+
     //LOG(Log::Info,"page :"+ page);
 		std::string username = getUser();
         boost::regex re(username);
         boost::regex re2("&amp;");
         boost::regex authre("auth=([\\w\\d_-]+)");
         boost::smatch match;
-		
+
         if (boost::regex_search(page, match, re))
         {
                 std::string url = match[1];
@@ -157,6 +157,11 @@ int GoogleAppsMailbox::downloadRequest(int seg)
         doGet(link);
         if (downloadSegDone() == 0) return 0;
         else return 1;
+}
+
+int GoogleAppsMailbox::uploadRequest(std::string filename) {
+
+	return 0;
 }
 
 GoogleAppsMailbox::~GoogleAppsMailbox()
