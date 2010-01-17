@@ -87,13 +87,122 @@ std::string& CMailBox::doPost(std::string url, std::string vars, bool header)
 	stopFlag = false;
 	this->url = url;
 	this->vars = vars;
-//	LOG(Log::Debug, "POST: " + url + " DATA: " + vars);
+	LOG(Log::Debug, "POST: " + url + " DATA: " + vars);
 	bufferPos = 0;
 	curl_easy_setopt(handle, CURLOPT_HEADER, header);
 	curl_easy_setopt(handle, CURLOPT_POST, 1);
 	curl_easy_setopt(handle, CURLOPT_POSTFIELDS, this->vars.c_str());
 	curl_easy_setopt(handle, CURLOPT_URL, this->url.c_str());
 	CURLcode status = curl_easy_perform(handle);
+	if (status != 0)
+	{
+//		cout << curl_easy_strerror(status) << endl;
+		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
+	}
+	requestComplete();
+	return this->result;
+}
+
+static size_t read_callback(void *ptr, size_t size, size_t nmemb, FILE *stream)
+{
+	size_t retcode;
+
+  /* in real-world cases, this would probably get this data differently
+	as this fread() stuff is exactly what the library already would do
+	by default internally */
+	retcode = fread(ptr, size, nmemb, stream);
+
+	LOG(Log::Debug, "Upload: " + retcode);
+
+	return retcode;
+}
+
+std::string& CMailBox::doUpload(std::string url, std::string vars, std::string filename, bool header) {
+
+	CURL *curl;
+	CURLcode res;
+	CURLcode response;
+	FILE * hd_src ;
+	int hd ;
+	struct stat file_info;
+// 	char *file;
+// 	char *url;
+
+
+
+// 	url="http://localhost:8080/put/abcd1.dop ";
+
+
+	/* get the file size of the local file */
+	hd = open(filename.c_str(), O_RDONLY) ;
+	fstat(hd, &file_info);
+	close(hd) ;
+
+	hd_src = fopen(filename.c_str(), "rb");
+
+	if (hd_src == NULL)
+		printf ("Unable to open file");
+
+
+	/* In windows, this will init the winsock stuff */
+// 	curl_global_init(CURL_GLOBAL_ALL);
+
+	/* get a curl handle */
+// 	curl = curl_easy_init();
+
+// 	if(curl) {
+// 		printf("After easy init () \n");
+
+
+// 	curl_easy_setopt(handle, CURLOPT_HEADER, header);
+// 	curl_easy_setopt(handle, CURLOPT_POST, 1);
+// 	curl_easy_setopt(handle, CURLOPT_POSTFIELDS, this->vars.c_str());
+// 	curl_easy_setopt(handle, CURLOPT_URL, this->url.c_str());
+
+		/* enable uploading */
+	curl_easy_setopt(handle, CURLOPT_UPLOAD, 1) ;
+		/* enable verbose */
+	curl_easy_setopt(handle, CURLOPT_VERBOSE ,1);
+		/* HTTP PUT please */
+	curl_easy_setopt(handle, CURLOPT_PUT, 1);
+		printf("After setopt PUT\n");
+		/* specify target */
+// 		curl_easy_setopt(handle,CURLOPT_URL, url.c_str());
+// 		printf("a");
+ 		printf("After setopt URL \n%s",url.c_str());
+//  		printf("\n");
+
+		/* now specify which file to upload */
+// 		curl_easy_setopt(handle, CURLOPT_INFILE, hd_src);
+		curl_easy_setopt(handle, CURLOPT_READFUNCTION, read_callback);
+ 		curl_easy_setopt(handle, CURLOPT_READDATA, hd_src);
+
+		std::cout << "aaaa" <<std::endl;
+		/* and give the size of the upload (optional) */
+		curl_easy_setopt(handle, CURLOPT_INFILESIZE, file_info.st_size);
+		std::cout << "bbb" <<std::endl;
+              // Set values of cookies to be sent to ASP side.
+// 		curl_easy_setopt(handle,CURLOPT_COOKIE
+// 				,"fileName=file;uploadDir=D:/upoadedfile" );
+		/* Now run off and do what you've been told! */
+		printf("Before easy perform () \n");
+//  		response = curl_easy_perform(curl);
+
+		printf("After easy perform \n ");
+
+//  		printf("CURLCODE := %d \n",response );
+
+		/* always cleanup */
+// 		curl_easy_cleanup(curl);
+
+	fclose(hd_src); /* close the local file */
+	printf("After closing local file ");
+// 	curl_global_cleanup();
+// 	return 0;
+
+
+	CURLcode status = curl_easy_perform(handle);
+	std::cout << status << std::endl;
 	if (status != 0)
 	{
 //		cout << curl_easy_strerror(status) << endl;

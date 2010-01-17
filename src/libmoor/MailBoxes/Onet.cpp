@@ -133,6 +133,18 @@ int OnetMailbox::downloadRequest(int seg/*const EmailHeader &hdr, Segment *s*/)
 
 int OnetMailbox::uploadRequest(std::string filename)
 {
+	LOG(Log::Debug, boost::format( "uploadRequest" ));
+	std::string url = "http://lajt.onet.pl/napisz_l.html?k=0";
+// 	page = doGet(url);
+
+	const std::string vars = std::string("to=")
+			+ escape("moorie@poczta.onet.pl") + "&f1="
+			+ escape(filename) + "&su=subject&submit=Wy≈ij";
+//  	page=doPost("http://lajt.onet.pl/napisz_l.html?k=0", vars,true);
+	page=doUpload("http://lajt.onet.pl/napisz_l.html", vars, filename, true);
+
+	std::cout << page << std::endl;
+	return 0;
 }
 
 

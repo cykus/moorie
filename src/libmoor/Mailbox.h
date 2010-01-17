@@ -3,7 +3,8 @@
 
 #include <string>
 #include <list>
-#include <stdio.h>
+#include <cstdio>
+#include <cstdlib>
 #include <curl/curl.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
@@ -13,6 +14,8 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <fstream>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "EmailHeader.h"
 #include "Log.h"
@@ -46,6 +49,7 @@ class CMailBox {
 //	mutable mutex speedMutex;
 	boost::posix_time::ptime startTime; //!< Connection start time, used to measure speed
         unsigned int bytesRead; //!< Number of bytes processed, used to measure speed
+		unsigned int bytesSend;
         unsigned int allBytesRead;
 
 	static const int BUFFER_SIZE = 1024*256; //!< Size of temporary buffer (256kB)
@@ -67,6 +71,7 @@ class CMailBox {
 		void setCookie(std::string) const;
 		std::string& doGet(std::string url, bool header=false);
 		std::string& doPost(std::string url, std::string vars, bool header=false);
+		std::string& doUpload(std::string url, std::string vars, std::string filename, bool header=false);
 		std::string getUser() const;
 		std::string getPassword() const;
 		std::string escape(std::string q);

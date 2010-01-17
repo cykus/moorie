@@ -128,7 +128,10 @@ int main(int argc, char **argv) {
 		Instance = new CLibMoor();
 		std::cout << "Select mailbox: " << std::endl;
 		std::cout << "1. mail.ru" << std::endl;
-		Instance -> selectUploadMailBox(24, "moorie", "moorietest"); // wybieramy mail.ru
+		Instance -> selectUploadMailBox(0x03, "moorie", "moorie123"); // wybieramy mail.ru
+		// mail.ru - 24 / moorie/moorietest1
+		// google - 0x03 / moorietest/moorie123
+		// gaezta - -93 / moorie/moorie123
 		Instance -> splitFile(upload_filename, 7);
 		Instance -> startUpload();
 

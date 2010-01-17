@@ -185,10 +185,10 @@ int CLibMoor::startUpload() {
 
 	std::stringstream ss;
 
-	myMailBox = MailboxFactory::Instance().Create("mail.ru", myLogin, myPasswd); // TODO - zmienic "mail.ru" na wybrana skrzynke
+	myMailBox = MailboxFactory::Instance().Create("gazeta.pl", myLogin, myPasswd); // TODO - zmienic "mail.ru" na wybrana skrzynke
 	if (myMailBox) {
 // 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) myUploadMailbox);
-		LOG(Log::Info, boost::format( "Logowanie do: mail.ru") );
+		LOG(Log::Info, boost::format( "Logowanie do: gazeta.pl") );
 		if (myMailBox->loginRequest() == 0) {
 			for (int i=1; i <= segments; i++) {
 				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
