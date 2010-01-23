@@ -16,9 +16,12 @@
 #include <fstream>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <boost/asio.hpp>
+#include <boost/array.hpp>
 
 #include "EmailHeader.h"
 #include "Log.h"
+#include "Decoder.h"
 
 class CMailBox {
 
@@ -71,7 +74,8 @@ class CMailBox {
 		void setCookie(std::string) const;
 		std::string& doGet(std::string url, bool header=false);
 		std::string& doPost(std::string url, std::string vars, bool header=false);
-		std::string& doUpload(std::string url, std::string vars, std::string filename, bool header=false);
+		std::string& doSMTPUpload(std::string server, std::string login, std::string password, std::string filename);
+		std::string& doHTTPUpload(std::string url, std::string vars, std::string filename, bool header);
 		std::string getUser() const;
 		std::string getPassword() const;
 		std::string escape(std::string q);

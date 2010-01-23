@@ -25,7 +25,7 @@ CMailBox::CMailBox(const std::string &usr, const std::string &passwd)
 	curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0); // don't verify peer certificates
 	//curl_easy_setopt(handle, CURLOPT_FORBID_REUSE, 1);
 	//curl_easy_setopt(handle, CURLOPT_FRESH_CONNECT, 1);
-	//curl_easy_setopt(handle, CURLOPT_VERBOSE, 1);
+ 	curl_easy_setopt(handle, CURLOPT_VERBOSE, 1);
 
 	segDownload = false;
 }
@@ -112,103 +112,47 @@ static size_t read_callback(void *ptr, size_t size, size_t nmemb, FILE *stream)
 	by default internally */
 	retcode = fread(ptr, size, nmemb, stream);
 
-	LOG(Log::Debug, "Upload: " + retcode);
+	std::cout << "retcode: " << retcode << std::endl;
 
 	return retcode;
 }
 
-std::string& CMailBox::doUpload(std::string url, std::string vars, std::string filename, bool header) {
+std::string& CMailBox::doSMTPUpload(std::string server, std::string login, std::string password, std::string filename) {
+}
 
-	CURL *curl;
-	CURLcode res;
-	CURLcode response;
-	FILE * hd_src ;
-	int hd ;
-	struct stat file_info;
-// 	char *file;
-// 	char *url;
+std::string& CMailBox::doHTTPUpload(std::string url, std::string vars, std::string filename, bool header) {
+	struct curl_httppost* post = NULL;
+	struct curl_httppost* last = NULL;
+	struct curl_slist *headerlist=NULL;
+	static const char buf[] = "Expect:";
 
+	curl_easy_setopt(handle, CURLOPT_URL, url.c_str());
+  	curl_easy_setopt(handle, CURLOPT_HEADER, header);
 
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, "to", CURLFORM_COPYCONTENTS, "moorie@gazeta.pl", CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, "subject", CURLFORM_COPYCONTENTS, "subject", CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, "body", CURLFORM_COPYCONTENTS, "tresc", CURLFORM_END);
+  	curl_formadd(&post, &last, CURLFORM_COPYNAME, "file0", CURLFORM_FILE, filename.c_str(), CURLFORM_END);
+  	curl_formadd(&post, &last, CURLFORM_COPYNAME, "file0", CURLFORM_COPYCONTENTS, filename.c_str(), CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, "nvp_bu_send", CURLFORM_COPYCONTENTS, "WyÅij", CURLFORM_END);
 
-// 	url="http://localhost:8080/put/abcd1.dop ";
-
-
-	/* get the file size of the local file */
-	hd = open(filename.c_str(), O_RDONLY) ;
-	fstat(hd, &file_info);
-	close(hd) ;
-
-	hd_src = fopen(filename.c_str(), "rb");
-
-	if (hd_src == NULL)
-		printf ("Unable to open file");
+	headerlist = curl_slist_append(headerlist, buf);
 
 
-	/* In windows, this will init the winsock stuff */
-// 	curl_global_init(CURL_GLOBAL_ALL);
-
-	/* get a curl handle */
-// 	curl = curl_easy_init();
-
-// 	if(curl) {
-// 		printf("After easy init () \n");
-
-
-// 	curl_easy_setopt(handle, CURLOPT_HEADER, header);
-// 	curl_easy_setopt(handle, CURLOPT_POST, 1);
-// 	curl_easy_setopt(handle, CURLOPT_POSTFIELDS, this->vars.c_str());
-// 	curl_easy_setopt(handle, CURLOPT_URL, this->url.c_str());
-
-		/* enable uploading */
-	curl_easy_setopt(handle, CURLOPT_UPLOAD, 1) ;
-		/* enable verbose */
-	curl_easy_setopt(handle, CURLOPT_VERBOSE ,1);
-		/* HTTP PUT please */
-	curl_easy_setopt(handle, CURLOPT_PUT, 1);
-		printf("After setopt PUT\n");
-		/* specify target */
-// 		curl_easy_setopt(handle,CURLOPT_URL, url.c_str());
-// 		printf("a");
- 		printf("After setopt URL \n%s",url.c_str());
-//  		printf("\n");
-
-		/* now specify which file to upload */
-// 		curl_easy_setopt(handle, CURLOPT_INFILE, hd_src);
-		curl_easy_setopt(handle, CURLOPT_READFUNCTION, read_callback);
- 		curl_easy_setopt(handle, CURLOPT_READDATA, hd_src);
-
-		std::cout << "aaaa" <<std::endl;
-		/* and give the size of the upload (optional) */
-		curl_easy_setopt(handle, CURLOPT_INFILESIZE, file_info.st_size);
-		std::cout << "bbb" <<std::endl;
-              // Set values of cookies to be sent to ASP side.
-// 		curl_easy_setopt(handle,CURLOPT_COOKIE
-// 				,"fileName=file;uploadDir=D:/upoadedfile" );
-		/* Now run off and do what you've been told! */
-		printf("Before easy perform () \n");
-//  		response = curl_easy_perform(curl);
-
-		printf("After easy perform \n ");
-
-//  		printf("CURLCODE := %d \n",response );
-
-		/* always cleanup */
-// 		curl_easy_cleanup(curl);
-
-	fclose(hd_src); /* close the local file */
-	printf("After closing local file ");
-// 	curl_global_cleanup();
-// 	return 0;
-
+	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headerlist);
+	curl_easy_setopt(handle, CURLOPT_HTTPPOST, post);
 
 	CURLcode status = curl_easy_perform(handle);
-	std::cout << status << std::endl;
 	if (status != 0)
 	{
-//		cout << curl_easy_strerror(status) << endl;
 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
 	requestComplete();
+
+	curl_formfree(post);
+	curl_slist_free_all (headerlist);
+
+	std::cout << status << std::endl;
 	return this->result;
 }
 

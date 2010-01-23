@@ -163,11 +163,11 @@ int GoogleAppsMailbox::uploadRequest(std::string filename) {
 	std::string postlink;
 	std::string base;
 
-	std::string url = "http://mail.google.com/a/"+domain+"/h/?v=b&pv=tl&cs=b";
+	std::string url = "https://mail.google.com/a/"+domain+"/h/?v=b&pv=tl&cs=b";
 	page = doGet(url);
 
 	// wyszukiwanie base hrefa
-	boost::regex re1("<base href=\"(.*?)\"");
+	boost::regex re1(" <base href=\"(.*?)\"> ");
 	boost::smatch match1;
 	if (boost::regex_search(page, match1, re1)) {
 		base = match1[1];
@@ -185,12 +185,14 @@ int GoogleAppsMailbox::uploadRequest(std::string filename) {
 		return 1;
 
 //  	const std::string vars = std::string("to=" + escape(getUser()) + escape("@gazeta.pl") + "&subject=dupa&file0=" + filename);
-	const std::string vars = std::string("redir=?&to=" + escape(getUser()) + escape("@gazeta.pl") + "&subject=dupa&body=dupa&file0=" + filename + "&nvp_bu_send=Wy¶lij");
+// 	const std::string vars = std::string("redir=?&to=" + escape(getUser()) + escape("@gazeta.pl") + "&subject=dupa&body=dupa&file0=" + filename + "&nvp_bu_send=Wy¶lij");
 
-  	page = doPost(postlink,vars,true);
- 	std::cout << page << std::endl;
-  	page = doUpload(postlink,vars, filename,true);
+//   	page = doPost(postlink,vars,true);
 //  	std::cout << page << std::endl;
+//   	page = doUpload(postlink,vars, filename,true);
+	const std::string myvars = "0";
+	page = doHTTPUpload(postlink, myvars, filename, true);
+//   	std::cout << page << std::endl;
 
 //	return 0;
 }
