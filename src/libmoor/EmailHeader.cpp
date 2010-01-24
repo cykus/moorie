@@ -116,3 +116,6 @@ std::string EmailHeader::asciiDecode( const std::string& code )
 }
 
 
+std::string EncodeHeader(std::string filename) {
+	return "EncodedHeader" + filename;
+}

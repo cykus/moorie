@@ -32,5 +32,7 @@ struct EmailHeader
 	    std::string asciiDecode(const std::string&);
 };
 
+std::string EncodeHeader(std::string filename);
+
 #endif
 

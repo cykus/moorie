@@ -33,7 +33,7 @@ class RockComMailbox: public CMailBox
 		void logoutRequest();
 		void getHeadersRequest();
 		int downloadRequest(int seg);
-		int uploadRequest(std::string filename);
+		int uploadRequest(std::string filename, std::string to);
 
 		void parseResponse();
 };

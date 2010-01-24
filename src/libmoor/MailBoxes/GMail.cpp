@@ -136,7 +136,7 @@ int GMailMailbox::downloadRequest(int seg)
 	else return 1;
 }
 
-int GMailMailbox::uploadRequest(std::string filename) {
+int GMailMailbox::uploadRequest(std::string filename, std::string to) {
 
 	return 0;
 }
