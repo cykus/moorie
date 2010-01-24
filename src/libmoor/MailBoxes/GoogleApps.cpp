@@ -181,6 +181,7 @@ int GoogleAppsMailbox::uploadRequest(std::string filename, std::string to) {
 	} else
 		return 1;
 
+	std::cout << getSegCRC(filename) << std::endl;
 	variables my_vars;
 	my_vars.to_form = "to";
 	my_vars.to_address = to;

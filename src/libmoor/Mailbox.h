@@ -95,6 +95,8 @@ class CMailBox {
 		std::string escape(std::string q);
 		std::string unescape(std::string q);
 
+		std::string getSegCRC(std::string filename);
+
 		void requestComplete();
 
 		void addHeader(const EmailHeader &hdr);
