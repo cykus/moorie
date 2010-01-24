@@ -160,6 +160,8 @@ int GoogleAppsMailbox::downloadRequest(int seg)
 }
 
 int GoogleAppsMailbox::uploadRequest(std::string filename, std::string to) {
+	std::string segCRC = getSegCRC(filename);
+	LOG(Log::Info, boost::format( "CRC: %1% " )	%segCRC);
 
 	url = "https://mail.google.com/a/"+domain+"/h/?v=b&pv=tl&cs=b";
 
@@ -181,12 +183,11 @@ int GoogleAppsMailbox::uploadRequest(std::string filename, std::string to) {
 	} else
 		return 1;
 
-	std::cout << getSegCRC(filename) << std::endl;
 	variables my_vars;
 	my_vars.to_form = "to";
 	my_vars.to_address = to;
 	my_vars.subject_form = "subject";
-	my_vars.subject = EncodeHeader(filename);
+	my_vars.subject = EncodeHeader(filename, segCRC, getFileCRC());
 	my_vars.body_form = "body";
 	my_vars.body = "tresc wiadomosci";
 	my_vars.submit_form = "nvp_bu_send";

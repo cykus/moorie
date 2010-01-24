@@ -192,8 +192,11 @@ int CLibMoor::startUpload() {
 // 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) myUploadMailbox);
 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
  		if (myMailBox->loginRequest() == 0) {
+			myMailBox->calculateFileCRC(myUploadFilename);
+			LOG(Log::Info, boost::format( "CRC Pliku: %1%" )	%myMailBox->getFileCRC());
 			for (int i=1; i <= segments; i++) {
 				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
+
 				ss.str("");
 				ss << myUploadFilename << "." << i;
 				if (myMailBox->uploadRequest(ss.str(), "moorie@gazeta.pl") == 0)

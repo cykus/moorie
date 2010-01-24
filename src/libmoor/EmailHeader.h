@@ -32,7 +32,7 @@ struct EmailHeader
 	    std::string asciiDecode(const std::string&);
 };
 
-std::string EncodeHeader(std::string filename);
+std::string EncodeHeader(std::string filename, std::string segCRC, std::string fileCRC);
 
 #endif
 

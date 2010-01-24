@@ -191,9 +191,12 @@ std::string CMailBox::unescape(std::string q)
 	return s;
 }
 
+std::string CMailBox::getFileCRC() {
+	return fileCRC;
+}
+
 std::string CMailBox::getSegCRC(std::string filename) {
-	std::string tmpfile = filename+".seg";
-	std::ifstream in(tmpfile.c_str(), std::ifstream::binary);
+	std::ifstream in(filename.c_str(), std::ifstream::binary);
 	while (!in.eof()) {
 		in.read(buffer, READ_BUFFER_SIZE);
 		int n = in.gcount();
@@ -205,10 +208,13 @@ std::string CMailBox::getSegCRC(std::string filename) {
 	ss << std::setw(8) << std::setfill('0')  << std::hex << crcRes.checksum();
 	segCRC = ss.str();
 
-	LOG( Log::Info, segCRC);
 	boost::to_upper(segCRC);
 
 	return segCRC;
+}
+
+void CMailBox::calculateFileCRC(std::string filename) {
+	fileCRC = getSegCRC(filename); // nie ma to jak skroty :)
 }
 
 size_t CMailBox::_writeData(void *buffer, size_t size, size_t nmem, void *ptr)

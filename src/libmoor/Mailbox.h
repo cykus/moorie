@@ -119,8 +119,10 @@ class CMailBox {
 		std::list<EmailHeader> getHeaders() const;
 		std::vector<std::string> getLinks() const;
 		int checkHeaders(int numOfSegments);
-                unsigned int getBytesRead();
-                unsigned int getSpeed() const;
+        unsigned int getBytesRead();
+        unsigned int getSpeed() const;
+		std::string getFileCRC();
+		void calculateFileCRC(std::string filename);
 		virtual ~CMailBox();
 
   private:
