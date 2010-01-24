@@ -151,7 +151,7 @@ int CLibMoor::splitFile(std::string filename, int size) {
 	int mysegsize = size*1024*1024;
 	int bytes = 0; int read = 0;
 	segments = 1;
-	char buffer[2048];
+	char buffer[128*1024];
 	std::stringstream ss;
 	ss << filename << "." << segments;
 	std::cout << ss.str() << std::endl;
@@ -161,7 +161,7 @@ int CLibMoor::splitFile(std::string filename, int size) {
 	LOG(Log::Debug, boost::format( "Seg: %1%" )	%segments);
 
 	while (!in.eof()) {
-		in.read(buffer, 2048);
+		in.read(buffer, 128*1024);
 		read = in.gcount();
 		out->write(buffer, read);
 		bytes += read;
