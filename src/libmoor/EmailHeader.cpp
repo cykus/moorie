@@ -116,7 +116,9 @@ std::string EmailHeader::asciiDecode( const std::string& code )
 }
 
 
-std::string EncodeHeader(std::string filename, std::string segCRC, std::string fileCRC) {
-	std::string header = "["+fileCRC+"]["+segCRC+"]";
+std::string EncodeHeader(std::string filename, std::string segCRC, std::string fileCRC, int seg) {
+	std::stringstream ss;
+	ss << seg;
+	std::string header = "["+fileCRC+"]["+segCRC+"]["+ss.str()+"]";
 	return header;
 }

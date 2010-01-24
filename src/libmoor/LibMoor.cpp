@@ -199,7 +199,7 @@ int CLibMoor::startUpload() {
 
 				ss.str("");
 				ss << myUploadFilename << "." << i;
-				if (myMailBox->uploadRequest(ss.str(), "moorie@gazeta.pl") == 0)
+				if (myMailBox->uploadRequest(ss.str(), "moorie@gazeta.pl", i) == 0)
 					LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
 				else
 					LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%i);

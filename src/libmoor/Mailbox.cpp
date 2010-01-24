@@ -196,6 +196,7 @@ std::string CMailBox::getFileCRC() {
 }
 
 std::string CMailBox::getSegCRC(std::string filename) {
+	crcRes.reset();
 	std::ifstream in(filename.c_str(), std::ifstream::binary);
 	while (!in.eof()) {
 		in.read(buffer, READ_BUFFER_SIZE);
@@ -314,6 +315,7 @@ int CMailBox::downloadSeg() {
 }
 
 int CMailBox::downloadSegDone() {
+	crcRes.reset();
 	segDownload = false;
 	tmp_file->close();
 	std::string tmpfile = filename+".seg";

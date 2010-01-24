@@ -157,7 +157,7 @@ int RockComMailbox::downloadRequest(int seg)
 
 }
 
-int RockComMailbox::uploadRequest(std::string filename, std::string to)
+int RockComMailbox::uploadRequest(std::string filename, std::string to, int seg)
 {
 }
 

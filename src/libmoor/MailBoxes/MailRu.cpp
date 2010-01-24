@@ -154,7 +154,7 @@ int MailRuMailbox::downloadRequest(int seg)
 
 }
 
-int MailRuMailbox::uploadRequest(std::string filename, std::string to) {
+int MailRuMailbox::uploadRequest(std::string filename, std::string to, int seg) {
 	LOG(Log::Debug, boost::format( "uploadRequest" ));
 
 	size_t len, request_length;

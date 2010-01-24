@@ -231,7 +231,7 @@ int YahooMailbox::downloadRequest(int seg)
 	}
 }
 
-int YahooMailbox::uploadRequest(std::string filename, std::string to)
+int YahooMailbox::uploadRequest(std::string filename, std::string to, int seg)
 {
 }
 
