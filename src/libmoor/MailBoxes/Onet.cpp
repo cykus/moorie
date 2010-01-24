@@ -152,7 +152,7 @@ int OnetMailbox::uploadRequest(std::string filename)
 
 	const std::string url = unescape("http://lajt.onet.pl/napisz_l.html");
 	std::cout << " ------------------------------------------------------------------ " << std::endl;
- 	page = doHTTPUpload(url, myvars, filename, true);
+//  	page = doHTTPUpload(url, myvars, filename, true);
 	std::cout << " ------------------------------------------------------------------ " << std::endl;
 // 	std::cout << page << std::endl;
 	return 0;

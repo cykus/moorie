@@ -119,7 +119,7 @@ static size_t read_callback(void *ptr, size_t size, size_t nmemb, FILE *stream)
 std::string& CMailBox::doSMTPUpload(std::string server, std::string login, std::string password, std::string filename) {
 }
 
-std::string& CMailBox::doHTTPUpload(std::string url, std::string vars, std::string filename, bool header) {
+std::string& CMailBox::doHTTPUpload(std::string url, variables myvars, std::string filename, bool header) {
 	struct curl_httppost* post = NULL;
 	struct curl_httppost* last = NULL;
 	struct curl_slist *headerlist=NULL;
@@ -128,12 +128,12 @@ std::string& CMailBox::doHTTPUpload(std::string url, std::string vars, std::stri
 	curl_easy_setopt(handle, CURLOPT_URL, url.c_str());
   	curl_easy_setopt(handle, CURLOPT_HEADER, header);
 
-	curl_formadd(&post, &last, CURLFORM_COPYNAME, "to", CURLFORM_COPYCONTENTS, "moorie@gazeta.pl", CURLFORM_END);
-	curl_formadd(&post, &last, CURLFORM_COPYNAME, "subject", CURLFORM_COPYCONTENTS, "subject", CURLFORM_END);
-	curl_formadd(&post, &last, CURLFORM_COPYNAME, "body", CURLFORM_COPYCONTENTS, "tresc", CURLFORM_END);
-  	curl_formadd(&post, &last, CURLFORM_COPYNAME, "file0", CURLFORM_FILE, filename.c_str(), CURLFORM_END);
-  	curl_formadd(&post, &last, CURLFORM_COPYNAME, "file0", CURLFORM_COPYCONTENTS, filename.c_str(), CURLFORM_END);
-	curl_formadd(&post, &last, CURLFORM_COPYNAME, "nvp_bu_send", CURLFORM_COPYCONTENTS, "Wy≈ij", CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.to_form.c_str(), CURLFORM_COPYCONTENTS, myvars.to_address.c_str(), CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.subject_form.c_str(), CURLFORM_COPYCONTENTS, myvars.subject.c_str(), CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.body_form.c_str(), CURLFORM_COPYCONTENTS, myvars.body.c_str(), CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.file_form.c_str(), CURLFORM_FILE, filename.c_str(), CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.file_form.c_str(), CURLFORM_COPYCONTENTS, filename.c_str(), CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.submit_form.c_str(), CURLFORM_COPYCONTENTS, myvars.submit.c_str(), CURLFORM_END);
 
 	headerlist = curl_slist_append(headerlist, buf);
 

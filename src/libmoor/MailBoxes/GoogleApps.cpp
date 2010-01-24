@@ -181,7 +181,16 @@ int GoogleAppsMailbox::uploadRequest(std::string filename) {
 	} else
 		return 1;
 
-	page = doHTTPUpload(postlink, myvars, filename, true);
+	variables my_vars;
+	my_vars.to_form = "to";
+	my_vars.to_address = "moorie@gazeta.pl";
+	my_vars.subject_form = "subject";
+	my_vars.subject = "temat";
+	my_vars.body_form = "body";
+	my_vars.body = "tresc wiadomosci";
+	my_vars.submit_form = "nvp_bu_send";
+	my_vars.submit = "Wy≈ij";
+	page = doHTTPUpload(postlink, my_vars, filename, true);
 
 	return 0;
 }

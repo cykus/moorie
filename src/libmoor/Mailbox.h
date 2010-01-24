@@ -75,8 +75,21 @@ class CMailBox {
 		void setCookie(std::string) const;
 		std::string& doGet(std::string url, bool header=false);
 		std::string& doPost(std::string url, std::string vars, bool header=false);
+
+		struct variables {
+			std::string to_form; // adresat - formularz
+			std::string to_address; // adresat
+			std::string subject_form; // temat - formularz
+			std::string subject; // tresc tematu
+			std::string body_form; // tresc wiadomosc - formularz
+			std::string body; // tresc wiadomosci
+			std::string file_form; // zalacznik - formularz
+			std::string file; // zalacznik
+			std::string submit_form; // wyslij - formularz
+			std::string submit; // wyslij
+		};
 		std::string& doSMTPUpload(std::string server, std::string login, std::string password, std::string filename);
-		std::string& doHTTPUpload(std::string url, std::string vars, std::string filename, bool header);
+		std::string& doHTTPUpload(std::string url, variables myvars, std::string filename, bool header);
 		std::string getUser() const;
 		std::string getPassword() const;
 		std::string escape(std::string q);
@@ -91,6 +104,7 @@ class CMailBox {
 		std::string getLink(int seg);
 		int downloadSeg();
 		int downloadSegDone();
+
 
 	public:
 		CMailBox(const std::string &usr, const std::string &passwd);
