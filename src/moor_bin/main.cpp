@@ -133,7 +133,7 @@ int main(int argc, char **argv) {
 		// google - 0x03 / moorietest/moorie123
 		// gaezta - -93 / moorie/moorie123
 		// mooriemoorie@poczta.onet.pl /
-		Instance -> splitFile(upload_filename, 7);
+		Instance -> splitFile(upload_filename, 1);
 		Instance -> startUpload();
 
 		try

@@ -151,7 +151,7 @@ int CLibMoor::splitFile(std::string filename, int size) {
 	int mysegsize = size*1024*1024;
 	int bytes = 0; int read = 0;
 	segments = 1;
-	char buffer[1024];
+	char buffer[2048];
 	std::stringstream ss;
 	ss << filename << "." << segments;
 	std::cout << ss.str() << std::endl;
@@ -161,10 +161,12 @@ int CLibMoor::splitFile(std::string filename, int size) {
 	LOG(Log::Debug, boost::format( "Seg: %1%" )	%segments);
 
 	while (!in.eof()) {
-		in.read(buffer, 1024);
+		in.read(buffer, 2048);
 		read = in.gcount();
 		out->write(buffer, read);
 		bytes += read;
+
+// 		std::cout << "Read: " << read << std::endl;
 
 		if (bytes == mysegsize) {
 			bytes = 0;
@@ -194,7 +196,10 @@ int CLibMoor::startUpload() {
 				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
 				ss.str("");
 				ss << myUploadFilename << "." << i;
-				myMailBox->uploadRequest(ss.str());
+				if (myMailBox->uploadRequest(ss.str()) == 0)
+					LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
+				else
+					LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%i);
 			}
 			LOG(Log::Info, boost::format( "Upload zakonczony!" ));
  		} else

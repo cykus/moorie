@@ -25,7 +25,7 @@ CMailBox::CMailBox(const std::string &usr, const std::string &passwd)
 	curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0); // don't verify peer certificates
 	//curl_easy_setopt(handle, CURLOPT_FORBID_REUSE, 1);
 	//curl_easy_setopt(handle, CURLOPT_FRESH_CONNECT, 1);
- 	curl_easy_setopt(handle, CURLOPT_VERBOSE, 1);
+//  	curl_easy_setopt(handle, CURLOPT_VERBOSE, 1);
 
 	segDownload = false;
 }
@@ -60,7 +60,6 @@ std::string& CMailBox::doGet(std::string url, bool  header)
 	bytesRead = 0;
 	startTime = boost::posix_time::microsec_clock::universal_time();
 //	lock.unlock();
-
 	stopFlag = false;
 	this->url = url;
 //	LOG(Log::Debug, "GET: " + url);
@@ -68,11 +67,11 @@ std::string& CMailBox::doGet(std::string url, bool  header)
 	curl_easy_setopt(handle, CURLOPT_HEADER, header);
 	curl_easy_setopt(handle, CURLOPT_HTTPGET, 1);
 	curl_easy_setopt(handle, CURLOPT_URL, this->url.c_str());
-	CURLcode status = curl_easy_perform(handle);
-	if (status != 0)
-	{
-//		LOG(Log::Error, format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
-	}
+ 	status = curl_easy_perform(handle);
+// 	if (status != 0)
+// 	{
+// 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
+// 	}
 //	LOG(Log::Debug,"Before request");
 	requestComplete();
 	return this->result;
@@ -93,7 +92,7 @@ std::string& CMailBox::doPost(std::string url, std::string vars, bool header)
 	curl_easy_setopt(handle, CURLOPT_POST, 1);
 	curl_easy_setopt(handle, CURLOPT_POSTFIELDS, this->vars.c_str());
 	curl_easy_setopt(handle, CURLOPT_URL, this->url.c_str());
-	CURLcode status = curl_easy_perform(handle);
+	status = curl_easy_perform(handle);
 	if (status != 0)
 	{
 //		cout << curl_easy_strerror(status) << endl;
@@ -142,17 +141,17 @@ std::string& CMailBox::doHTTPUpload(std::string url, std::string vars, std::stri
 	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headerlist);
 	curl_easy_setopt(handle, CURLOPT_HTTPPOST, post);
 
-	CURLcode status = curl_easy_perform(handle);
+	status = curl_easy_perform(handle);
 	if (status != 0)
 	{
 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
+
+// 	curl_formfree(post);
+// 	curl_slist_free_all (headerlist);
+
 	requestComplete();
 
-	curl_formfree(post);
-	curl_slist_free_all (headerlist);
-
-	std::cout << status << std::endl;
 	return this->result;
 }
 

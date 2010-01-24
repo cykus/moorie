@@ -66,6 +66,7 @@ class CMailBox {
 	std::string segCRC;
 	std::string segNumber;
 	std::string fileCRC;
+	CURLcode status;
 
 	protected:
 		static size_t _writeData(void *buffer, size_t size, size_t nmem, void *ptr);
