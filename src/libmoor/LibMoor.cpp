@@ -35,19 +35,11 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 		path += "/";
         
 	LOG(Log::Info, boost::format("Pobieranie do %1%") %path);
-	std::string strfile = path + myHash->getInfo().fileName;
-	std::ifstream myfile (strfile.c_str(), std::ifstream::binary);
-	if (boost::filesystem::exists(strfile)) {
-		int filesize = boost::filesystem::file_size(strfile);
-		if (filesize < myHash->getInfo().fileSize) {
-			mySeg = filesize / myHash->getInfo().segmentSize;
-			LOG(Log::Info, boost::format("Kontynuuje pobieranie pliku: %1%   Segment: %2%") %strfile %mySeg);
-		}
-		else {
-			LOG(Log::Info, "Plik pobrano w calosci, przerywam...");
-			return 1;
-		}
-	}
+        mySeg = getLastSegment(path + myHash->getInfo().fileName);
+        if (mySeg == myHash->getInfo().numOfSegments) {
+            LOG(Log::Info, "Plik pobrano w calosci, przerywam...");
+            return 1;
+        }
 
 	int vector_size = myHash->getInfo().accounts.size();
 	/*for (int i = 0; i < vector_size; ++i) {
