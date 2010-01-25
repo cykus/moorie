@@ -140,9 +140,10 @@ int CLibMoor::startDownload() {
 
 int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd) {
 // 	myUploadMailbox = getMailboxName(id);
-	// TODO - wybieranie skrzynki po id;
+
 	myLogin = login;
 	myPasswd = passwd;
+	myUploadMailbox = "gazeta.pl"; // TODO - wybieranie skrzynki po id;
 	return 0;
 }
 
@@ -187,8 +188,9 @@ int CLibMoor::startUpload() {
 	LOG(Log::Info, boost::format("Zaczynam upload"));
 
 	std::stringstream ss;
+	std::string address = myLogin+"@"+myUploadMailbox;
 
-	myMailBox = MailboxFactory::Instance().Create("gazeta.pl", myLogin, myPasswd); // TODO - zmienic "mail.ru" na wybrana skrzynke
+	myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd); // TODO - zmienic "mail.ru" na wybrana skrzynke
 	if (myMailBox) {
 // 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) myUploadMailbox);
 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
@@ -200,7 +202,7 @@ int CLibMoor::startUpload() {
 
 				ss.str("");
 				ss << myUploadFilename << "." << i;
-				if (myMailBox->uploadRequest(ss.str(), "moorie@gazeta.pl", i) == 0)
+				if (myMailBox->uploadRequest(ss.str(), address, i) == 0)
 					LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
 				else
 					LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%i);
