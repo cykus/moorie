@@ -18,21 +18,21 @@
 // #include "MoorieException.h"
 #include <sstream>
 #include <boost/regex.hpp>
-        
+
 namespace {
-	CMailBox* Create(const std::string& username, 
-					 const std::string& password) 
+	CMailBox* Create(const std::string& username,
+					 const std::string& password)
 	{
 		return new RockComMailbox(username, password);
 	}
-  
+
 	const bool registered = MailboxFactory::Instance().
 			Register("rock.com", Create);
-}        
+}
 
 
 RockComMailbox::RockComMailbox(const std::string &usr, const std::string &passwd)
-	: CMailBox(usr, passwd), 
+	: CMailBox(usr, passwd),
 		totalEmails(0)
 {
 }
@@ -99,7 +99,7 @@ void RockComMailbox::getHeadersRequest()
 		}
         boost::regex re2("<a href=\"/scripts/[^<>]*\"><img src=\"http://img1.us4.outblaze.com/rock.com/nextPg.gif\"");
         boost::smatch match2;
-	
+
 		if (!boost::regex_search(page,match,re2))
 		{
 // 			setState(Mailbox::ReadHeadersDone);
@@ -126,7 +126,7 @@ int RockComMailbox::downloadRequest(int seg)
 // 	regex re("<A HREF=\"(/getattach/[^\"]*)");
 // 	if(!regex_search(page,match,re))
 // 		return 1;
-// 	else 
+// 	else
 // 		return 0;
 // 		throw MoorieException("Unable to download attachement.");
 // 	setState(Mailbox::DownloadIP);
@@ -152,10 +152,15 @@ int RockComMailbox::downloadRequest(int seg)
 			return 1;
 //		setState(Mailbox::DownloadIP);
 //		setSegment(s);
-	} else 
+	} else
 		return 1;
-	
+
 }
+
+int RockComMailbox::uploadRequest(std::string filename, std::string to, int seg)
+{
+}
+
 
 RockComMailbox::~RockComMailbox()
 {

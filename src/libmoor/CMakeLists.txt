@@ -24,5 +24,4 @@ add_library (moor SHARED Decoder.cpp
                          Hash.cpp
                          StringUtils.cpp
                          BinaryStream.cpp)
-
 install (TARGETS moor DESTINATION lib${LIB_SUFFIX})

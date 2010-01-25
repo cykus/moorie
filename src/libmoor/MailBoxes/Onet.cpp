@@ -17,20 +17,20 @@
 #include "../MailboxFactory.h"
 
 namespace {
-  CMailBox* Create(const std::string& username, 
-                   const std::string& password) 
+  CMailBox* Create(const std::string& username,
+                   const std::string& password)
   {
     return new OnetMailbox(username, password);
   }
-  
+
   const bool registered = MailboxFactory::Instance().
                                           Register("poczta.onet.pl", Create);
 
 
-}   
+}
 
 OnetMailbox::OnetMailbox(const std::string &usr, const std::string &passwd)
-	: CMailBox(usr, passwd), 
+	: CMailBox(usr, passwd),
 		totalEmails(0)
 {
 }
@@ -130,6 +130,35 @@ int OnetMailbox::downloadRequest(int seg/*const EmailHeader &hdr, Segment *s*/)
 	else
 		return 1;
 }
+
+int OnetMailbox::uploadRequest(std::string filename, std::string to, int seg)
+{
+// 	const std::string vars = std::string("to=")
+// 			+ escape(getUser()) + escape("@"+domain) + "&su="
+// 			+ escape(getPassword()) + "&file0=" + filename + "&submit=Wy¶lij";
+
+	std::string myvars;
+
+	page = doGet("http://lajt.onet.pl/napisz_l.html?k=0");
+
+	boost::regex re("<input type=\"hidden\" name=\"uid\" value=\"(.*?)\" /><input type");
+	boost::smatch match;
+	if (boost::regex_search(page,match,re) /*&& !regex_search(page,match,re3)*/)
+	{
+		myvars = match[1];
+	}
+	std::cout << page << std::endl;
+	std::cout << " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " << myvars << std::endl;
+
+	const std::string url = unescape("http://lajt.onet.pl/napisz_l.html");
+	std::cout << " ------------------------------------------------------------------ " << std::endl;
+//  	page = doHTTPUpload(url, myvars, filename, true);
+	std::cout << " ------------------------------------------------------------------ " << std::endl;
+// 	std::cout << page << std::endl;
+	return 0;
+
+}
+
 
 OnetMailbox::~OnetMailbox()
 {

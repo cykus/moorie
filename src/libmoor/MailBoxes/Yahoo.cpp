@@ -21,18 +21,18 @@
 #include <boost/format.hpp>
 
 namespace {
-  CMailBox* Create(const std::string& username, 
-                   const std::string& password) 
+  CMailBox* Create(const std::string& username,
+                   const std::string& password)
   {
     return new YahooMailbox(username, password);
   }
-  
+
   const bool registered = MailboxFactory::Instance().
                                           Register("yahoo.com", Create);
 }
 
 YahooMailbox::YahooMailbox(const std::string &usr, const std::string &passwd)
-	: CMailBox(usr, passwd), 
+	: CMailBox(usr, passwd),
 		totalEmails(0)
 {
 }
@@ -60,7 +60,7 @@ int YahooMailbox::loginRequest()
 		//throw MoorieException("Unable to get login vars.");
 		//return 1;
 	}
-	
+
 	const std::string vars = std::string(".tries=1&.src=ym&.md5=&.hash=&.js=&.last=&promo=&.intl=us")
 		+"&.bypass=&.partner=&.u="+uvar+"&.v=0&.challenge="+challenge+"&.yplus=&.emailCode=&pkg=&stepid="
 		+"&.ev=&hasMsgr=0&.chkP=y&.done="
@@ -166,7 +166,7 @@ void YahooMailbox::getHeadersRequest()
 	int msgcnt = 0; // number of message headers for current page
 	boost::match_results<std::string::const_iterator> match;
 	boost::regex how_many("<li id=\"inbox\" title=\"Inbox contains ([0-9]*) messages");
-	boost::regex how_many2("<span class=\"last\">Messages 1-25 of ([0-9]*)</span>"); 
+	boost::regex how_many2("<span class=\"last\">Messages 1-25 of ([0-9]*)</span>");
 	boost::smatch hmatch;
 	boost::regex_search(page,hmatch,how_many2);
 	std::cout << "ilosc: " <<hmatch[1] <<std::endl ;
@@ -191,7 +191,7 @@ void YahooMailbox::getHeadersRequest()
 		myint << curEmail;
 		auth=mserv+"/mc/"+match2[1]+"&startMid="+myint.str();
 		page=doGet(auth);
-	} 
+	}
 	//setState(Mailbox::ReadHeadersDone);
 }
 
@@ -230,6 +230,11 @@ int YahooMailbox::downloadRequest(int seg)
 		}
 	}
 }
+
+int YahooMailbox::uploadRequest(std::string filename, std::string to, int seg)
+{
+}
+
 
 YahooMailbox::~YahooMailbox()
 {

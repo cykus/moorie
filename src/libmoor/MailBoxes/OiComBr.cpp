@@ -18,17 +18,17 @@
 // #include "MoorieException.h"
 #include <sstream>
 #include <boost/regex.hpp>
-        
+
 namespace {
-	CMailBox* Create(const std::string& username, 
-					 const std::string& password) 
+	CMailBox* Create(const std::string& username,
+					 const std::string& password)
 	{
 		return new OiComBrMailbox(username, password);
 	}
-  
+
 	const bool registered = MailboxFactory::Instance().
 			Register("oi.com.br", Create);
-}    
+}
 
 OiComBrMailbox::OiComBrMailbox(const std::string &usr, const std::string &passwd): CMailBox(usr, passwd), totalEmails(0)
 {
@@ -44,13 +44,13 @@ int OiComBrMailbox::loginRequest()
 		+"&pass="
 		+ escape(getPassword())
 		+"&loginButton=Entrar";
-	
+
 // 	setState(Mailbox::LoginIP);
 	page=doPost("http://webmail.oi.com.br/mail/redirect.php",vars);
-	
+
         boost::regex re("http://webmail.oi.com.br/mail/redirect.php");
         boost::smatch match;
-	
+
 	if(regex_search(page,match,re))
 	{
 // 		setState(Mailbox::LoginError); //login failure
@@ -62,10 +62,10 @@ int OiComBrMailbox::loginRequest()
 		return 0;
 	}
 // 	setState(Mailbox::Connected);
-	
-	
+
+
 /*	smatch match;
-	
+
 	regex re("Set-Cookie: (Horde=.*?;)");
 	if (regex_search(page, match, re)) {
 		auth = match[1];
@@ -112,7 +112,7 @@ void OiComBrMailbox::getHeadersRequest()
 			addHeaderLink(match[1]);
 			pbegin = match[2].second;
 		}
-    
+
 	}
 // 	setState(Mailbox::ReadHeadersDone);
 }
@@ -125,7 +125,7 @@ int OiComBrMailbox::downloadRequest(int seg)
 	std::string page = doGet("http://webmail.oi.com.br"+mylink);
 //	regex re("http://a[a-z]*[0-9].mail.ru/cgi-bin/readmsg/.*?&mode=attachment&channel=");
         boost::regex re("<a href=\"(/services/download/[^\"]*)");
-	
+
         boost::smatch match;
         std::string link;
 	if(regex_search(page,match,re))
@@ -144,6 +144,11 @@ int OiComBrMailbox::downloadRequest(int seg)
 //		setSegment(s);
 	}
 }
+
+int OiComBrMailbox::uploadRequest(std::string filename, std::string to, int seg)
+{
+}
+
 
 OiComBrMailbox::~OiComBrMailbox()
 {

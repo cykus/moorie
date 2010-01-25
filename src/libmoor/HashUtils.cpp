@@ -8,27 +8,27 @@
 #include "StringUtils.h"
 
 namespace {
-	std::string hash(hashid id, const std::string& data) {
-		MHASH td = mhash_init(id);
+        std::string hash(hashid id, const std::string& data) {
+                MHASH td = mhash_init(id);
 
-		if (td != MHASH_FAILED) {
-			uint32_t hash_size = mhash_get_block_size(id);
-			boost::scoped_array<unsigned char> hash(new unsigned char[hash_size]);
-			mhash(td, data.c_str(), data.size());
-			mhash_deinit(td, hash.get());
-			return hashToStr(hash.get(), hash_size);
-		}
+                if (td != MHASH_FAILED) {
+                        uint32_t hash_size = mhash_get_block_size(id);
+                        boost::scoped_array<unsigned char> hash(new unsigned char[hash_size]);
+                        mhash(td, data.c_str(), data.size());
+                        mhash_deinit(td, hash.get());
+                        return hashToStr(hash.get(), hash_size);
+                }
 
-		return std::string();
-	}
+                return std::string();
+        }
 }
 
 std::string md5(const std::string& data) {
-	return hash(MHASH_MD5, data);
+        return hash(MHASH_MD5, data);
 }
 
 std::string sha1(unsigned char data) {
-	return hash(MHASH_SHA1, std::string() + static_cast<char>(data));
+        return hash(MHASH_SHA1, std::string() + static_cast<char>(data));
 }
 
 std::vector<int> split(const char* str, int len) {

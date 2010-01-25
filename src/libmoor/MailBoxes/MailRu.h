@@ -30,6 +30,7 @@ class MailRuMailbox: public CMailBox
 		void logoutRequest();
 		void getHeadersRequest();
 		int downloadRequest(int seg/*const EmailHeader &hdr, Segment *s*/);
+		int uploadRequest(std::string filename, std::string to, int seg);
 
 		void parseResponse();
 };

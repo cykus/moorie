@@ -27,7 +27,7 @@ CMailBox::CMailBox(const std::string &usr, const std::string &passwd)
 	curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0); // don't verify peer certificates
 	//curl_easy_setopt(handle, CURLOPT_FORBID_REUSE, 1);
 	//curl_easy_setopt(handle, CURLOPT_FRESH_CONNECT, 1);
-	//curl_easy_setopt(handle, CURLOPT_VERBOSE, 1);
+//  	curl_easy_setopt(handle, CURLOPT_VERBOSE, 1);
 
 	segDownload = false;
 }
@@ -62,7 +62,6 @@ std::string& CMailBox::doGet(std::string url, bool  header)
 	bytesRead = 0;
 	startTime = boost::posix_time::microsec_clock::universal_time();
 //	lock.unlock();
-
 	stopFlag = false;
 	this->url = url;
 //	LOG(Log::Debug, "GET: " + url);
@@ -70,11 +69,11 @@ std::string& CMailBox::doGet(std::string url, bool  header)
 	curl_easy_setopt(handle, CURLOPT_HEADER, header);
 	curl_easy_setopt(handle, CURLOPT_HTTPGET, 1);
 	curl_easy_setopt(handle, CURLOPT_URL, this->url.c_str());
-	CURLcode status = curl_easy_perform(handle);
-	if (status != 0)
-	{
-//		LOG(Log::Error, format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
-	}
+ 	status = curl_easy_perform(handle);
+// 	if (status != 0)
+// 	{
+// 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
+// 	}
 //	LOG(Log::Debug,"Before request");
 	requestComplete();
 	return this->result;
@@ -89,19 +88,72 @@ std::string& CMailBox::doPost(std::string url, std::string vars, bool header)
 	stopFlag = false;
 	this->url = url;
 	this->vars = vars;
-//	LOG(Log::Debug, "POST: " + url + " DATA: " + vars);
+	LOG(Log::Debug, "POST: " + url + " DATA: " + vars);
 	bufferPos = 0;
 	curl_easy_setopt(handle, CURLOPT_HEADER, header);
 	curl_easy_setopt(handle, CURLOPT_POST, 1);
 	curl_easy_setopt(handle, CURLOPT_POSTFIELDS, this->vars.c_str());
 	curl_easy_setopt(handle, CURLOPT_URL, this->url.c_str());
-	CURLcode status = curl_easy_perform(handle);
+	status = curl_easy_perform(handle);
 	if (status != 0)
 	{
 //		cout << curl_easy_strerror(status) << endl;
 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
 	requestComplete();
+	return this->result;
+}
+
+static size_t read_callback(void *ptr, size_t size, size_t nmemb, FILE *stream)
+{
+	size_t retcode;
+
+  /* in real-world cases, this would probably get this data differently
+	as this fread() stuff is exactly what the library already would do
+	by default internally */
+	retcode = fread(ptr, size, nmemb, stream);
+
+	std::cout << "retcode: " << retcode << std::endl;
+
+	return retcode;
+}
+
+std::string& CMailBox::doSMTPUpload(std::string server, std::string login, std::string password, std::string filename) {
+}
+
+std::string& CMailBox::doHTTPUpload(std::string url, variables myvars, std::string filename, bool header) {
+	struct curl_httppost* post = NULL;
+	struct curl_httppost* last = NULL;
+	struct curl_slist *headerlist=NULL;
+	static const char buf[] = "Expect:";
+
+	curl_easy_setopt(handle, CURLOPT_URL, url.c_str());
+  	curl_easy_setopt(handle, CURLOPT_HEADER, header);
+
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.to_form.c_str(), CURLFORM_COPYCONTENTS, myvars.to_address.c_str(), CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.subject_form.c_str(), CURLFORM_COPYCONTENTS, myvars.subject.c_str(), CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.body_form.c_str(), CURLFORM_COPYCONTENTS, myvars.body.c_str(), CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.file_form.c_str(), CURLFORM_FILE, filename.c_str(), CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.file_form.c_str(), CURLFORM_COPYCONTENTS, filename.c_str(), CURLFORM_END);
+	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.submit_form.c_str(), CURLFORM_COPYCONTENTS, myvars.submit.c_str(), CURLFORM_END);
+
+	headerlist = curl_slist_append(headerlist, buf);
+
+
+	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headerlist);
+	curl_easy_setopt(handle, CURLOPT_HTTPPOST, post);
+
+	status = curl_easy_perform(handle);
+	if (status != 0)
+	{
+		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
+	}
+
+// 	curl_formfree(post);
+// 	curl_slist_free_all (headerlist);
+
+	requestComplete();
+
 	return this->result;
 }
 
@@ -139,6 +191,33 @@ std::string CMailBox::unescape(std::string q)
 	char *e = curl_easy_unescape(handle, q.c_str(), 0, NULL);
 	std::string s(e);
 	return s;
+}
+
+std::string CMailBox::getFileCRC() {
+	return fileCRC;
+}
+
+std::string CMailBox::getSegCRC(std::string filename) {
+	crcRes.reset();
+	std::ifstream in(filename.c_str(), std::ifstream::binary);
+	while (!in.eof()) {
+		in.read(buffer, READ_BUFFER_SIZE);
+		int n = in.gcount();
+		crcRes.process_bytes(buffer, n);
+	}
+	in.close();
+
+	std::stringstream ss;
+	ss << std::setw(8) << std::setfill('0')  << std::hex << crcRes.checksum();
+	segCRC = ss.str();
+
+	boost::to_upper(segCRC);
+
+	return segCRC;
+}
+
+void CMailBox::calculateFileCRC(std::string filename) {
+	fileCRC = getSegCRC(filename); // nie ma to jak skroty :)
 }
 
 size_t CMailBox::_writeData(void *buffer, size_t size, size_t nmem, void *ptr)
@@ -191,7 +270,7 @@ void CMailBox::addHeader(const EmailHeader &hdr)
 
 void CMailBox::addHeaderLink(std::string link)
 {
-	segments_links.push_back(link);	
+	segments_links.push_back(link);
 }
 
 void CMailBox::clearHeaders()
@@ -222,7 +301,7 @@ std::string CMailBox::getLink(int seg) {
 			break;
 		else
 			++counter;
-	} 
+	}
 	//LOG( Log::Debug, boost::format( "%1% %2%" ) %counter %segments_links.at(counter));
 	return segments_links.at(counter);
 }
@@ -238,6 +317,7 @@ int CMailBox::downloadSeg() {
 }
 
 int CMailBox::downloadSegDone() {
+	crcRes.reset();
 	segDownload = false;
 	tmp_file->close();
 	std::string tmpfile = filename+".seg";
@@ -261,7 +341,7 @@ int CMailBox::downloadSegDone() {
 //	string id = ss.str();
 	boost::to_upper(segCRC);
 	boost::regex hreg("\\[" + fileCRC + "\\]\\[" + segCRC + "\\]\\[" + segNumber + "\\]"); // match "[crc][id]"
-	boost::smatch match; 
+	boost::smatch match;
 	for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++)
 	{
 		if (boost::regex_search(it->subject, match, hreg))
@@ -271,8 +351,8 @@ int CMailBox::downloadSegDone() {
 			LOG( Log::Info, "Seg CRC OK");
 			break;
 		}
-	} 
-	
+	}
+
 	if (segOK == true) {
 		std::ifstream segfile(tmpfile.c_str(), std::ifstream::binary);
 		std::ofstream myfile(filename.c_str(), std::ofstream::binary | std::ofstream::app);
@@ -303,11 +383,11 @@ int CMailBox::checkHeaders(int numOfSegments) {
 		{
 			if (boost::regex_search(it->subject, match, hreg))
 			{
-				segments++; 
+				segments++;
 				break;
 			}
-		} 
-		
+		}
+
 	}
 	lost = numOfSegments - segments;
 	LOG( Log::Info, boost::format("Brakujących segmentow: %1%") %lost);

@@ -59,7 +59,7 @@ class Log
 	public:
 		//! Returns Log object instance creating one if necessary
 		static Log* getLog()
-		{ 
+		{
 			if (instance == NULL)
 				instance = new Log();
 			return instance;

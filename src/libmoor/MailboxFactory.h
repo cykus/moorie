@@ -36,7 +36,7 @@ class MailboxFactory {
 		 * @return True if mailbox creator was found, false otherwise.
 		 */
 		bool Registered(const std::string& name);
-		
+
 		/**
 		 * Unregisters mailbox object creator.
 		 * @param name Name of creator.

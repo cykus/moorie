@@ -22,15 +22,17 @@ struct EmailHeader
 	std::string uniqueId; //!< Unique id of the message
 
 	EmailHeader(const std::string& id, const std::string& subj)
-    : uniqueId(id) 
-	{ 
-    subject = decode(subj); 
+    : uniqueId(id)
+	{
+    subject = decode(subj);
   }
 
     private:
 	    std::string decode(const std::string&);
 	    std::string asciiDecode(const std::string&);
 };
+
+std::string EncodeHeader(std::string filename, std::string segCRC, std::string fileCRC, int seg);
 
 #endif
 

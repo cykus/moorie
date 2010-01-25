@@ -1,4 +1,4 @@
-#include "Tools.h" 
+#include "Tools.h"
 
 // std::string& str_replace(const std::string &search,
 //                          const std::string &replace,
@@ -60,7 +60,6 @@ std::string Rot13(std::string str)
 	}
 	return str2;
 }
-
 std::string rot13(const std::string& str) {
 	std::string result = "";
 

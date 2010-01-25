@@ -18,27 +18,27 @@
 // #include "MoorieException.h"
 #include <sstream>
 #include <boost/regex.hpp>
-        
+
 namespace {
-  CMailBox* Create(const std::string& username, 
-                   const std::string& password) 
+  CMailBox* Create(const std::string& username,
+                   const std::string& password)
   {
     return new MailRuMailbox(username, password);
   }
-  
+
   const bool registered = MailboxFactory::Instance().
                                           Register("mail.ru", Create);
-}        
+}
 
 MailRuMailbox::MailRuMailbox(const std::string &usr, const std::string &passwd)
-	: CMailBox(usr, passwd), 
+	: CMailBox(usr, passwd),
 		totalEmails(0)
 {
 }
 
 int MailRuMailbox::loginRequest()
 {
-	
+
 //	LOG_ENTER("MailRuMailbox::loginRequest");
 	const std::string vars = std::string("Login=")
 		+ escape(getUser()) + "&Domain=" + escape("mail.ru") + "&Password="
@@ -50,7 +50,7 @@ int MailRuMailbox::loginRequest()
 
 	boost::regex re("Set-Cookie: (Mpop=.*?;)");
 	if (boost::regex_search(page, match, re))
-	{	
+	{
 		auth = match[1];
 //		LOG(Log::Debug, "auth=" + auth);
 //		setState(Mailbox::LoginDone); // logged in
@@ -94,7 +94,7 @@ void MailRuMailbox::getHeadersRequest()
 	boost::regex_search(page,match3,re3);
 	std::istringstream pg(match3[1]);
 	int pages;
-	pg >> pages; 
+	pg >> pages;
 	pages = pages / 25 + 1;
 //	cout << "match: " << match3[1] << " stron: " << pages;
 	LOG(Log::Debug,boost::format( "match: "+match3[1]+" stron: %d" ) % pages );
@@ -122,7 +122,7 @@ void MailRuMailbox::getHeadersRequest()
 		}
 //		LOG(Log::Debug, ".");
 	}
-	
+
 //	setState(Mailbox::ReadHeadersDone); */
 }
 
@@ -134,7 +134,7 @@ int MailRuMailbox::downloadRequest(int seg)
  	page = doGet("http://win.mail.ru/cgi-bin/readmsg"+mylink);
 //	regex re("http://a[a-z]*[0-9].mail.ru/cgi-bin/readmsg/.*?&mode=attachment&channel=");
  	boost::regex re("<a href=\"(http://a[^\"]*/cgi-bin/readmsg/[^\"]*&mode=attachment&channel=)");
-	
+
 	boost::smatch match;
 	std::string link;
 	if (boost::regex_search(page,match,re))
@@ -153,6 +153,115 @@ int MailRuMailbox::downloadRequest(int seg)
 	}
 
 }
+
+int MailRuMailbox::uploadRequest(std::string filename, std::string to, int seg) {
+	LOG(Log::Debug, boost::format( "uploadRequest" ));
+
+	size_t len, request_length;
+	std::string message;
+	using boost::asio::ip::tcp;
+
+	len = strlen(getUser().c_str());
+	unsigned char *b64login = base64((char*)getUser().c_str(), len);
+	len = strlen(getPassword().c_str());
+	unsigned char *b64password = base64((char*)getPassword().c_str(), len);
+
+std::cout << b64login << " " << b64password << std::endl;
+
+	boost::asio::io_service io_service;
+	tcp::resolver resolver(io_service);
+	tcp::resolver::query query("smtp.mail.ru", "smtp");
+	tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+	tcp::resolver::iterator end;
+	tcp::socket socket(io_service);
+	boost::system::error_code error = boost::asio::error::host_not_found;
+
+	while (error && endpoint_iterator != end)
+	{
+		socket.close();
+		socket.connect(*endpoint_iterator++, error);
+	}
+	if (error)
+		throw boost::system::system_error(error);
+
+	boost::array<char, 128> buf;
+
+	len = socket.read_some(boost::asio::buffer(buf), error);
+	std::cout.write(buf.data(), len);
+
+	// powiedz ladnie HELO
+	message = "HELO smtpproxy.netcity.pl\n";
+	request_length = strlen(message.c_str());
+	boost::asio::write(socket, boost::asio::buffer(message, request_length));
+	len = socket.read_some(boost::asio::buffer(buf), error);
+	std::cout.write(buf.data(), len);
+
+	// autoryzacja
+	message = "AUTH LOGIN\n";
+	request_length = strlen(message.c_str());
+	boost::asio::write(socket, boost::asio::buffer(message, request_length));
+	len = socket.read_some(boost::asio::buffer(buf), error);
+	std::cout.write(buf.data(), len);
+
+	// autoryzacja - login
+	request_length = strlen((char*)b64login);
+	boost::asio::write(socket, boost::asio::buffer(b64login, request_length));
+	boost::asio::write(socket, boost::asio::buffer("\n", 1));
+	len = socket.read_some(boost::asio::buffer(buf), error);
+	std::cout.write(buf.data(), len);
+
+	// autoryzacja - haslo
+	request_length = strlen((char*)b64password);
+	boost::asio::write(socket, boost::asio::buffer(b64password, request_length));
+	boost::asio::write(socket, boost::asio::buffer("\n", 1));
+	len = socket.read_some(boost::asio::buffer(buf), error);
+	std::cout.write(buf.data(), len);
+
+// nadawca
+	message = "MAIL FROM:" + getUser() + "@mail.ru\n";
+	request_length = strlen(message.c_str());
+	boost::asio::write(socket, boost::asio::buffer(message, request_length));
+	len = socket.read_some(boost::asio::buffer(buf), error);
+	std::cout.write(buf.data(), len);
+
+
+	// odbiorca
+	message = "RCPT TO: " + getUser() + "@mail.ru\n";
+	request_length = strlen(message.c_str());
+	boost::asio::write(socket, boost::asio::buffer(message, request_length));
+	len = socket.read_some(boost::asio::buffer(buf), error);
+	std::cout.write(buf.data(), len);
+
+	// odbiorca
+	message = "DATA\n";
+	request_length = strlen(message.c_str());
+	boost::asio::write(socket, boost::asio::buffer(message, request_length));
+	len = socket.read_some(boost::asio::buffer(buf), error);
+	std::cout.write(buf.data(), len);
+
+	// odbiorca
+	message = "testowanie dupa dupa\n";
+	request_length = strlen(message.c_str());
+	boost::asio::write(socket, boost::asio::buffer(message, request_length));
+
+
+		// odbiorca
+	message = ".\n";
+	request_length = strlen(message.c_str());
+	boost::asio::write(socket, boost::asio::buffer(message, request_length));
+	len = socket.read_some(boost::asio::buffer(buf), error);
+	std::cout.write(buf.data(), len);
+
+	// odbiorca
+	message = "quit\n";
+	request_length = strlen(message.c_str());
+	boost::asio::write(socket, boost::asio::buffer(message, request_length));
+	len = socket.read_some(boost::asio::buffer(buf), error);
+	std::cout.write(buf.data(), len);
+
+	return 0;
+}
+
 
 MailRuMailbox::~MailRuMailbox()
 {

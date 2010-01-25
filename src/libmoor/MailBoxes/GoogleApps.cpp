@@ -53,7 +53,7 @@ int GoogleAppsMailbox::loginRequest()
     domain = "gazeta.pl";
     boost::smatch match2;
 
-	
+
     page = doGet("https://www.google.com/a/"+domain);
     boost::regex re3("name=\"GALX\"[\n].*?value=\"([a-zA-Z0-9_*[-]*]*)\"");
     boost::regex_search(page, match2, re3);
@@ -66,14 +66,14 @@ int GoogleAppsMailbox::loginRequest()
                 +"&Passwd="+escape(getPassword())
                 +"&rmShown=1";
     page = doPost("https://www.google.com/a/"+domain+"/LoginAction2?service=mail",vars,true);
-    
+
     //LOG(Log::Info,"page :"+ page);
 		std::string username = getUser();
         boost::regex re(username);
         boost::regex re2("&amp;");
         boost::regex authre("auth=([\\w\\d_-]+)");
         boost::smatch match;
-		
+
         if (boost::regex_search(page, match, re))
         {
                 std::string url = match[1];
@@ -154,6 +154,43 @@ int GoogleAppsMailbox::downloadRequest(int seg)
         doGet(link);
         if (downloadSegDone() == 0) return 0;
         else return 1;
+}
+
+int GoogleAppsMailbox::uploadRequest(std::string filename, std::string to, int seg) {
+	std::string segCRC = getSegCRC(filename);
+
+	url = "https://mail.google.com/a/"+domain+"/h/?v=b&pv=tl&cs=b";
+
+	page = doGet(url);
+
+	// wyszukiwanie base hrefa
+	boost::regex re1(" <base href=\"(.*?)\"> ");
+	boost::smatch match1;
+	if (boost::regex_search(page, match1, re1)) {
+		base = match1[1];
+	} else
+		return 1;
+
+	// szukanie linka do POST-a
+	boost::regex re("<td bgcolor=\"#e0ecff\"> <form action=\"(.*?)\" name=\"f\"");
+	boost::smatch match;
+	if (boost::regex_search(page, match, re)) {
+		postlink = base + match[1];
+	} else
+		return 1;
+
+	variables my_vars;
+	my_vars.to_form = "to";
+	my_vars.to_address = to;
+	my_vars.subject_form = "subject";
+	my_vars.subject = EncodeHeader(filename, segCRC, getFileCRC(), seg);
+	my_vars.body_form = "body";
+	my_vars.body = "tresc wiadomosci";
+	my_vars.submit_form = "nvp_bu_send";
+	my_vars.submit = "WyÅij";
+	page = doHTTPUpload(postlink, my_vars, filename, true);
+
+	return 0;
 }
 
 GoogleAppsMailbox::~GoogleAppsMailbox()

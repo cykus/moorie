@@ -90,9 +90,11 @@ void QMoorie::toggleVisibility()
      connect(settingsAct, SIGNAL(triggered()), this ,SLOT(showSettings()));
 
      playAct = new QAction(QIcon(":images/play.png"),tr("&Wznów"),this);
+     playAct->setDisabled(true);
      playAct -> setStatusTip(tr("Wznowienie pobierania"));
 
      pauseAct = new QAction(QIcon(":images/pause.png"),tr("Wstrzymaj"),this);
+     pauseAct->setDisabled(true);
      pauseAct -> setStatusTip(tr("Wstrzymanie pobierania"));
 
      removeAct = new QAction(QIcon(":images/remove.png"),tr("&Usuń"),this);
@@ -203,6 +205,7 @@ void QMoorie::refreshStatuses()
 
     while(1)
     {
+        boost::mutex::scoped_lock scoped_lock(mutex);
         quint64 allBytesReadSession = 0;
         sleep(2);
         for (int i = 0; i < tInstance.size(); ++i)
@@ -301,15 +304,18 @@ void QMoorie::removeDownload()
     int row = tabela->currentRow();
     for (int i = 0; i < tInstance.size(); ++i)
     {
+        qDebug() << 'tIns.size: ' << tInstance.size() << ' tabela.rowcount: ' << tabela->rowCount();
         if(tInstance.at(i)->itemRow == row)
         {
+            tInstance.at(i)->exit();
             tInstance.remove(i);
             saveDownloads();
         }
     }
     for (int i = 0; i < tInstance.size(); ++i)
     {
-            stop = true;
+            qDebug() << "tIns.size: " << tInstance.size() << " tabela.rowcount: " << tabela->rowCount();
+            mutex.lock();
             tabela->setRowCount(tabela->rowCount() - 1);
             tInstance.at(i)->itemRow = i;
             QTableWidgetItem *nazwaPliku = new QTableWidgetItem(tInstance.last()->filename);
@@ -317,7 +323,7 @@ void QMoorie::removeDownload()
             QString fileSize; fileSize.sprintf("%.2f", tInstance.at(i)->size / 1024 / 1024);
             QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize + " MB");
             tabela->setItem(tInstance.at(i)->itemRow, 1, rozmiarPliku);
-            stop = false;
+            mutex.unlock();
 
     }
 }

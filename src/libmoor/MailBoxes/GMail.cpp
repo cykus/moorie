@@ -19,18 +19,18 @@
 #include <boost/format.hpp>
 
 namespace {
-  CMailBox* Create(const std::string& username, 
-                   const std::string& password) 
+  CMailBox* Create(const std::string& username,
+                   const std::string& password)
   {
     return new GMailMailbox(username, password);
   }
-  
+
   const bool registered = MailboxFactory::Instance().
                                           Register("gmail.com", Create);
 }
 
 GMailMailbox::GMailMailbox(const std::string &usr, const std::string &passwd)
-  : CMailBox(usr, passwd), 
+  : CMailBox(usr, passwd),
     totalEmails(0)
 {
 }
@@ -49,7 +49,7 @@ int GMailMailbox::loginRequest()
 		+ escape(getUser()) + "&Passwd="
 		+ escape(getPassword())
                 + "&signIn=Sign+in";
-	
+
 	page = doPost("https://www.google.com/accounts/ServiceLoginAuth", vars);
 
 	boost::regex re("url=&#39;(.+)&");
@@ -110,7 +110,7 @@ void GMailMailbox::getHeadersRequest()
 		}
 		if (msgcnt == 0)
 		{
-			
+
 		}
 		else
 		{
@@ -121,7 +121,7 @@ void GMailMailbox::getHeadersRequest()
 			page = doGet(url);
 		}
 	}
-	
+
 }
 
 int GMailMailbox::downloadRequest(int seg)
@@ -134,6 +134,11 @@ int GMailMailbox::downloadRequest(int seg)
 	doGet(link);
 	if (downloadSegDone() == 0) return 0;
 	else return 1;
+}
+
+int GMailMailbox::uploadRequest(std::string filename, std::string to, int seg) {
+
+	return 0;
 }
 
 GMailMailbox::~GMailMailbox()

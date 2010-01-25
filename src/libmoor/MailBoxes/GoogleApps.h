@@ -25,6 +25,10 @@ class GoogleAppsMailbox: public CMailBox
                 std::string page;
                 std::string domain;
 
+				std::string postlink;
+				std::string base;
+				std::string url;
+				std::string myvars;
 	public:
                 GoogleAppsMailbox(const std::string &usr, const std::string &passwd);
 		~GoogleAppsMailbox();
@@ -32,6 +36,7 @@ class GoogleAppsMailbox: public CMailBox
                 void logoutRequest();
                 void getHeadersRequest();
                 int downloadRequest(int seg);
+				int uploadRequest(std::string filename, std::string to, int seg);
 
                 void parseResponse();
 };

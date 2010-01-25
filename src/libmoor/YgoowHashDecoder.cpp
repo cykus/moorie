@@ -27,7 +27,7 @@ const char* needles[] = {"~", "{", "}", "=", "<", "?", "[YKP]:", 0};
 const char* replacements[] = {"*", "-", ".", "0", "1", "2", "[KontoPomocnicze]:", 0};
 
 Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
-	HashInfo result;
+        HashInfo result;
 	std::string hash = hashcode;
 
 	hash = str::replace(hash, "\r\n", "");
@@ -71,7 +71,7 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 		std::string str6 = sha1(i + '0');
 		if ((str6.substr(0, 10) == str2) && (str6.substr(30, 10) == rot13(str4)))
 			num = i;
-	}
+        }
 
 	int num4 = 0x18 - (str::toInt(str3) + num);
 	std::string str5_r = rot13(str5);
@@ -167,8 +167,7 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 		result.comment = adds.at(2);
 
 		result.valid = true; // TODO: add required checks before setting it!
-	}
-
+        }
 	return new YgoowHash(result);
 }
 

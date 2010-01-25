@@ -35,9 +35,9 @@ std::string EmailHeader::decode( const std::string& code )
 		int cut = code_temp.length() - digits;
 		code1 = code_temp.substr(l-cut, l);
 	}
-    else 
+    else
 		code1 = code_temp;
-	
+
     try{
 
     std::string sa,sb,sc;
@@ -116,3 +116,9 @@ std::string EmailHeader::asciiDecode( const std::string& code )
 }
 
 
+std::string EncodeHeader(std::string filename, std::string segCRC, std::string fileCRC, int seg) {
+	std::stringstream ss;
+	ss << seg;
+	std::string header = "["+fileCRC+"]["+segCRC+"]["+ss.str()+"]";
+	return header;
+}

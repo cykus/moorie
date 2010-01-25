@@ -78,6 +78,7 @@ class QMoorie:public QMainWindow
     Ui::MainWindow *ui;
     boost::thread *statusesThread; //!< Wątek odpowiedzialny za wyświetlanie statusów
     boost::thread *logsThread; //!< Wątek odpowiedzialny za wyświetlanie logów
+    boost::mutex mutex; 
 
     void refreshStatuses();
     void refreshLogs();

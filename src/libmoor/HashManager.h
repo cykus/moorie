@@ -24,7 +24,7 @@ class HashManager {
 		 * @return Hash decoder.
 		 */
 		static HashDecoder* getHashDecoder(const std::string& hashcode);
-		
+
 	private:
 		HashManager();
 		HashManager(const HashManager&);
