@@ -33,7 +33,7 @@ bool CLibMoor::Dehash(const std::string& hashcode) {
 int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 	if((path.find_last_of("/") != 0) && (path.length() > 1))
 		path += "/";
-        
+
 	LOG(Log::Info, boost::format("Pobieranie do %1%") %path);
         mySeg = getLastSegment(path + myHash->getInfo().fileName);
         if (mySeg == myHash->getInfo().numOfSegments) {
@@ -135,7 +135,7 @@ int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd)
 
 	myLogin = login;
 	myPasswd = passwd;
-	myUploadMailbox = "gazeta.pl"; // TODO - wybieranie skrzynki po id;
+	myUploadMailbox = "gmail.com"; // TODO - wybieranie skrzynki po id;
 	return 0;
 }
 

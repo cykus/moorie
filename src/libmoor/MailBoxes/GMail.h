@@ -24,6 +24,11 @@ class GMailMailbox: public CMailBox
 		int totalEmails;
 		std::string page;
 
+		std::string postlink;
+		std::string base;
+		std::string url;
+		std::string myvars;
+
 	public:
 		GMailMailbox(const std::string &usr, const std::string &passwd);
 		~GMailMailbox();
