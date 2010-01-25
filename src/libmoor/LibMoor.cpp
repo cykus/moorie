@@ -1,5 +1,7 @@
 #include "LibMoor.h"
 
+#include <iostream>
+
 #include "Log.h"
 #include "MailboxFactory.h"
 #include "HashManager.h"
@@ -73,18 +75,14 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 				LOG(Log::Info, "Zalogowano pomyslnie...");
 				LOG(Log::Info, "Sprawdzanie listy segmentow...");
 				myMailBox->getHeadersRequest();
-				int segments = myMailBox->checkHeaders(myHash->getInfo().numOfSegments);
+				unsigned int segments = myMailBox->countAvailableSegments(mySeg);
 				if (segments == 0) {
-					LOG(Log::Info, "Found none segments at all.");
-				}
-				else if (segments <= mySeg) {
 					LOG(Log::Info, "Found none new segments.");
 				}
-				// (segments >= myHash->getInfo().numOfSegments)
-				else if (segments > mySeg) {
+				else {
 					LOG(Log::Info, "Found new segments. Downloading...");
 					if (startDownload() == 0) {
-						LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %mySeg );
+						LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %(mySeg + 1) );
 					}
 				}
 			}
@@ -111,20 +109,23 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 	}
 
 //	myMailBox -> Login();
+
 	return 0;
 }
 
 int CLibMoor::startDownload() {
 	bool segValid = true;
-        while (segValid && (mySeg < myHash->getInfo().numOfSegments)) {
-		mySeg++;
+	int curSeg = mySeg;
+	while (segValid && (mySeg < myHash->getInfo().numOfSegments)) {
+		++curSeg;
 		LOG(Log::Info, boost::format( "Sciaganie segmentu: %1%/%2%" )
-		               %mySeg
+		               %curSeg
 		               %myHash->getInfo().numOfSegments);
-		for (int i = 0, segValid = false; i < segDownloadTries; ++i) {
-			if (myMailBox->downloadRequest(mySeg) == 0) {
+		segValid = false;
+		for (int i = 0; i < segDownloadTries && !segValid; ++i) {
+			if (myMailBox->downloadRequest(curSeg) == 0) {
 				segValid = true;
-		    break;
+				mySeg = curSeg;
 			}
 		}
 	}
@@ -139,9 +140,10 @@ int CLibMoor::startDownload() {
 
 int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd) {
 // 	myUploadMailbox = getMailboxName(id);
-	// TODO - wybieranie skrzynki po id;
+
 	myLogin = login;
 	myPasswd = passwd;
+	myUploadMailbox = "gazeta.pl"; // TODO - wybieranie skrzynki po id;
 	return 0;
 }
 
@@ -186,8 +188,9 @@ int CLibMoor::startUpload() {
 	LOG(Log::Info, boost::format("Zaczynam upload"));
 
 	std::stringstream ss;
+	std::string address = myLogin+"@"+myUploadMailbox;
 
-	myMailBox = MailboxFactory::Instance().Create("gazeta.pl", myLogin, myPasswd); // TODO - zmienic "mail.ru" na wybrana skrzynke
+	myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd); // TODO - zmienic "mail.ru" na wybrana skrzynke
 	if (myMailBox) {
 // 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) myUploadMailbox);
 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
@@ -199,7 +202,7 @@ int CLibMoor::startUpload() {
 
 				ss.str("");
 				ss << myUploadFilename << "." << i;
-				if (myMailBox->uploadRequest(ss.str(), "moorie@gazeta.pl", i) == 0)
+				if (myMailBox->uploadRequest(ss.str(), address, i) == 0)
 					LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
 				else
 					LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%i);
@@ -217,4 +220,24 @@ Status CLibMoor::getStatus() {
 	Status s(mySeg, myMailBox->getSpeed(), myMailBox->getBytesRead(),
 	         myHash->getInfo().accounts[selected].name);
 	return s;
+}
+
+unsigned int CLibMoor::getLastSegment(const std::string& filePath) {
+	unsigned int segment = 0;
+	if (boost::filesystem::exists(filePath)) {
+		unsigned int filesize = boost::filesystem::file_size(filePath);
+		if (myHash->getInfo().segmentSize != 0) {
+			segment = filesize / myHash->getInfo().segmentSize;
+		}
+		else {
+			int currSize = 0;
+			std::vector<int>::const_iterator it = myHash->getInfo().segmentSizes.begin();
+			for (; it != myHash->getInfo().segmentSizes.end(); ++it) {
+				if ((currSize += *it) < filesize)	break;
+				else ++segment;
+			}
+		}
+	}
+
+	return segment;
 }
