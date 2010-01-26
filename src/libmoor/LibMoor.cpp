@@ -142,7 +142,7 @@ int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd)
 
 	myLogin = login;
 	myPasswd = passwd;
-	myUploadMailbox = "gmail.com"; // TODO - wybieranie skrzynki po id;
+	myUploadMailbox = getMailboxName(id); // TODO - wybieranie skrzynki po id;
 	return 0;
 }
 
@@ -191,8 +191,8 @@ int CLibMoor::startUpload() {
 
 	myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd); // TODO - zmienic "mail.ru" na wybrana skrzynke
 	if (myMailBox) {
-// 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) myUploadMailbox);
-		LOG(Log::Info, boost::format( "Logowanie do: ...") );
+ 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %address);
+// 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
  		if (myMailBox->loginRequest() == 0) {
 			myMailBox->calculateFileCRC(myUploadFilename);
 			LOG(Log::Info, boost::format( "CRC Pliku: %1%" )	%myMailBox->getFileCRC());

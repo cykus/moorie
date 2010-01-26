@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
 	std::string file;   // hash input file
 	std::string strhash;
 	unsigned int mailbox (1) ;
+	int upmailbox;
     std::string pass; // moorhunt password
 	std::string hash;
     std::string path = "";
@@ -22,7 +23,7 @@ int main(int argc, char **argv) {
 	unsigned int ss (7);
 	bool download = false, upload = false;
 
-	boost::program_options::options_description desc("Moorie 0.2 (C)by Moorie Team (http://moorie.mahho.net/) \n\nOptions");
+	boost::program_options::options_description desc("Moorie 0.2.1 (C)by Moorie Team (http://moorie.mahho.net/) \n\nOptions");
 	desc.add_options()
 			("hash,f", boost::program_options::value<std::string>(), "Hash file")
 			("shash,s", boost::program_options::value<std::string>(), "Hash string")
@@ -33,7 +34,7 @@ int main(int argc, char **argv) {
 			("ul", boost::program_options::value<std::string>(), "Upload mailbox login")
 			("up", boost::program_options::value<std::string>(), "Upload mailbox password")
 			("ss", boost::program_options::value<unsigned int>( &ss )->default_value( 7 ), "Upload segment size (1-10 mb), default 7mb")
-            ("log-level,l", boost::program_options::value<unsigned int>( &logLevel )->default_value( 1 ), "Log level (0-8)")
+            ("log-level,l", boost::program_options::value<unsigned int>( &logLevel )->default_value( 8 ), "Log level (0-8)")
 			("version", "Show version information")
 			("help,h", "Show help");
 	boost::program_options::variables_map vars;
@@ -154,7 +155,17 @@ int main(int argc, char **argv) {
 		try
 		{
 			Instance = new CLibMoor();
-			Instance -> selectUploadMailBox(0x03, ul, up);
+			std::cout << "Wybierz skrzynke do uploadu: " << std::endl;
+			std::cout << "1. gmail.com" << std::endl;
+			std::cout << "2. gazeta.pl" << std::endl;
+			std::cin >> mailbox;
+			switch (mailbox) {
+				case 1: upmailbox = 0x03; break;
+				case 2: upmailbox = -93; break;
+				default: std::cout << "Zla skrzynka" << std::endl;
+			}
+
+			Instance -> selectUploadMailBox(upmailbox, ul, up);
 			Instance -> splitFile(upload_filename, ss);
 			Instance -> startUpload();
 
