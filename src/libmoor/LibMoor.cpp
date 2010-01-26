@@ -58,7 +58,7 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 										%myHash->getInfo().accounts[i].password);
 	}*/
 
-	int tries = 1;
+	int tries = 0;
 	while (tries <= myHash->getInfo().accounts.size() && downloadDone == false) {
 		std::string mailbox = myHash->getInfo().accounts[selected].name;
 		std::string login = myHash->getInfo().accounts[selected].login;
@@ -111,7 +111,7 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 				LOG(Log::Info, "-- CRC OK! --");
 		}
 
-		if (tries > myHash->getInfo().accounts.size()) {
+		if (tries >= myHash->getInfo().accounts.size()) {
 			LOG(Log::Info, "Nie udalo sie pobrac pliku z zadnej ze skrzynek... Koncze program." );
 			downloadDone = true;
 			delete myMailBox;
