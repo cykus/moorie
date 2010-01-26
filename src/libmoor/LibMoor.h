@@ -39,6 +39,7 @@ class CLibMoor {
 		boost::shared_ptr<Hash> myHash;
 		CMailBox* myMailBox;
 		int mySeg;
+		std::string myPath;
 
 		// upload
 		std::string myUploadFilename;

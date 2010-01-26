@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 			("up", boost::program_options::value<std::string>(), "Upload mailbox password")
 			("ss", boost::program_options::value<unsigned int>( &ss )->default_value( 7 ), "Upload segment size (1-10 mb), default 7mb")
             ("log-level,l", boost::program_options::value<unsigned int>( &logLevel )->default_value( 8 ), "Log level (0-8)")
-			("version", "Show version information")
+			("version,v", "Show version information")
 			("help,h", "Show help");
 	boost::program_options::variables_map vars;
 	try
@@ -174,6 +174,7 @@ int main(int argc, char **argv) {
 			std::cout << "Wybierz skrzynke do uploadu: " << std::endl;
 			std::cout << "1. gmail.com" << std::endl;
 			std::cout << "2. gazeta.pl" << std::endl;
+			std::cout << "$ ";
 			std::cin >> mailbox;
 			switch (mailbox) {
 				case 1: upmailbox = 0x03; break;
