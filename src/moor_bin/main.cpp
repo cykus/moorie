@@ -60,22 +60,24 @@ int main(int argc, char **argv) {
 		std::cout << "Moorie " << VERSION << std::endl;
 		return 0;
 	}
-        if ( logLevel > 0 )
-        {
-                logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
-                LogFileHandle *logh = new LogFileHandle( "moorie.log", static_cast<Log::Level>( logLevel ) );
-                Log::getLog()->addHandle(logh);
-                LogConsoleHandle *logh2 = new LogConsoleHandle(static_cast<Log::Level>( logLevel ) );
-                Log::getLog()->addHandle(logh2);
-        }
+
+	if ( logLevel > 0 )
+    {
+    	logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
+        LogFileHandle *logh = new LogFileHandle( "moorie.log", static_cast<Log::Level>( logLevel ) );
+        Log::getLog()->addHandle(logh);
+        LogConsoleHandle *logh2 = new LogConsoleHandle(static_cast<Log::Level>( logLevel ) );
+        Log::getLog()->addHandle(logh2);
+    }
+
 	if (vars.count("password"))
 	{
                 pass = vars["password"].as<std::string>();
 	}
-        if (vars.count("path"))
-        {
-                path = vars["path"].as<std::string>();
-        }
+    if (vars.count("path"))
+    {
+    	path = vars["path"].as<std::string>();
+	}
 	if (vars.count("hash"))
 	{
 		file = vars["hash"].as<std::string>();
@@ -137,6 +139,10 @@ int main(int argc, char **argv) {
 			std::cout << "Zla wielkosc segmentu (tylko 1-10)! Koncze program." << std::endl;
 			return 1;
 		}
+	}
+
+	if (!vars.count("hash") && !vars.count("shash") && !vars.count("upload")) {
+		std::cout << desc << std::endl;
 	}
 
 	curl_global_init(CURL_GLOBAL_ALL);
