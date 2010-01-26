@@ -12,13 +12,14 @@ int main(int argc, char **argv) {
         CLibMoor * Instance;
 	std::string file;   // hash input file
 	std::string strhash;
-        std::string pass; // moorhunt password
+	unsigned int mailbox (1) ;
+    std::string pass; // moorhunt password
 	std::string hash;
-        std::string path = "";
-		std::string upload_filename;
-        unsigned int logLevel( 8 );
-		std::string ul, up;
-		unsigned int ss (7);
+    std::string path = "";
+	std::string upload_filename;
+    unsigned int logLevel( 8 );
+	std::string ul, up;
+	unsigned int ss (7);
 	bool download = false, upload = false;
 
 	boost::program_options::options_description desc("Moorie 0.2 (C)by Moorie Team (http://moorie.mahho.net/) \n\nOptions");
@@ -26,6 +27,7 @@ int main(int argc, char **argv) {
 			("hash,f", boost::program_options::value<std::string>(), "Hash file")
 			("shash,s", boost::program_options::value<std::string>(), "Hash string")
 			("password,p", boost::program_options::value<std::string>(), "Hash password")
+			("mailbox,m", boost::program_options::value<unsigned int>( &mailbox )->default_value( 1 ), "Select mailbox")
 //          ("path,u",      boost::program_options::value<std::string>(), "Download path")
 			("upload,u", boost::program_options::value<std::string>(), "Upload file")
 			("ul", boost::program_options::value<std::string>(), "Upload mailbox login")
@@ -76,6 +78,7 @@ int main(int argc, char **argv) {
 	if (vars.count("hash"))
 	{
 		file = vars["hash"].as<std::string>();
+		mailbox = vars["mailbox"].as<unsigned int>();
 		std::string buf, line;
 		std::ifstream f(file.c_str());
 		while(std::getline(f,line))
@@ -86,6 +89,7 @@ int main(int argc, char **argv) {
 	else if (vars.count("shash"))
 	{
 		strhash = vars["shash"].as<std::string>();
+		mailbox = vars["mailbox"].as<unsigned int>();
 		hash = strhash;
 		download = true;
 	}
@@ -136,7 +140,7 @@ int main(int argc, char **argv) {
                         {
                             Instance = new CLibMoor();
                             Instance -> Dehash(hash);
-                            Instance -> selectDownloadMailBox(0,path);
+                            Instance -> selectDownloadMailBox(mailbox-1, path);
                         }
                         else std::cerr << "Hasło nieprawidłowe" << std::endl;
                         }

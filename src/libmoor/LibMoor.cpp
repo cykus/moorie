@@ -23,7 +23,7 @@ bool CLibMoor::Dehash(const std::string& hashcode) {
 	if (myHash->getInfo().valid) {
 		int vector_size = myHash->getInfo().accounts.size();
 		for (int i = 0; i < vector_size; ++i) {
-			std::cout << i << " " << myHash->getInfo().accounts[i].name << std::endl;
+			std::cout << i+1 << " " << myHash->getInfo().accounts[i].name << std::endl;
 		}
 	}
 
@@ -42,6 +42,13 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
         }
 
 	int vector_size = myHash->getInfo().accounts.size();
+
+	if (MailBox > vector_size -1) {
+		selected = 0;
+		LOG(Log::Info ,"Skrzynka nie istnieje, wybieram pierwsza z listy");
+	}
+	else
+		selected = MailBox;
 	/*for (int i = 0; i < vector_size; ++i) {
 		LOG(Log::Debug, boost::format( "%1%. ID: %2% L: %3% P: %4%" ) %i
 										%myHash->getInfo().accounts[i].name

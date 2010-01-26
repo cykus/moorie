@@ -88,7 +88,7 @@ std::string& CMailBox::doPost(std::string url, std::string vars, bool header)
 	stopFlag = false;
 	this->url = url;
 	this->vars = vars;
-	LOG(Log::Debug, "POST: " + url + " DATA: " + vars);
+// 	LOG(Log::Debug, "POST: " + url + " DATA: " + vars);
 	bufferPos = 0;
 	curl_easy_setopt(handle, CURLOPT_HEADER, header);
 	curl_easy_setopt(handle, CURLOPT_POST, 1);
