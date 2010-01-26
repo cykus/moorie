@@ -101,31 +101,41 @@ int main(int argc, char **argv) {
 	}
 	else if (vars.count ("upload"))
 	{
-		if ( !boost::filesystem::exists( vars["upload"].as<std::string>() ) )
-		{
+		if ( !boost::filesystem::exists( vars["upload"].as<std::string>() ) ) {
 			std::cout << "File does not exist! Terminating" << std::endl;
 			return 1;
-		} else if (!vars.count ("ul")) {
-			std::cout << "Upload Mailbox login (-ul) is not set" << std::endl;
-			return 1;
-		} else if (!vars.count ("up")) {
-			std::cout << "Upload Mailbox password (-up) is not set" << std::endl;
-			return 1;
-		} else if (!vars.count ("ss")) {
-			std::cout << "Upload Segment size (-ss) is not set" << std::endl;
-			return 1;
 		} else {
-			ul = vars["ul"].as<std::string>();
-			up = vars["up"].as<std::string>();
-// 			ss = vars["ss"].as<int>();
-			if (ss < 1 || ss > 10) {
-				std::cout << "Upload Segment size is bad (only 1-10)! Aborting" << std::endl;
-				return 1;
-			}
-// 			std::cout << "Select mailbox: " << std::endl;
-// 			std::cout << "1. mail.ru" << std::endl;
 			upload_filename = vars["upload"].as<std::string>();
 			upload = true;
+		}
+
+		if (!vars.count ("ul")) {
+// 			std::cout << "Upload Mailbox login (-ul) is not set" << std::endl;
+			std::cout << "Podaj login: ";
+			std::cin >> ul;
+// 			return 1;
+		} else
+			ul = vars["ul"].as<std::string>();
+
+		if (!vars.count ("up")) {
+// 			std::cout << "Upload Mailbox password (-up) is not set" << std::endl;
+			std::cout << "Podaj haslo: ";
+			std::cin >> up;
+// 			return 1;
+		} else
+			up = vars["up"].as<std::string>();
+
+		if (!vars.count ("ss")) {
+// 			std::cout << "Upload Segment size (-ss) is not set" << std::endl;
+			std::cout << "Podaj wielkosc segmentu (1-10): ";
+			std::cin >> ss;
+// 			return 1;
+		} else
+			ss = vars["ss"].as<unsigned int>();
+
+		if (ss < 1 || ss > 10) {
+			std::cout << "Zla wielkosc segmentu (tylko 1-10)! Koncze program." << std::endl;
+			return 1;
 		}
 	}
 
@@ -162,7 +172,7 @@ int main(int argc, char **argv) {
 			switch (mailbox) {
 				case 1: upmailbox = 0x03; break;
 				case 2: upmailbox = -93; break;
-				default: std::cout << "Zla skrzynka" << std::endl;
+				default: std::cout << "Zly wybor! Koncze program." << std::endl; return 1;
 			}
 
 			Instance -> selectUploadMailBox(upmailbox, ul, up);

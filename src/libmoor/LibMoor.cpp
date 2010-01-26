@@ -194,6 +194,7 @@ int CLibMoor::startUpload() {
  		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %address);
 // 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
  		if (myMailBox->loginRequest() == 0) {
+			LOG(Log::Info, boost::format( "Zalogowano pomyslnie!" ));
 			myMailBox->calculateFileCRC(myUploadFilename);
 			LOG(Log::Info, boost::format( "CRC Pliku: %1%" )	%myMailBox->getFileCRC());
 			for (int i=1; i <= segments; i++) {
