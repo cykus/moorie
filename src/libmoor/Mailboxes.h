@@ -6,12 +6,6 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "MailBoxes/MailRu.h"
-#include "MailBoxes/GMail.h"
-#include "MailBoxes/Yahoo.h"
-#include "MailBoxes/Onet.h"
-#include "MailBoxes/GoogleApps.h"
-
 enum MBoxID {
 	Walla        = 0x01,
 	Yahoo        = 0x02,

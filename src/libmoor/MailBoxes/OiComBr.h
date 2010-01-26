@@ -29,7 +29,7 @@ class OiComBrMailbox: public CMailBox
 		int pgcnt;
 
 	public:
-                OiComBrMailbox(const std::string &usr, const std::string &passwd);
+                OiComBrMailbox(const std::string &name, const std::string &usr, const std::string &passwd);
 		~OiComBrMailbox();
 		int loginRequest();
 		void logoutRequest();

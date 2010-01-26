@@ -20,19 +20,20 @@
 #include <boost/regex.hpp>
 
 namespace {
-  CMailBox* Create(const std::string& username,
+  CMailBox* Create(const std::string& name,
+                   const std::string& username,
                    const std::string& password)
   {
-    return new MailRuMailbox(username, password);
+    return new MailRuMailbox(name, username, password);
   }
 
   const bool registered = MailboxFactory::Instance().
                                           Register("mail.ru", Create);
 }
 
-MailRuMailbox::MailRuMailbox(const std::string &usr, const std::string &passwd)
-	: CMailBox(usr, passwd),
-		totalEmails(0)
+MailRuMailbox::MailRuMailbox(const std::string &name, const std::string &usr, const std::string &passwd)
+    : CMailBox(name, usr, passwd),
+      totalEmails( 0 )
 {
 }
 

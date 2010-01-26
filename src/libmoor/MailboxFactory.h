@@ -8,7 +8,7 @@ class CMailBox;
 
 class MailboxFactory {
 	public:
-		typedef CMailBox* (*MailboxCreator)(const std::string&, const std::string&);
+                typedef CMailBox* (*MailboxCreator)(const std::string&, const std::string&, const std::string&);
 
 	public:
 		/**

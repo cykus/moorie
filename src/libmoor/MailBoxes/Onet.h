@@ -23,7 +23,7 @@ class OnetMailbox: public CMailBox
 		int totalEmails;
 		int pgcnt;
 	public:
-		OnetMailbox(const std::string &usr, const std::string &passwd);
+                OnetMailbox(const std::string &name, const std::string &usr, const std::string &passwd);
 		~OnetMailbox();
 		int loginRequest();
 		void logoutRequest();

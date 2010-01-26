@@ -41,7 +41,7 @@ CMailBox* MailboxFactory::Create(const std::string& name,
 	CreatorMap::const_iterator it = creators_.find(name);
 	if (it != creators_.end()) {
 		try {
-			return (it->second)(username, password);
+                        return (it->second)(name, username, password);
 		}
 		catch (...) {
 			// Hopefully only std::bad_alloc can be thrown here.

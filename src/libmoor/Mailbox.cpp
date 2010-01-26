@@ -2,8 +2,9 @@
 
 #include "StringUtils.h"
 
-CMailBox::CMailBox(const std::string &usr, const std::string &passwd)
+CMailBox::CMailBox(const std::string &name, const std::string &usr, const std::string &passwd)
 	: user(usr)
+        , mailbox(name)
 	, password(passwd)
 	, bufferPos(0)
 	, buffer(NULL)
@@ -168,7 +169,10 @@ void CMailBox::requestComplete()
 		this->result="";
 //	parseResponse();
 }
-
+std::string CMailBox::getMailbox() const
+{
+        return mailbox;
+}
 std::string CMailBox::getUser() const
 {
 	return user;

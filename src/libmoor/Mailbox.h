@@ -28,6 +28,7 @@ class CMailBox {
 	CURL *handle; //!< Connection handle using curl easy interface
 	std::string url; //!< Current URL
 	std::string vars; //!< Variables for current POST request (used for CURLOPT_POSTFIELDS)
+        std::string mailbox; //!< Mailbox Name
 	std::string user; //!< User login
 	std::string password; //!< User password
 	std::string filename;
@@ -90,7 +91,8 @@ class CMailBox {
 		};
 		std::string& doSMTPUpload(std::string server, std::string login, std::string password, std::string filename);
 		std::string& doHTTPUpload(std::string url, variables myvars, std::string filename, bool header);
-		std::string getUser() const;
+                std::string getMailbox() const;
+                std::string getUser() const;
 		std::string getPassword() const;
 		std::string escape(std::string q);
 		std::string unescape(std::string q);
@@ -109,7 +111,7 @@ class CMailBox {
 
 
 	public:
-		CMailBox(const std::string &usr, const std::string &passwd);
+                CMailBox(const std::string &name, const std::string &usr, const std::string &passwd);
 		void setFileName(std::string file);
 		void setFileCRC(int crc);
 		virtual int loginRequest() = 0;

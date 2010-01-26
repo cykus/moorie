@@ -23,14 +23,13 @@ class GoogleAppsMailbox: public CMailBox
                 std::string auth;
                 int totalEmails;
                 std::string page;
-                std::string domain;
 
 				std::string postlink;
 				std::string base;
 				std::string url;
 				std::string myvars;
 	public:
-                GoogleAppsMailbox(const std::string &usr, const std::string &passwd);
+                GoogleAppsMailbox(const std::string &name, const std::string &usr, const std::string &passwd);
 		~GoogleAppsMailbox();
                 int loginRequest();
                 void logoutRequest();

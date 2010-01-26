@@ -19,10 +19,11 @@
 #include <boost/format.hpp>
 
 namespace {
-  CMailBox* Create(const std::string& username,
+  CMailBox* Create(const std::string& name,
+                   const std::string& username,
                    const std::string& password)
   {
-    return new GoogleAppsMailbox(username, password);
+    return new GoogleAppsMailbox(name, username, password);
   }
 }
 
@@ -40,32 +41,30 @@ const std::string c_names[] = {
 };
 const bool registered = MailboxFactory::Instance().Register(c_names, Create);
 
-GoogleAppsMailbox::GoogleAppsMailbox(const std::string &usr, const std::string
+GoogleAppsMailbox::GoogleAppsMailbox(const std::string &name, const std::string &usr, const std::string
 &passwd)
-  : CMailBox(usr, passwd),
+  : CMailBox(name, usr, passwd),
   totalEmails( 0 )
 {
 }
 
 int GoogleAppsMailbox::loginRequest()
 {
-    //    LOG_ENTER( "GoogleAppsMailbox::loginRequest " + domain );
-    domain = "gazeta.pl";
     boost::smatch match2;
 
 
-    page = doGet("https://www.google.com/a/"+domain);
+    page = doGet("https://www.google.com/a/"+getMailbox());
     boost::regex re3("name=\"GALX\"[\n].*?value=\"([a-zA-Z0-9_*[-]*]*)\"");
     boost::regex_search(page, match2, re3);
     LOG(Log::Info, boost::format("match: %1% ") %match2[1]);
     const std::string vars = std::string("ltmpl=default&ltmplcache=2&continue=")
-                + escape("https://mail.google.com/a/"+domain+"/")
+                + escape("https://mail.google.com/a/"+getMailbox()+"/")
                 +"&service=mail&GALX="
                 + escape(match2[1])
                 +"&rm=false&hl=pl&Email="+escape(getUser())
                 +"&Passwd="+escape(getPassword())
                 +"&rmShown=1";
-    page = doPost("https://www.google.com/a/"+domain+"/LoginAction2?service=mail",vars,true);
+    page = doPost("https://www.google.com/a/"+getMailbox()+"/LoginAction2?service=mail",vars,true);
 
     //LOG(Log::Info,"page :"+ page);
 		std::string username = getUser();
@@ -102,8 +101,8 @@ void GoogleAppsMailbox::logoutRequest()
 
 void GoogleAppsMailbox::getHeadersRequest()
 {
-//	LOG_ENTER( "GoogleAppsMailbox::getHeadersRequest " + domain );
-	std::string url("https://mail.google.com/a/"+domain+"/?AuthEventSource=SSO&husr="+escape(getUser()+"@"+domain)+"&ui=html&auth=");
+//	LOG_ENTER( "GoogleAppsMailbox::getHeadersRequest " + getMailbox() );
+        std::string url("https://mail.google.com/a/"+getMailbox()+"/?AuthEventSource=SSO&husr="+escape(getUser()+"@"+getMailbox())+"&ui=html&auth=");
 //	setState(Mailbox::ReadHeadersIP); // request headers
 	totalEmails = 0;
 	page = doGet(url + auth);
@@ -137,7 +136,7 @@ void GoogleAppsMailbox::getHeadersRequest()
 			std::stringstream numstr;
 			totalEmails += msgcnt;
 			numstr << totalEmails;
-			std::string url = "https://mail.google.com/a/"+domain+"/?ui=html&st=" + numstr.str();
+                        std::string url = "https://mail.google.com/a/"+getMailbox()+"/?ui=html&st=" + numstr.str();
 			page = doGet(url);
 		}
 	}
@@ -148,7 +147,7 @@ int GoogleAppsMailbox::downloadRequest(int seg)
 {
         std::string mylink = getLink(seg);
 //	page = doGet();
-        std::string link = "https://mail.google.com/a/"+domain+"/?realattid=file0&attid=0.1&disp=attd&view=att&th=" + mylink;
+        std::string link = "https://mail.google.com/a/"+getMailbox()+"/?realattid=file0&attid=0.1&disp=attd&view=att&th=" + mylink;
 		LOG(Log::Debug, link);
         downloadSeg();
         doGet(link);
@@ -159,7 +158,7 @@ int GoogleAppsMailbox::downloadRequest(int seg)
 int GoogleAppsMailbox::uploadRequest(std::string filename, std::string to, int seg) {
 	std::string segCRC = getSegCRC(filename);
 
-	url = "https://mail.google.com/a/"+domain+"/h/?v=b&pv=tl&cs=b";
+        url = "https://mail.google.com/a/"+getMailbox()+"/h/?v=b&pv=tl&cs=b";
 
 	page = doGet(url);
 
@@ -187,7 +186,7 @@ int GoogleAppsMailbox::uploadRequest(std::string filename, std::string to, int s
 	my_vars.body_form = "body";
 	my_vars.body = "tresc wiadomosci";
 	my_vars.submit_form = "nvp_bu_send";
-	my_vars.submit = "WyÅij";
+        my_vars.submit = "Wyï¿½ij";
 	page = doHTTPUpload(postlink, my_vars, filename, true);
 
 	return 0;
