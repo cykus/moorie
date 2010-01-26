@@ -34,6 +34,8 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 	if((path.find_last_of("/") != 0) && (path.length() > 1))
 		path += "/";
 
+	myPath = path;
+
 	LOG(Log::Info, boost::format("Pobieranie do %1%") %path);
         mySeg = getLastSegment(path + myHash->getInfo().fileName);
         if (mySeg == myHash->getInfo().numOfSegments) {
@@ -95,7 +97,21 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 			LOG(Log::Info, "Wybrana skrzynka nie jest obsługiwana w tej wersji programu.");
 		}
 
-		if (tries >= myHash->getInfo().accounts.size()) {
+		if (downloadDone == true) {
+			myMailBox->setFileCRC(myHash->getInfo().crc);
+			std::string crcFromHash = myMailBox->getFileCRC();
+			LOG(Log::Info, boost::format ("Sprawdzanie CRC sciagnietego pliku, oczekiwane CRC: [%1%]") %crcFromHash);
+			myMailBox->calculateFileCRC(myPath + myHash->getInfo().fileName);
+			std::string fileCRC = myMailBox->getFileCRC();
+			LOG(Log::Info, boost::format ("CRC sciagnietego pliku: [%1%]") %fileCRC);
+
+			if (fileCRC.compare(crcFromHash) != 0)
+				LOG(Log::Error, "-- Zle CRC sciagnietego pliku! --");
+			else
+				LOG(Log::Info, "-- CRC OK! --");
+		}
+
+		if (tries > myHash->getInfo().accounts.size()) {
 			LOG(Log::Info, "Nie udalo sie pobrac pliku z zadnej ze skrzynek... Koncze program." );
 			downloadDone = true;
 			delete myMailBox;

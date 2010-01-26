@@ -45,10 +45,10 @@ void CMailBox::setFileName(std::string file) {
 void CMailBox::setFileCRC(int crc) {
 	std::stringstream ss;
 	ss << std::setw(8) << std::setfill('0') << std::hex << crc;
-	std::cout << std::hex << crc;
+// 	std::cout << std::hex << crc;
 	fileCRC = ss.str();
 	boost::to_upper(fileCRC);
-	LOG( Log::Info, boost::format("File CRC: %1%") %fileCRC);
+// 	LOG( Log::Debug, boost::format("CRC: [%1%]") %fileCRC);
 
 }
 void CMailBox::setCookie( std::string cookie ) const
