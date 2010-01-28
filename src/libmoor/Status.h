@@ -28,10 +28,9 @@ class Status
 			Connected,        //!< Succesfully connected to mailbox
 			Downloading,      //!< A segment is being downloaded
 			ConnectionError,  //!< Network or mailbox login error
-			SegmentError,     //!< CRC or other error for segment
+                        SegmentError,     //!< CRC or other error for segment
+                        FileError,        //!< file or other error for segment
 			Downloaded,       //!< All segments downloaded
-			Merging,          //!< Merging is in progress
-			Merged,           //!< Merged, download complete
 			GivingUp,         //!< No (more) valid mailboxes
 			Finished		  //!< Download finished
 		};
@@ -41,9 +40,10 @@ class Status
 		unsigned int speed; //!< Download speed (bytes per second)
                 unsigned int bytesRead; //!< number of bytes downloaded so far
                 std::string mailboxName; //!< name of mailbox
+                bool downloadPaused; //!< Pause/Play upload
 
 		Status();
-                Status(int downloadSegment, unsigned int speed, unsigned int  bytesRead, std::string mailboxName);
+                Status(int downloadSegment, unsigned int speed, unsigned int  bytesRead, std::string mailboxName, Status::State state);
 		Status(const Status &s);
 
 		/*!

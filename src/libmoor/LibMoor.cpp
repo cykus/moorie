@@ -12,7 +12,8 @@ CLibMoor::CLibMoor()
 	: mySeg(0),
 		selected(0),
 		downloadDone(false),
-		uploadDone(false)
+                uploadDone(false),
+                downloadPaused(false)
 {
 }
 
@@ -31,8 +32,6 @@ bool CLibMoor::Dehash(const std::string& hashcode) {
 }
 
 int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
-	if((path.find_last_of("/") != 0) && (path.length() > 1))
-		path += "/";
 
 	myPath = path;
 
@@ -70,9 +69,11 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 		if (myMailBox) {
 			LOG(Log::Info, boost::format( "Logowanie do:  %1%" )
 			               %myHash->getInfo().accounts[selected].name);
+                        state = Status::Connecting;
 			if (myMailBox->loginRequest() == 0) {
 				myMailBox->setFileName(path + myHash->getInfo().fileName);
 				myMailBox->setFileCRC(myHash->getInfo().crc);
+                                state = Status::Connected;
 				LOG(Log::Info, "Zalogowano pomyslnie...");
 				LOG(Log::Info, "Sprawdzanie listy segmentow...");
 				myMailBox->getHeadersRequest();
@@ -82,13 +83,16 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 				}
 				else {
 					LOG(Log::Info, "Found new segments. Downloading...");
-					if (startDownload() == 0) {
-						LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %(mySeg + 1) );
-					}
+                                        state = Status::Downloading;
+                                        if (startDownload() == 0) {
+                                            LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %(mySeg + 1) );
+                                            state = Status::SegmentError;
+                                        }
 				}
 			}
 			else {
 				LOG(Log::Info, "Logowanie nie powiodlo sie..." );
+                                state = Status::ConnectionError;
 			}
 		}
 		// Program should never reach this execution path, if decoder is
@@ -101,14 +105,19 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 			myMailBox->setFileCRC(myHash->getInfo().crc);
 			std::string crcFromHash = myMailBox->getFileCRC();
 			LOG(Log::Info, boost::format ("Sprawdzanie CRC sciagnietego pliku, oczekiwane CRC: [%1%]") %crcFromHash);
+                        state = Status::ConnectionError;
 			myMailBox->calculateFileCRC(myPath + myHash->getInfo().fileName);
 			std::string fileCRC = myMailBox->getFileCRC();
 			LOG(Log::Info, boost::format ("CRC sciagnietego pliku: [%1%]") %fileCRC);
 
-			if (fileCRC.compare(crcFromHash) != 0)
-				LOG(Log::Error, "-- Zle CRC sciagnietego pliku! --");
-			else
-				LOG(Log::Info, "-- CRC OK! --");
+                        if (fileCRC.compare(crcFromHash) != 0){
+                            LOG(Log::Error, "-- Zle CRC sciagnietego pliku! --");
+                            state = Status::FileError;
+                        }
+                        else{
+                            LOG(Log::Info, "-- CRC OK! --");
+                            state = Status::Finished;
+                        }
 		}
 
 		if (tries >= myHash->getInfo().accounts.size()) {
@@ -148,6 +157,7 @@ int CLibMoor::startDownload() {
 	if (segValid) {
 		LOG(Log::Info, "Wszystkie segmenty sciagnieto pomyslnie... Koncze pobieranie.");
 		downloadDone = true;
+                state = Status::Downloaded;
 	}
 
 	return segValid;
@@ -234,10 +244,15 @@ int CLibMoor::startUpload() {
 
 Status CLibMoor::getStatus() {
 	Status s(mySeg, myMailBox->getSpeed(), myMailBox->getBytesRead(),
-	         myHash->getInfo().accounts[selected].name);
+                 myHash->getInfo().accounts[selected].name, state);
 	return s;
 }
-
+void CLibMoor::pauseDownload() {
+        if(myMailBox->pauseDownload()) downloadPaused = true;
+}
+void CLibMoor::unpauseDownload() {
+        if(myMailBox->unpauseDownload()) downloadPaused = false;
+}
 unsigned int CLibMoor::getLastSegment(const std::string& filePath) {
 	unsigned int segment = 0;
 	if (boost::filesystem::exists(filePath)) {
