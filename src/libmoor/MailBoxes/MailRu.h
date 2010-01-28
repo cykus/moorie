@@ -24,7 +24,7 @@ class MailRuMailbox: public CMailBox
 
 
 	public:
-		MailRuMailbox(const std::string &usr, const std::string &passwd);
+                MailRuMailbox(const std::string &name, const std::string &usr, const std::string &passwd);
 		~MailRuMailbox();
 		int loginRequest();
 		void logoutRequest();

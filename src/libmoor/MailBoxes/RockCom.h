@@ -27,7 +27,7 @@ class RockComMailbox: public CMailBox
 		std::string page;
 
 	public:
-		RockComMailbox(const std::string &usr, const std::string &passwd);
+                RockComMailbox(const std::string &name, const std::string &usr, const std::string &passwd);
 		~RockComMailbox();
 		int loginRequest();
 		void logoutRequest();

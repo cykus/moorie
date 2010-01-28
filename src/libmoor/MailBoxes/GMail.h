@@ -30,7 +30,7 @@ class GMailMailbox: public CMailBox
 		std::string myvars;
 
 	public:
-		GMailMailbox(const std::string &usr, const std::string &passwd);
+                GMailMailbox(const std::string &name, const std::string &usr, const std::string &passwd);
 		~GMailMailbox();
 		int loginRequest();
 		void logoutRequest();

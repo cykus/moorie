@@ -29,7 +29,7 @@ class MyNetMailbox: public CMailBox
 		int pgcnt;
 
 	public:
-                MyNetMailbox(const std::string &usr, const std::string &passwd);
+                MyNetMailbox(const std::string &name, const std::string &usr, const std::string &passwd);
 		~MyNetMailbox();
 		int loginRequest();
 		void logoutRequest();

@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
 	std::string file;   // hash input file
 	std::string strhash;
 	unsigned int mailbox (1) ;
+	int upmailbox;
     std::string pass; // moorhunt password
 	std::string hash;
     std::string path = "";
@@ -22,7 +23,7 @@ int main(int argc, char **argv) {
 	unsigned int ss (7);
 	bool download = false, upload = false;
 
-	boost::program_options::options_description desc("Moorie 0.2 (C)by Moorie Team (http://moorie.mahho.net/) \n\nOptions");
+	boost::program_options::options_description desc("Moorie 0.2.1 (C)by Moorie Team (http://moorie.mahho.net/) \n\nOptions");
 	desc.add_options()
 			("hash,f", boost::program_options::value<std::string>(), "Hash file")
 			("shash,s", boost::program_options::value<std::string>(), "Hash string")
@@ -33,8 +34,8 @@ int main(int argc, char **argv) {
 			("ul", boost::program_options::value<std::string>(), "Upload mailbox login")
 			("up", boost::program_options::value<std::string>(), "Upload mailbox password")
 			("ss", boost::program_options::value<unsigned int>( &ss )->default_value( 7 ), "Upload segment size (1-10 mb), default 7mb")
-            ("log-level,l", boost::program_options::value<unsigned int>( &logLevel )->default_value( 1 ), "Log level (0-8)")
-			("version", "Show version information")
+            ("log-level,l", boost::program_options::value<unsigned int>( &logLevel )->default_value( 8 ), "Log level (0-8)")
+			("version,v", "Show version information")
 			("help,h", "Show help");
 	boost::program_options::variables_map vars;
 	try
@@ -59,22 +60,24 @@ int main(int argc, char **argv) {
 		std::cout << "Moorie " << VERSION << std::endl;
 		return 0;
 	}
-        if ( logLevel > 0 )
-        {
-                logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
-                LogFileHandle *logh = new LogFileHandle( "moorie.log", static_cast<Log::Level>( logLevel ) );
-                Log::getLog()->addHandle(logh);
-                LogConsoleHandle *logh2 = new LogConsoleHandle(static_cast<Log::Level>( logLevel ) );
-                Log::getLog()->addHandle(logh2);
-        }
+
+	if ( logLevel > 0 )
+    {
+    	logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
+        LogFileHandle *logh = new LogFileHandle( "moorie.log", static_cast<Log::Level>( logLevel ) );
+        Log::getLog()->addHandle(logh);
+        LogConsoleHandle *logh2 = new LogConsoleHandle(static_cast<Log::Level>( logLevel ) );
+        Log::getLog()->addHandle(logh2);
+    }
+
 	if (vars.count("password"))
 	{
                 pass = vars["password"].as<std::string>();
 	}
-        if (vars.count("path"))
-        {
-                path = vars["path"].as<std::string>();
-        }
+    if (vars.count("path"))
+    {
+    	path = vars["path"].as<std::string>();
+	}
 	if (vars.count("hash"))
 	{
 		file = vars["hash"].as<std::string>();
@@ -100,32 +103,46 @@ int main(int argc, char **argv) {
 	}
 	else if (vars.count ("upload"))
 	{
-		if ( !boost::filesystem::exists( vars["upload"].as<std::string>() ) )
-		{
+		if ( !boost::filesystem::exists( vars["upload"].as<std::string>() ) ) {
 			std::cout << "File does not exist! Terminating" << std::endl;
 			return 1;
-		} else if (!vars.count ("ul")) {
-			std::cout << "Upload Mailbox login (-ul) is not set" << std::endl;
-			return 1;
-		} else if (!vars.count ("up")) {
-			std::cout << "Upload Mailbox password (-up) is not set" << std::endl;
-			return 1;
-		} else if (!vars.count ("ss")) {
-			std::cout << "Upload Segment size (-ss) is not set" << std::endl;
-			return 1;
 		} else {
-			ul = vars["ul"].as<std::string>();
-			up = vars["up"].as<std::string>();
-// 			ss = vars["ss"].as<int>();
-			if (ss < 1 || ss > 10) {
-				std::cout << "Upload Segment size is bad (only 1-10)! Aborting" << std::endl;
-				return 1;
-			}
-// 			std::cout << "Select mailbox: " << std::endl;
-// 			std::cout << "1. mail.ru" << std::endl;
 			upload_filename = vars["upload"].as<std::string>();
 			upload = true;
 		}
+
+		if (!vars.count ("ul")) {
+// 			std::cout << "Upload Mailbox login (-ul) is not set" << std::endl;
+			std::cout << "Podaj login: ";
+			std::cin >> ul;
+// 			return 1;
+		} else
+			ul = vars["ul"].as<std::string>();
+
+		if (!vars.count ("up")) {
+// 			std::cout << "Upload Mailbox password (-up) is not set" << std::endl;
+			std::cout << "Podaj haslo: ";
+			std::cin >> up;
+// 			return 1;
+		} else
+			up = vars["up"].as<std::string>();
+
+		if (!vars.count ("ss")) {
+// 			std::cout << "Upload Segment size (-ss) is not set" << std::endl;
+			std::cout << "Podaj wielkosc segmentu (1-10): ";
+			std::cin >> ss;
+// 			return 1;
+		} else
+			ss = vars["ss"].as<unsigned int>();
+
+		if (ss < 1 || ss > 10) {
+			std::cout << "Zla wielkosc segmentu (tylko 1-10)! Koncze program." << std::endl;
+			return 1;
+		}
+	}
+
+	if (!vars.count("hash") && !vars.count("shash") && !vars.count("upload")) {
+		std::cout << desc << std::endl;
 	}
 
 	curl_global_init(CURL_GLOBAL_ALL);
@@ -154,7 +171,18 @@ int main(int argc, char **argv) {
 		try
 		{
 			Instance = new CLibMoor();
-			Instance -> selectUploadMailBox(0x03, ul, up);
+			std::cout << "Wybierz skrzynke do uploadu: " << std::endl;
+			std::cout << "1. gmail.com" << std::endl;
+			std::cout << "2. gazeta.pl" << std::endl;
+			std::cout << "$ ";
+			std::cin >> mailbox;
+			switch (mailbox) {
+				case 1: upmailbox = 0x03; break;
+				case 2: upmailbox = -93; break;
+				default: std::cout << "Zly wybor! Koncze program." << std::endl; return 1;
+			}
+
+			Instance -> selectUploadMailBox(upmailbox, ul, up);
 			Instance -> splitFile(upload_filename, ss);
 			Instance -> startUpload();
 

@@ -5,6 +5,7 @@
 
 #include "Hash.h"
 #include "Mailbox.h"
+#include "Mailboxes.h"
 #include "Status.h"
 
 class CLibMoor {
@@ -19,26 +20,27 @@ class CLibMoor {
 		bool downloadDone;
 		bool uploadDone;
 		Status getStatus();
-		
+
 		// upload
 		int selectUploadMailBox(int mailbox, std::string login, std::string passwd);
 		int splitFile(std::string filename, int size);
 		int startUpload();
 	private:
-		/** 
+		/**
 		 * Gets number of last downloaded segment.
 		 * @param filePath Path to downloaded file.
 		 * @return Last downloaded segment.
 		 */
 		unsigned int getLastSegment(const std::string& filePath);
 
-		
+
 
 	private:
 		boost::shared_ptr<Hash> myHash;
 		CMailBox* myMailBox;
 		int mySeg;
-		
+		std::string myPath;
+
 		// upload
 		std::string myUploadFilename;
 		int selected;

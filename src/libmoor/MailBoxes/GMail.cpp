@@ -19,19 +19,20 @@
 #include <boost/format.hpp>
 
 namespace {
-  CMailBox* Create(const std::string& username,
+  CMailBox* Create(const std::string& name,
+                   const std::string& username,
                    const std::string& password)
   {
-    return new GMailMailbox(username, password);
+    return new GMailMailbox(name, username, password);
   }
 
   const bool registered = MailboxFactory::Instance().
                                           Register("gmail.com", Create);
 }
 
-GMailMailbox::GMailMailbox(const std::string &usr, const std::string &passwd)
-  : CMailBox(usr, passwd),
-    totalEmails(0)
+GMailMailbox::GMailMailbox(const std::string &name, const std::string &usr, const std::string &passwd)
+    : CMailBox(name, usr, passwd),
+      totalEmails( 0 )
 {
 }
 
@@ -167,7 +168,7 @@ int GMailMailbox::uploadRequest(std::string filename, std::string to, int seg) {
 	my_vars.body_form = "body";
 	my_vars.body = "tresc wiadomosci";
 	my_vars.submit_form = "nvp_bu_send";
-	my_vars.submit = "WyÅij";
+	my_vars.submit = "Wyï¿½ij";
 	page = doHTTPUpload(postlink, my_vars, filename, true);
 
 	return 0;

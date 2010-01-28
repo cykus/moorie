@@ -17,10 +17,11 @@
 #include "../MailboxFactory.h"
 
 namespace {
-  CMailBox* Create(const std::string& username,
-                   const std::string& password)
+    CMailBox* Create(const std::string& name,
+                     const std::string& username,
+                     const std::string& password)
   {
-    return new OnetMailbox(username, password);
+    return new OnetMailbox(name, username, password);
   }
 
   const bool registered = MailboxFactory::Instance().
@@ -29,9 +30,9 @@ namespace {
 
 }
 
-OnetMailbox::OnetMailbox(const std::string &usr, const std::string &passwd)
-	: CMailBox(usr, passwd),
-		totalEmails(0)
+OnetMailbox::OnetMailbox(const std::string &name, const std::string &usr, const std::string &passwd)
+                         : CMailBox(name, usr, passwd),
+                           totalEmails( 0 )
 {
 }
 
