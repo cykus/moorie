@@ -33,5 +33,4 @@ void threadInstance::run()
     Instance = new CLibMoor();
     Instance->Dehash(hash.toStdString());
     Instance->selectDownloadMailBox(0, path.toStdString());
-    pobrano = true;
 }

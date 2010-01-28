@@ -29,7 +29,7 @@ class Status
 			Downloading,      //!< A segment is being downloaded
 			ConnectionError,  //!< Network or mailbox login error
                         SegmentError,     //!< CRC or other error for segment
-                        FileError,        //!< file or other error for segment
+                        FileError,        //!< CRC or other error for file
 			Downloaded,       //!< All segments downloaded
 			GivingUp,         //!< No (more) valid mailboxes
 			Finished		  //!< Download finished

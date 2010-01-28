@@ -214,28 +214,42 @@ void QMoorie::refreshStatuses()
         {
             if(tInstance.at(i)->Instance->downloadDone)
             {
-                QTableWidgetItem *PobranoPliku = new QTableWidgetItem("0.00 MB");
-                tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
-                QTableWidgetItem *postepPobierania = new QTableWidgetItem;
-                postepPobierania->setData(Qt::DisplayRole, 100);
-                tabela->setItem(tInstance.at(i)->itemRow, 3, postepPobierania);
-                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
-                for(int j = 0 ; j < 7; j++ )
+                Status status = tInstance.at(i)->Instance->getStatus();
+
+                if(status.state == Status::Finished)
                 {
-                    tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 100));
+                    for(int j = 0 ; j < 7; j++ )
+                    {
+                        tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 100));
+                    }
+                    tInstance.remove(i);
+                    saveDownloads();
                 }
-                tInstance.remove(i);
-                saveDownloads();
+                if(status.state == Status::FileError && !tInstance.at(i)->pobrano)
+                {
+                    QTableWidgetItem *PobranoPliku = new QTableWidgetItem("0.00 MB");
+                    tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
+                    QTableWidgetItem *postepPobierania = new QTableWidgetItem;
+                    postepPobierania->setData(Qt::DisplayRole, 0);
+                    tabela->setItem(tInstance.at(i)->itemRow, 3, postepPobierania);
+                    QTableWidgetItem *statusPobierania = new QTableWidgetItem("No valid account found");
+                    tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
+                    QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
+                    tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
+                    for(int j = 0 ; j < 7; j++ )
+                    {
+                        tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(255, 0, 0, 200));
+                    }
+                    tInstance.at(i)->pobrano = true;
+                }
             }
         }
 
         for (int i = 0; i < tInstance.size(); ++i)
         {
-            if(!(tInstance.at(i)->Instance->downloadPaused))
+            Status status = tInstance.at(i)->Instance->getStatus();
+            if(!(tInstance.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
             {
-                Status status = tInstance.at(i)->Instance->getStatus();
-
                 allBytesReadSession += status.bytesRead;
 
                 QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize(tInstance.at(i)->size - tInstance.at(i)->pobranoLS - status.bytesRead));
@@ -276,14 +290,14 @@ void QMoorie::refreshStatuses()
                 }
                 else if(status.state == Status::ConnectionError || status.state == Status::FileError || status.state == Status::SegmentError)
                 {
-                   statusPobierania->setForeground(QColor(0, 0, 200, 255));
+                   statusPobierania->setForeground(QColor(255, 0, 0, 200));
                 }
                 tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
                 //qDebug() << status.downloadSegment;
                 QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
                 tabela->setItem(tInstance.at(i)->itemRow, 6, SkrzynkaPobierania);
             }
-            else
+            else if(tInstance.at(i)->Instance->downloadPaused)
             {
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
                 tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
