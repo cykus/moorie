@@ -105,7 +105,6 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 			myMailBox->setFileCRC(myHash->getInfo().crc);
 			std::string crcFromHash = myMailBox->getFileCRC();
 			LOG(Log::Info, boost::format ("Sprawdzanie CRC sciagnietego pliku, oczekiwane CRC: [%1%]") %crcFromHash);
-                        state = Status::ConnectionError;
 			myMailBox->calculateFileCRC(myPath + myHash->getInfo().fileName);
 			std::string fileCRC = myMailBox->getFileCRC();
 			LOG(Log::Info, boost::format ("CRC sciagnietego pliku: [%1%]") %fileCRC);
@@ -122,6 +121,7 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 
 		if (tries >= myHash->getInfo().accounts.size()) {
 			LOG(Log::Info, "Nie udalo sie pobrac pliku z zadnej ze skrzynek... Koncze program." );
+                        state = Status::FileError;
 			downloadDone = true;
 			delete myMailBox;
 			break;
