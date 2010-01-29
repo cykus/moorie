@@ -20,10 +20,18 @@
 class MoorhuntHashDecoder : public HashDecoder {
 	public:
 		~MoorhuntHashDecoder() {}
-		
+
 	public:
 		virtual Hash* decode(const std::string& hashcode);
 };
+
+class MoorhuntHashEncoder {
+	public:
+		MoorhuntHashEncoder();
+		~MoorhuntHashEncoder();
+		std::string encode(std::string data);
+};
+
 
 #endif // MOORHUNTHASHDECODER_H__
 

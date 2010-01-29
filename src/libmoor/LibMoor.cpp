@@ -5,6 +5,7 @@
 #include "Log.h"
 #include "MailboxFactory.h"
 #include "HashManager.h"
+#include "MoorhuntHashDecoder.h"
 
 const int segDownloadTries = 2;
 
@@ -174,6 +175,9 @@ int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd)
 
 int CLibMoor::splitFile(std::string filename, int size) {
 	myUploadFilename = filename;
+	myUploadFilesize = 0;
+	myUploadSegSize = size*1024*1024;
+
 	LOG(Log::Info, boost::format("Dzielenie pliku %1% na segmenty") % filename);
 	int mysegsize = size*1024*1024;
 	int bytes = 0; int read = 0;
@@ -209,13 +213,15 @@ int CLibMoor::splitFile(std::string filename, int size) {
 
 }
 
-int CLibMoor::startUpload() {
-	LOG(Log::Info, boost::format("Zaczynam upload"));
+int CLibMoor::startUpload(unsigned int fromseg) {
+	LOG(Log::Info, boost::format("Zaczynam upload od segmentu: %1%") %fromseg);
 
 	std::stringstream ss;
 	std::string address = myLogin+"@"+myUploadMailbox;
 
-	myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd); // TODO - zmienic "mail.ru" na wybrana skrzynke
+//  	std::cout << generateClearHashcode() << std::endl;
+
+	myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd);
 	if (myMailBox) {
  		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %address);
 // 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
@@ -223,7 +229,7 @@ int CLibMoor::startUpload() {
 			LOG(Log::Info, boost::format( "Zalogowano pomyslnie!" ));
 			myMailBox->calculateFileCRC(myUploadFilename);
 			LOG(Log::Info, boost::format( "CRC Pliku: %1%" )	%myMailBox->getFileCRC());
-			for (int i=1; i <= segments; i++) {
+			for (int i=fromseg; i <= segments; i++) {
 				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
 
 				ss.str("");
@@ -239,6 +245,22 @@ int CLibMoor::startUpload() {
 	}
 
 	return 0;
+}
+
+std::string CLibMoor::generateClearHashcode() {
+	std::stringstream ss, ss2, ss3;
+	ss << myUploadFilesize;
+	ss2 << myUploadNumOfSeg;
+	ss3 << myUploadSegSize;
+	myUploadAccessPasswd = "098f6bcd4621d373cade4e832627b4f6";
+	myUploadEditPasswd = "098f6bcd4621d373cade4e832627b4f6";
+
+	std::string clearData = myUploadFilename+"|"+"[CRC]"+"|"+ss.str()+"|False|False|"+ss2.str()+"|"+ss3.str()+"|"+ss3.str()+"|"+myUploadAccessPasswd+"|0||"+myUploadEditPasswd+"||||||$$$$$$$$$$$$$$$$$$¾=á¿o";
+
+	MoorhuntHashEncoder *hashEncoder;
+
+	std::string hash = "<<ah"+hashEncoder->encode(clearData)+">>";
+	return hash;
 }
 
 
