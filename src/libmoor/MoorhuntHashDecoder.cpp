@@ -207,6 +207,7 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 
 	} while (false); //just once
 
+	std::cout << in << std::endl;
 	if (result.valid)
 	{
 		std::string tmp;

@@ -199,7 +199,7 @@ std::string CMailBox::getFileCRC() {
 }
 
 std::string CMailBox::getSegCRC(std::string filename) {
-	LOG(Log::Info, boost::format("Licze CRC"));
+// 	LOG(Log::Info, boost::format("Licze CRC"));
 
 	crcRes.reset();
 	std::ifstream in(filename.c_str(), std::ifstream::binary);

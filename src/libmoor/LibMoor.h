@@ -37,7 +37,7 @@ class CLibMoor {
 		 */
 		unsigned int getLastSegment(const std::string& filePath);
 
-		std::string generateClearHashcode(); // clear hashcode generator
+		std::string generateCleanHashcode(); // clear hashcode generator
 
 		boost::shared_ptr<Hash> myHash;
 		CMailBox* myMailBox;
@@ -52,6 +52,7 @@ class CLibMoor {
 		std::string myUploadAccessPasswd;
 		std::string myUploadEditPasswd;
 		int myUploadNumOfSeg;
+		std::string myUploadFileCRC;
 
 		int selected;
 		int segments;

@@ -145,6 +145,7 @@ int main(int argc, char **argv) {
                 try
                 {
                                 boost::shared_ptr<Hash> hhash(HashManager::fromString(hash));
+								Instance -> Dehash(hash);
                     if (hhash->getInfo().valid)
                     {
                         if(hhash->checkAccessPassword(pass))
