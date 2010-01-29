@@ -47,6 +47,20 @@
 #include <map>
 #include <sstream>
 
+#ifdef _WIN32
+    #include <windows.h>
+    inline void sleepMs(int ms) {
+    {
+        ::Sleep(ms);
+    }
+#else
+    #include <unistd.h>
+    inline void sleepMs(int ms) {
+        static const unsigned MilliToMicro = 1000;
+        ::usleep(ms * MilliToMicro);
+    }
+#endif
+
 namespace Ui
 {
     class MainWindow;

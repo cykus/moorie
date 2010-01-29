@@ -1,3 +1,10 @@
+* 2009/02/28: 0.2.1  -- Dodano statystyki
+                     -- Dodano opcje wstrzymaj / usuń
+                     -- Dodano Statusy pobierania pliku
+                     -- Poprawiono liczenie prędkości pobierania choć dalej jest z tym słabo
+                     -- Poprawiono powiadomienia o błędach
+                     -- poprawiono zapis konfiguracji programu i plików do pobrania
+
 * 2009/11/15: 0.2.0  -- Aplikacja została przepisana od początku razem moorie
                      -- Dodano wybór katalogu dla każdego pliku
                      -- Qmoorie pamięta pozycje i rozmiar okna głównego i rozmiar kolumn

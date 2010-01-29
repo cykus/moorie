@@ -23,7 +23,7 @@ class HashManager {
 		 * @param hashcode Hashcode string to decode.
 		 * @return Hash decoder.
 		 */
-		static HashDecoder* getHashDecoder(const std::string& hashcode);
+                //static HashDecoder* getHashDecoder(const std::string& hashcode);
 
 	private:
 		HashManager();
