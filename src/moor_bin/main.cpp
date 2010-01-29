@@ -177,14 +177,18 @@ int main(int argc, char **argv) {
 				default: std::cout << "Zly wybor! Koncze program." << std::endl; return 1;
 			}
 
+			std::cout << "selectUploadMailbox" << std::endl;
 			Instance -> selectUploadMailBox(upmailbox, ul, up);
+			std::cout << "splitFile" << std::endl;
 			Instance -> splitFile(upload_filename, ss);
+			std::cout << "startUpload" << std::endl;
 			Instance -> startUpload(fromseg);
+			std::cout << "Koniec" << std::endl;
 
 		}
 		catch (std::exception& e)
 		{
-				std::cerr << "Blad!" << std::endl;
+				std::cerr << "Blad! " << e.what() << std::endl;
 		}
 	}
 	return 0;

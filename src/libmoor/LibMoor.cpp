@@ -213,15 +213,15 @@ int CLibMoor::splitFile(std::string filename, int size) {
 
 }
 
-int CLibMoor::startUpload(int fromseg) {
-	LOG(Log::Info, boost::format("Zaczynam upload od segmentu: ") %fromseg);
+int CLibMoor::startUpload(unsigned int fromseg) {
+	LOG(Log::Info, boost::format("Zaczynam upload od segmentu: %1%") %fromseg);
 
 	std::stringstream ss;
 	std::string address = myLogin+"@"+myUploadMailbox;
 
-	std::cout << generateClearHashcode() << std::endl;
+//  	std::cout << generateClearHashcode() << std::endl;
 
-	myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd); // TODO - zmienic "mail.ru" na wybrana skrzynke
+	myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd);
 	if (myMailBox) {
  		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %address);
 // 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
@@ -255,7 +255,7 @@ std::string CLibMoor::generateClearHashcode() {
 	myUploadAccessPasswd = "098f6bcd4621d373cade4e832627b4f6";
 	myUploadEditPasswd = "098f6bcd4621d373cade4e832627b4f6";
 
-	std::string clearData = myUploadFilename+"|"+"[CRC]"+"|"+ss.str()+"|False|False|"+ss2.str()+"|"+ss3.str()+"|"+ss3.str()+"|"+myUploadAccessPasswd+"|0||"+myUploadEditPasswd+"|||||||";
+	std::string clearData = myUploadFilename+"|"+"[CRC]"+"|"+ss.str()+"|False|False|"+ss2.str()+"|"+ss3.str()+"|"+ss3.str()+"|"+myUploadAccessPasswd+"|0||"+myUploadEditPasswd+"||||||$$$$$$$$$$$$$$$$$$¾=á¿o";
 
 	MoorhuntHashEncoder *hashEncoder;
 

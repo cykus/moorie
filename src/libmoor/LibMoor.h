@@ -28,7 +28,7 @@ class CLibMoor {
 		// upload
 		int selectUploadMailBox(int mailbox, std::string login, std::string passwd);
 		int splitFile(std::string filename, int size);
-		int startUpload(int fromseg);
+		int startUpload(unsigned int fromseg);
 	private:
 		/**
 		 * Gets number of last downloaded segment.

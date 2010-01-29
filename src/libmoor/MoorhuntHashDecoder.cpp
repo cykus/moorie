@@ -169,6 +169,7 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 //	unsigned char *in = base64Decode(&hashin[hpos], i, &declen);
 	unsigned char *in = unbase64(&hashin[hpos], strlen(&hashin[hpos]));
 	declen = strlen(&hashin[hpos]);
+
 	//
 	// AES decryption
 	do
@@ -210,6 +211,7 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 	{
 		std::string tmp;
 		char *src = reinterpret_cast<char *>(in);
+// 		std::cout << src << std::endl;
 //		char *ptr;
 		std::vector<int> v = split(src, declen);
 		std::cout << v.size() << std::endl;
@@ -221,7 +223,6 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 		else
 		{
 			int numOfMirrors;
-			std::cout << src << std::endl;
 			result.fileName = std::string(src, v[1]);
 			result.crc = (
 					((unsigned char)src[v[2]]) << 24 |
@@ -230,9 +231,9 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 					((unsigned char)src[v[2] + 3])
 			);
 			std::stringstream asd;
-			int dupa =((unsigned char)src[v[2]]) << 24;
-			asd << dupa << " " << std::hex << result.crc;
-			std::cout << " CRC: " <<  asd.str() << " " << dupa << std::endl;
+// 			int dupa =((unsigned char)src[v[2]]) << 24;
+// 			asd << dupa << " " << std::hex << result.crc;
+// 			std::cout << " CRC: " <<  asd.str() << " " << dupa << std::endl;
 
 			tmp = std::string(src + v[4], v[5]);
 			result.fileSize = atol(tmp.c_str());

@@ -47,7 +47,7 @@ unsigned char *base64(char *input, int length)
         return buffer;
 }
 
-unsigned char* 
+unsigned char*
 base64_decode(const char* data, int size, unsigned int* read) {
 	assert(data);
 	assert(size > 0);
@@ -63,9 +63,9 @@ base64_decode(const char* data, int size, unsigned int* read) {
 	bmem = BIO_new_mem_buf(const_cast<char*>(data), size);
 	bmem = BIO_push(b64, bmem);
 
-	if (read) 
+	if (read)
 		*read = BIO_read(bmem, buffer, size);
-	else 
+	else
 		BIO_read(bmem, buffer, size);
 
 	BIO_free_all(bmem);
