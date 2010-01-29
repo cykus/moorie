@@ -35,7 +35,7 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 
 	myPath = path;
 
-	LOG(Log::Info, boost::format("Pobieranie do %1%") %path);
+        LOG(Log::Info, boost::format("Pobieranie do %1%") %path);
         mySeg = getLastSegment(path + myHash->getInfo().fileName);
         if (mySeg == myHash->getInfo().numOfSegments) {
             LOG(Log::Info, "Plik pobrano w calosci, przerywam...");

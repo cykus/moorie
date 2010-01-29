@@ -155,7 +155,7 @@ int main(int argc, char **argv) {
                     {
                         if(hhash->checkAccessPassword(pass))
                         {
-                            if((path.find_last_of("/") != 0) && (path.length() > 1)) path += "/";
+                            if((path.find_last_of("/") != path.length() - 1) && (path.length() > 1)) path += "/";
                             Instance = new CLibMoor();
                             Instance -> Dehash(hash);
                             Instance -> selectDownloadMailBox(mailbox-1, path);

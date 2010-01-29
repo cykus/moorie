@@ -150,8 +150,7 @@ void QMoorie::addDialog()
     if(get->result())
     {
         QString path = get->pathEdit->text();
-        if((path.lastIndexOf("/") != 0) && (path.length() > 1))
-                path += "/";
+        if((path.lastIndexOf(QDir::separator()) != path.length() - 1) && (path.length() > 1)) path += QDir::separator();
         addInstance(get->text->toPlainText(), get->edit->text(), path);
         saveDownloads();
     }
@@ -178,8 +177,7 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
     tabela->setRowCount(tabela->rowCount() + 1);
 
     QFileInfo fileInfo;
-    if((path.lastIndexOf("/") > 0) && (path.size() > 1))fileInfo.setFile(tInstance.last()->path+"/"+tInstance.last()->filename);
-    else fileInfo.setFile(tInstance.last()->path+tInstance.last()->filename);
+    fileInfo.setFile(tInstance.last()->path+tInstance.last()->filename);
 
     if(fileInfo.exists()) tInstance.last()->pobranoLS = fileInfo.size();
     else tInstance.last()->pobranoLS = 0;
@@ -206,10 +204,11 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
 */
 void QMoorie::refreshStatuses()
 {
+
     while(1)
     {
         quint64 allBytesReadSession = 0;
-        sleep(2);
+        sleepMs(2000);
         for (int i = 0; i < tInstance.size(); ++i)
         {
             if(tInstance.at(i)->Instance->downloadDone)
@@ -338,7 +337,7 @@ void QMoorie::refreshLogs()
 
     while(1)
     {
-        sleep(2);
+        sleepMs(2000);
         if(Zmienne().logs != ""){
             ui->log->append(Zmienne().logs);
             Zmienne().logs = "";
@@ -350,11 +349,11 @@ void QMoorie::removeDownload()
     int row = tabela->currentRow();
     for (int i = 0; i < tInstance.size(); ++i)
     {
-        //no qDebug() << 'tIns.size: ' << tInstance.size() << ' tabela.rowcount: ' << tabela->rowCount();
+        //qDebug() << 'tIns.size: ' << tInstance.size() << ' tabela.rowcount: ' << tabela->rowCount();
         if(tInstance.at(i)->itemRow == row)
         {
             QString fileName = tInstance.at(i)->path + tInstance.at(i)->filename;
-            qDebug() << 'filename: ' << tInstance.at(i)->path + tInstance.at(i)->filename;
+            //qDebug() << 'filename: ' << tInstance.at(i)->path + tInstance.at(i)->filename;
             tInstance.at(i)->terminate();
             tInstance.remove(i);
             tabela->removeRow(row);
@@ -430,7 +429,9 @@ void QMoorie::loadDownloads()
                 if(hhio->checkAccessPassword(pass.text().toStdString()))
                 {
                     QString pathstr = path.text();
-                    if((pathstr.lastIndexOf("/") != 0) && (pathstr.length() > 1)) pathstr += "/";
+                    
+                    if((pathstr.lastIndexOf(QDir::separator()) != pathstr.length() - 1) && (pathstr.length() > 1)) pathstr += QDir::separator();
+
                     addInstance(hash.text(), pass.text(), pathstr);
                 }
                 else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));
@@ -504,6 +505,7 @@ void QMoorie::readConfigFile()
     QHeaderView *header = tabela->horizontalHeader();
     header->setDefaultAlignment(Qt::AlignLeft);
     QSettings settings;
+    settings.setDefaultFormat(QSettings::IniFormat);
     settings.beginGroup("CONFIG_PAGE");
     Zmienne().PATH = settings.value("PATH", "home").toString();
     Zmienne().LLEVEL = settings.value("LLEVEL", 6).toInt();
@@ -530,13 +532,15 @@ void QMoorie::readConfigFile()
     writeConfigFile();
 
     Zmienne().configPath = settings.fileName();
-    Zmienne().configPath.remove(Zmienne().configPath.lastIndexOf("/")+1,Zmienne().configPath.size());
+    //qDebug() << "configPath: " << Zmienne().configPath;
+    Zmienne().configPath.remove(Zmienne().configPath.lastIndexOf(QDir::separator())+1,Zmienne().configPath.size());
+    //qDebug() << "configPath: " << Zmienne().configPath;
 }
 void QMoorie::writeConfigFile()
 {
     QHeaderView *header = tabela->horizontalHeader();
     QSettings settings;
-
+    settings.setDefaultFormat(QSettings::IniFormat);
     if(settings.isWritable()){
         settings.beginGroup("CONFIG_PAGE");
         settings.setValue("PATH", Zmienne().PATH);
