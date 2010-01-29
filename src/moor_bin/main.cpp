@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
     unsigned int logLevel( 8 );
 	std::string ul, up;
 	unsigned int ss (7);
+	unsigned int fromseg (1);
 	bool download = false, upload = false;
 
 	boost::program_options::options_description desc("Moorie 0.2.1 (C)by Moorie Team (http://moorie.mahho.net/) \n\nOptions");
@@ -34,6 +35,7 @@ int main(int argc, char **argv) {
 			("ul", boost::program_options::value<std::string>(), "Upload mailbox login")
 			("up", boost::program_options::value<std::string>(), "Upload mailbox password")
 			("ss", boost::program_options::value<unsigned int>( &ss )->default_value( 7 ), "Upload segment size (1-10 mb), default 7mb")
+			("fromseg", boost::program_options::value<unsigned int>( &fromseg )->default_value( 1 ),  "Upload from given segment")
             ("log-level,l", boost::program_options::value<unsigned int>( &logLevel )->default_value( 8 ), "Log level (0-8)")
 			("version,v", "Show version information")
 			("help,h", "Show help");
@@ -127,14 +129,6 @@ int main(int argc, char **argv) {
 		} else
 			up = vars["up"].as<std::string>();
 
-		if (!vars.count ("ss")) {
-// 			std::cout << "Upload Segment size (-ss) is not set" << std::endl;
-			std::cout << "Podaj wielkosc segmentu (1-10): ";
-			std::cin >> ss;
-// 			return 1;
-		} else
-			ss = vars["ss"].as<unsigned int>();
-
 		if (ss < 1 || ss > 10) {
 			std::cout << "Zla wielkosc segmentu (tylko 1-10)! Koncze program." << std::endl;
 			return 1;
@@ -185,7 +179,7 @@ int main(int argc, char **argv) {
 
 			Instance -> selectUploadMailBox(upmailbox, ul, up);
 			Instance -> splitFile(upload_filename, ss);
-			Instance -> startUpload();
+			Instance -> startUpload(fromseg);
 
 		}
 		catch (std::exception& e)
