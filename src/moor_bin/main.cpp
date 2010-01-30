@@ -170,11 +170,13 @@ int main(int argc, char **argv) {
 			std::cout << "Wybierz skrzynke do uploadu: " << std::endl;
 			std::cout << "1. gmail.com" << std::endl;
 			std::cout << "2. gazeta.pl" << std::endl;
+			std::cout << "3. volny.cz" << std::endl;
 			std::cout << "$ ";
 			std::cin >> mailbox;
 			switch (mailbox) {
 				case 1: upmailbox = 0x03; break;
 				case 2: upmailbox = -93; break;
+				case 3: upmailbox = 121; break;
 				default: std::cout << "Zly wybor! Koncze program." << std::endl; return 1;
 			}
 

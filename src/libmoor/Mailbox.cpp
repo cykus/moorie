@@ -133,7 +133,12 @@ std::string& CMailBox::doHTTPUpload(std::string url, std::string filename, bool 
 		curl_formadd(&post, &last, CURLFORM_COPYNAME, myvar.field[i].c_str(), CURLFORM_COPYCONTENTS, myvar.value[i].c_str(), CURLFORM_END);
 	}
 	if (myvar.value[0]!="")
+	{
 		curl_formadd(&post, &last, CURLFORM_COPYNAME, myvar.field[0].c_str(), CURLFORM_FILE, myvar.value[0].c_str(), CURLFORM_END);
+	}
+	myvar.value.clear();
+	myvar.field.clear();
+	
 	headerlist = curl_slist_append(headerlist, buf);
 
 	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headerlist);
