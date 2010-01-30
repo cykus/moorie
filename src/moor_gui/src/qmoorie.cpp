@@ -89,13 +89,9 @@ void QMoorie::toggleVisibility()
      settingsAct -> setStatusTip(tr("Konfiguracja aplikacji"));
      connect(settingsAct, SIGNAL(triggered()), this ,SLOT(showSettings()));
 
-     playAct = new QAction(QIcon(":images/play.png"),tr("&Wznów"),this);
-     playAct->setDisabled(true);
-     playAct -> setStatusTip(tr("Wznowienie pobierania"));
-
-     pauseAct = new QAction(QIcon(":images/pause.png"),tr("Wstrzymaj"),this);
+     pauseAct = new QAction(QIcon(":images/pause.png"),tr("Wstrzymaj wszystko"),this);
      pauseAct->setDisabled(true);
-     pauseAct -> setStatusTip(tr("Wstrzymanie pobierania"));
+     pauseAct -> setStatusTip(tr("Wstrzymanie/wznowienie pobierania wszystkich plików"));
 
      removeAct = new QAction(QIcon(":images/remove.png"),tr("&Usuń"),this);
      removeAct -> setStatusTip(tr("Usunięcie pobierania"));
@@ -119,7 +115,6 @@ void QMoorie::toggleVisibility()
      fileToolBar->addAction(addAct);
      fileToolBar->addAction(removeAct);
      fileToolBar->addSeparator();
-     fileToolBar->addAction(playAct);
      fileToolBar->addAction(pauseAct);
      fileToolBar->addAction(settingsAct);
      fileToolBar->addSeparator();
@@ -140,6 +135,7 @@ void QMoorie::createTable()
     tabela->setEditTriggers(0);
     tabela->setItemDelegate(new TrackDelegate());
     tabela->setColumnCount(7);
+    tabela->horizontalHeader()->setStretchLastSection(true);
     headerH  << "Nazwa pliku" << "Rozmiar" << "Pozostało"<< "Postęp " << "Prędkość" << "Status" << "Skrzynka";
     tabela->setHorizontalHeaderLabels(headerH);
 }
@@ -353,7 +349,6 @@ void QMoorie::removeDownload()
         if(tInstance.at(i)->itemRow == row)
         {
             QString fileName = tInstance.at(i)->path + tInstance.at(i)->filename;
-            //qDebug() << 'filename: ' << tInstance.at(i)->path + tInstance.at(i)->filename;
             tInstance.at(i)->terminate();
             tInstance.remove(i);
             tabela->removeRow(row);

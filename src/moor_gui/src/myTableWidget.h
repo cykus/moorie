@@ -26,20 +26,19 @@
 
 class myTableWidget : public QTableWidget
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-myTableWidget(QWidget *parent = 0);
-QClipboard *clip;
-QTableWidget *table;
-QAction *tPauseAct;
-QAction *tInfoAct;
-QAction *tRemoveAct;
+    myTableWidget(QWidget *parent = 0);
+    QClipboard *clip;
+    QTableWidget *table;
+    QAction *tPauseAct;
+    QAction *tInfoAct;
+    QAction *tRemoveAct;
 public Q_SLOTS:
-
-//int info();
-//void paste();
+    //int info();
+    //void paste();
 public:
-void setUpContextMenu();
-void createActions();
+    void setUpContextMenu();
+    void createActions();
 };
 #endif // MYTABLEWIDGET_H

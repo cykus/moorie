@@ -81,7 +81,6 @@ class QMoorie:public QMainWindow
     QAction *aboutQtAct;
     QAction *settingsAct;
     QAction *pauseAct;
-    QAction *playAct;
     QAction *infoAct;
     QAction *removeAct;
 

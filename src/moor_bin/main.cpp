@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 	unsigned int fromseg (1);
 	bool download = false, upload = false;
 
-	boost::program_options::options_description desc("Moorie 0.2.1 (C)by Moorie Team (http://moorie.mahho.net/) \n\nOptions");
+        boost::program_options::options_description desc("Moorie 0.2.1 (C)by Moorie Team (http://moorie.pl) \n\nOptions");
 	desc.add_options()
 			("hash,f", boost::program_options::value<std::string>(), "Hash file")
 			("shash,s", boost::program_options::value<std::string>(), "Hash string")
