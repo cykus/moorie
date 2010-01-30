@@ -46,6 +46,7 @@ std::string getMailboxName(int id) {
                 case KlikniCz: return "klikni.cz";
                 case LivedoorCom: return "livedoor.com";
                 case OneindiaIn : return "oneindia.in";
+                case VolnyCz : return "volny.cz";
  		default:    return "Nieobslugiwana !";
 	}
 

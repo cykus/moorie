@@ -49,7 +49,8 @@ enum MBoxID {
         GdeRu= -9,
         KlikniCz= -65,
         LivedoorCom= -30,
-        OneindiaIn= 55
+        OneindiaIn= 55,
+        VolnyCz = 121
 };
 
 std::string getMailboxName(int id);

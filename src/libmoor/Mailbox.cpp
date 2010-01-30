@@ -119,7 +119,7 @@ static size_t read_callback(void *ptr, size_t size, size_t nmemb, FILE *stream)
 std::string& CMailBox::doSMTPUpload(std::string server, std::string login, std::string password, std::string filename) {
 }
 
-std::string& CMailBox::doHTTPUpload(std::string url, variables myvars, std::string filename, bool header) {
+std::string& CMailBox::doHTTPUpload(std::string url, std::string filename, bool header) {
 	struct curl_httppost* post = NULL;
 	struct curl_httppost* last = NULL;
 	struct curl_slist *headerlist=NULL;
@@ -128,15 +128,18 @@ std::string& CMailBox::doHTTPUpload(std::string url, variables myvars, std::stri
 	curl_easy_setopt(handle, CURLOPT_URL, url.c_str());
   	curl_easy_setopt(handle, CURLOPT_HEADER, header);
 
-	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.to_form.c_str(), CURLFORM_COPYCONTENTS, myvars.to_address.c_str(), CURLFORM_END);
-	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.subject_form.c_str(), CURLFORM_COPYCONTENTS, myvars.subject.c_str(), CURLFORM_END);
-	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.body_form.c_str(), CURLFORM_COPYCONTENTS, myvars.body.c_str(), CURLFORM_END);
-	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.file_form.c_str(), CURLFORM_FILE, filename.c_str(), CURLFORM_END);
-	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.file_form.c_str(), CURLFORM_COPYCONTENTS, filename.c_str(), CURLFORM_END);
-	curl_formadd(&post, &last, CURLFORM_COPYNAME, myvars.submit_form.c_str(), CURLFORM_COPYCONTENTS, myvars.submit.c_str(), CURLFORM_END);
-
+	for (int i= 1; i < myvar.field.size(); ++i )
+	{
+		curl_formadd(&post, &last, CURLFORM_COPYNAME, myvar.field[i].c_str(), CURLFORM_COPYCONTENTS, myvar.value[i].c_str(), CURLFORM_END);
+	}
+	if (myvar.value[0]!="")
+	{
+		curl_formadd(&post, &last, CURLFORM_COPYNAME, myvar.field[0].c_str(), CURLFORM_FILE, myvar.value[0].c_str(), CURLFORM_END);
+	}
+	myvar.value.clear();
+	myvar.field.clear();
+	
 	headerlist = curl_slist_append(headerlist, buf);
-
 
 	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headerlist);
 	curl_easy_setopt(handle, CURLOPT_HTTPPOST, post);
@@ -274,6 +277,12 @@ void CMailBox::addHeader(const EmailHeader &hdr)
 void CMailBox::addHeaderLink(std::string link)
 {
 	segments_links.push_back(link);
+}
+
+void CMailBox::addPostData(std::string field, std::string value )
+{
+	myvar.field.push_back(field);
+	myvar.value.push_back(value);
 }
 
 void CMailBox::clearHeaders()
