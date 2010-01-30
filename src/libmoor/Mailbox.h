@@ -78,19 +78,13 @@ class CMailBox {
 		std::string& doPost(std::string url, std::string vars, bool header=false);
 
 		struct variables {
-			std::string to_form; // adresat - formularz
-			std::string to_address; // adresat
-			std::string subject_form; // temat - formularz
-			std::string subject; // tresc tematu
-			std::string body_form; // tresc wiadomosc - formularz
-			std::string body; // tresc wiadomosci
-			std::string file_form; // zalacznik - formularz
-			std::string file; // zalacznik
-			std::string submit_form; // wyslij - formularz
-			std::string submit; // wyslij
+			std::vector<std::string> field; // adresat - formularz
+			std::vector<std::string> value; // adresat
 		};
+		variables myvar;
+		
 		std::string& doSMTPUpload(std::string server, std::string login, std::string password, std::string filename);
-		std::string& doHTTPUpload(std::string url, variables myvars, std::string filename, bool header);
+		std::string& doHTTPUpload(std::string url, std::string filename, bool header);
                 std::string getMailbox() const;
                 std::string getUser() const;
 		std::string getPassword() const;
@@ -104,6 +98,7 @@ class CMailBox {
 		void addHeader(const EmailHeader &hdr);
 		void addHeaderLink(std::string link);
 		void clearHeaders();
+		void addPostData(std::string field, std::string value );
 
 		std::string getLink(int seg);
 		int downloadSeg();
