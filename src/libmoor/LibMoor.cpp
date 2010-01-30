@@ -227,7 +227,7 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 			LOG(Log::Info, boost::format( "Zalogowano pomyslnie!" ));
 			myMailBox->calculateFileCRC(myUploadFilename);
 			myUploadFileCRC = myMailBox->getFileCRC();
-			LOG(Log::Info, boost::format( "CRC Pliku: %1%" ) %myMailBox->getFileCRC());
+			LOG(Log::Debug, boost::format( "CRC Pliku: %1%" ) %myMailBox->getFileCRC());
 
 // 			std::cout << generateCleanHashcode() << std::endl;
 

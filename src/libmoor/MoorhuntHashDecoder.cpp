@@ -207,7 +207,7 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 
 	} while (false); //just once
 
-	std::cout << in << std::endl;
+// 	std::cout << in << std::endl;
 	if (result.valid)
 	{
 		std::string tmp;
@@ -215,7 +215,7 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 // 		std::cout << src << std::endl;
 //		char *ptr;
 		std::vector<int> v = split(src, declen);
-		std::cout << v.size() << std::endl;
+// 		std::cout << v.size() << std::endl;
 		if (v.size() < 39)
 		{
 			result.valid = false;
