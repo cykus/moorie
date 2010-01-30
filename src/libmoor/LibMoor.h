@@ -18,13 +18,17 @@ class CLibMoor {
 		int selectDownloadMailBox(int MailBox, std::string path = "");
 		int startDownload();
 		bool downloadDone;
-		bool uploadDone;
+                bool downloadPaused;
+                bool uploadDone;
+
 		Status getStatus();
+                void pauseDownload();
+                void unpauseDownload();
 
 		// upload
 		int selectUploadMailBox(int mailbox, std::string login, std::string passwd);
 		int splitFile(std::string filename, int size);
-		int startUpload();
+		int startUpload(unsigned int fromseg);
 	private:
 		/**
 		 * Gets number of last downloaded segment.
@@ -33,21 +37,29 @@ class CLibMoor {
 		 */
 		unsigned int getLastSegment(const std::string& filePath);
 
+		std::string generateCleanHashcode(); // clear hashcode generator
 
-
-	private:
 		boost::shared_ptr<Hash> myHash;
 		CMailBox* myMailBox;
 		int mySeg;
 		std::string myPath;
+        Status::State state;
 
-		// upload
+                // upload
 		std::string myUploadFilename;
+		int myUploadFilesize;
+		int myUploadSegSize;
+		std::string myUploadAccessPasswd;
+		std::string myUploadEditPasswd;
+		int myUploadNumOfSeg;
+		std::string myUploadFileCRC;
+
 		int selected;
 		int segments;
 		std::string myUploadMailbox;
 		std::string myLogin;
 		std::string myPasswd;
+
 };
 
 #endif

@@ -47,6 +47,20 @@
 #include <map>
 #include <sstream>
 
+#ifdef _WIN32
+    #include <windows.h>
+    inline void sleepMs(int ms) {
+    {
+        ::Sleep(ms);
+    }
+#else
+    #include <unistd.h>
+    inline void sleepMs(int ms) {
+        static const unsigned MilliToMicro = 1000;
+        ::usleep(ms * MilliToMicro);
+    }
+#endif
+
 namespace Ui
 {
     class MainWindow;
@@ -80,6 +94,9 @@ class QMoorie:public QMainWindow
     boost::thread *logsThread; //!< Wątek odpowiedzialny za wyświetlanie logów
     boost::mutex mutex; 
 
+    void createTable(); //!< Tworzy myTableview dla karty pobieranie
+    void createToolBars(); //!< Tworzy pasek narzędziowy
+    void createActions(); //!< Tworzy akcje dla przycisków
     void refreshStatuses();
     void refreshLogs();
 
@@ -99,9 +116,6 @@ public:
     ~QMoorie();
 
     void addInstance(QString, QString, QString = ""); //!< Tworzymy nową instację pobierania
-    void createTable(); //!< Tworzy myTableview dla karty pobieranie
-    void createToolBars(); //!< Tworzy pasek narzędziowy
-    void createActions(); //!< Tworzy akcje dla przycisków
     void readConfigFile(); //!< Wczytuje konfigurację z pliku
     void writeConfigFile(); //!< Zapisuje konfiguracje do pliku
     void loadDownloads(); //!< Wczytuje listę plików do pobrania z poprzedniej sesji
@@ -123,6 +137,8 @@ public Q_SLOTS:
     void toggleVisibility();
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
     void removeDownload(); //!< Usuwa wybrane pobieranie
+    void pauseDownload(); //!< Wstrzymuje wybrane pobierani
+
 
 };
 #endif

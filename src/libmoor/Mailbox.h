@@ -52,8 +52,9 @@ class CMailBox {
 
 //	mutable mutex speedMutex;
 	boost::posix_time::ptime startTime; //!< Connection start time, used to measure speed
+        boost::posix_time::ptime pausedTime;
         unsigned int bytesRead; //!< Number of bytes processed, used to measure speed
-		unsigned int bytesSend;
+        unsigned int bytesSend;
         unsigned int allBytesRead;
 
 	static const int BUFFER_SIZE = 1024*256; //!< Size of temporary buffer (256kB)
@@ -133,7 +134,9 @@ class CMailBox {
 		 */
 		unsigned int countAvailableSegments(unsigned int segment);
 		unsigned int getBytesRead();
-		unsigned int getSpeed() const;
+                unsigned int getSpeed() const;
+                int pauseDownload();
+                int unpauseDownload();
 		std::string getFileCRC();
 		void calculateFileCRC(std::string filename);
 		virtual ~CMailBox();

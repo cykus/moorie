@@ -63,7 +63,6 @@ std::string& CMailBox::doGet(std::string url, bool  header)
 	bytesRead = 0;
 	startTime = boost::posix_time::microsec_clock::universal_time();
 //	lock.unlock();
-	stopFlag = false;
 	this->url = url;
 //	LOG(Log::Debug, "GET: " + url);
 	bufferPos = 0;
@@ -71,11 +70,11 @@ std::string& CMailBox::doGet(std::string url, bool  header)
 	curl_easy_setopt(handle, CURLOPT_HTTPGET, 1);
 	curl_easy_setopt(handle, CURLOPT_URL, this->url.c_str());
  	status = curl_easy_perform(handle);
-// 	if (status != 0)
-// 	{
-// 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
-// 	}
-//	LOG(Log::Debug,"Before request");
+        if (status != 0)
+        {
+                LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
+        }
+        //LOG(Log::Debug,"Before request");
 	requestComplete();
 	return this->result;
 }
@@ -86,7 +85,6 @@ std::string& CMailBox::doPost(std::string url, std::string vars, bool header)
 	bytesRead = 0;
 	startTime = boost::posix_time::microsec_clock::universal_time();
 //	lock.unlock();
-	stopFlag = false;
 	this->url = url;
 	this->vars = vars;
 // 	LOG(Log::Debug, "POST: " + url + " DATA: " + vars);
@@ -97,8 +95,7 @@ std::string& CMailBox::doPost(std::string url, std::string vars, bool header)
 	curl_easy_setopt(handle, CURLOPT_URL, this->url.c_str());
 	status = curl_easy_perform(handle);
 	if (status != 0)
-	{
-//		cout << curl_easy_strerror(status) << endl;
+        {
 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
 	requestComplete();
@@ -200,6 +197,8 @@ std::string CMailBox::getFileCRC() {
 }
 
 std::string CMailBox::getSegCRC(std::string filename) {
+// 	LOG(Log::Info, boost::format("Licze CRC"));
+
 	crcRes.reset();
 	std::ifstream in(filename.c_str(), std::ifstream::binary);
 	while (!in.eof()) {
@@ -431,4 +430,36 @@ unsigned int CMailBox::getSpeed() const
                 return static_cast<int>( b );
         }
         return 0;
+}
+int CMailBox::pauseDownload() {
+        CURLcode ret;
+        pausedTime = boost::posix_time::microsec_clock::universal_time();
+        ret = curl_easy_pause(handle, CURLPAUSE_ALL);
+        if(ret == CURLE_OK)
+        {
+            LOG( Log::Info, "Wstrzymanie pobierania");
+
+            return 1;
+        }
+        else
+        {
+            LOG( Log::Error, "Wstrzymanie pobierania nie powiodło się");
+            return 0;
+        }
+}
+int CMailBox::unpauseDownload() {
+        CURLcode ret;
+        ret = curl_easy_pause(handle, CURLPAUSE_CONT);
+        const boost::posix_time::ptime currTime = boost::posix_time::microsec_clock::universal_time();
+        startTime = startTime + (currTime - pausedTime);
+        if(ret == CURLE_OK)
+        {
+            LOG( Log::Info, "Wznowienie pobierania");
+            return 1;
+        }
+        else
+        {
+            LOG( Log::Error, "Wznowienie pobierania nie powiodło się");
+            return 0;
+        }
 }

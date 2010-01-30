@@ -4,11 +4,12 @@ Status::Status()
 {
 }
 
-Status::Status(int downloadSegment, unsigned int speed, unsigned int bytesRead, std::string mailboxName)
+Status::Status(int downloadSegment, unsigned int speed, unsigned int bytesRead, std::string mailboxName, Status::State state)
         : downloadSegment( downloadSegment )
         , speed( speed )
         , bytesRead( bytesRead )
         , mailboxName( mailboxName )
+        , state( state )
 {
 }
 
@@ -18,6 +19,7 @@ Status::Status( const Status &s )
 	speed = s.speed;
         bytesRead = s.bytesRead;
         mailboxName = s.mailboxName;
+        downloadPaused = s.downloadPaused;
 }
 
 std::string Status::getStateText() const
@@ -34,15 +36,12 @@ std::string Status::getStateText() const
 			return "Downloading";
 		case Status::Downloaded:
 			return "All segments downloaded";
-		case Status::Merging:
-			return "Merging";
-		case Status::Merged:
-//			return std::string("Merged, CRC ") + (crcOk ? "OK" : "FAIL");
-			return std::string("Download complete!");
 		case Status::ConnectionError:
 			return "Connection Error";
 		case Status::SegmentError:
 			return "Segment CRC Error";
+                case Status::FileError:
+                        return "File CRC Error";
 		case Status::GivingUp:
 			return "Giving up";
 		case Status::Finished:

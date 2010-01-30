@@ -169,6 +169,7 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 //	unsigned char *in = base64Decode(&hashin[hpos], i, &declen);
 	unsigned char *in = unbase64(&hashin[hpos], strlen(&hashin[hpos]));
 	declen = strlen(&hashin[hpos]);
+
 	//
 	// AES decryption
 	do
@@ -206,12 +207,15 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 
 	} while (false); //just once
 
+	std::cout << in << std::endl;
 	if (result.valid)
 	{
 		std::string tmp;
 		char *src = reinterpret_cast<char *>(in);
+// 		std::cout << src << std::endl;
 //		char *ptr;
 		std::vector<int> v = split(src, declen);
+		std::cout << v.size() << std::endl;
 		if (v.size() < 39)
 		{
 			result.valid = false;
@@ -220,7 +224,6 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 		else
 		{
 			int numOfMirrors;
-
 			result.fileName = std::string(src, v[1]);
 			result.crc = (
 					((unsigned char)src[v[2]]) << 24 |
@@ -228,6 +231,11 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 					((unsigned char)src[v[2] + 2]) << 8 |
 					((unsigned char)src[v[2] + 3])
 			);
+			std::stringstream asd;
+// 			int dupa =((unsigned char)src[v[2]]) << 24;
+// 			asd << dupa << " " << std::hex << result.crc;
+// 			std::cout << " CRC: " <<  asd.str() << " " << dupa << std::endl;
+
 			tmp = std::string(src + v[4], v[5]);
 			result.fileSize = atol(tmp.c_str());
 			tmp = std::string(src + v[6], v[7]); // bool 1
@@ -272,6 +280,54 @@ Hash* MoorhuntHashDecoder::decode(const std::string& hashcode)
 	delete [] in;
 	return new MoorhuntHash(result);
 }
+
+std::string MoorhuntHashEncoder::encode(std::string data) {
+
+	MCRYPT td;
+	int length = strlen(data.c_str());
+	char *in;
+		// AES decryption
+
+	do
+	{
+		td = mcrypt_module_open((char*)"rijndael-256", NULL, (char*)"cbc", NULL);
+		if (td == MCRYPT_FAILED)
+			break;
+
+		unsigned char* key = getVerByte(keys, 'a', 'h');
+		unsigned char* iv = getVerByte(ivec, 'a', 'h');
+
+		if (key == NULL || iv == NULL)
+			break;
+
+		if (mcrypt_generic_init(td, key, 32, iv) < 0)
+		{
+			mcrypt_module_close(td);
+			break;
+		}
+
+		in = (char*)data.c_str();
+		if (mcrypt_generic(td, in, length) != 0)
+		{
+			mcrypt_module_close(td);
+			break;
+		}
+
+//		LOG_BUFFER(Log::Debug, reinterpret_cast<char *>(in), declen);
+		mcrypt_generic_deinit(td);
+		mcrypt_module_close(td);
+
+// 		result.valid = true;
+
+	} while (false); //just once
+
+	unsigned char *myhash = base64(in, length);
+
+	std::stringstream ss;
+	ss << myhash;
+	return ss.str();
+}
+
 
 // bool MoorhuntHash::usesMD5Passwords() const
 // {
