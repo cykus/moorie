@@ -17,34 +17,23 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef THREADLOGS_H
-#define THREADLOGS_H
+#ifndef THREADSTATUSES_H
+#define THREADSTATUSES_H
 #include <QtCore>
 #include <QThread>
 #include <QTime>
 
-#include "singleton.h"
-#include <Log.h>
-#include <iostream>
-
-class threadLogs : public QThread
+class threadStatuses : public QThread
 {
-    Q_OBJECT
-public:
-    threadLogs();
-    void run();
-    void setLogLevel(int);
+Q_OBJECT
 
-    class LogGuiHandle: public LogHandle
-    {
-    public:
-        LogGuiHandle(Log::Level lvl);
-        virtual ~LogGuiHandle();
-        virtual void log(const char *msg);
-    };
 Q_SIGNALS:
-    void append(const QString & text);
+    void refresh();
 
+public:
+    threadStatuses();
+
+protected:
+    void run();
 };
-
-#endif // THREADLOGS_H
+#endif // THREADSTATUSES_H

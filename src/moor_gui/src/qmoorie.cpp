@@ -33,13 +33,18 @@ QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new 
     createActions();
     createToolBars();
     readConfigFile();
-
-    stop = false;
     setTray();
-    statusesThread = new boost::thread( boost::bind( &QMoorie::refreshStatuses, this ) );
-    logsThread = new boost::thread( boost::bind( &QMoorie::refreshLogs, this ) );
+    statuses.start();
+
+    unsigned int logLevel(Zmienne().LLEVEL);
+    logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
+    LogGuiHandle *logh = new LogGuiHandle(static_cast<Log::Level>( logLevel ) );
+    Log::getLog()->addHandle(logh);
+    LogConsoleHandle *logh2 = new LogConsoleHandle(static_cast<Log::Level>( logLevel ) );
+    Log::getLog()->addHandle(logh2);
 
     loadDownloads();
+    
 }
 
 void QMoorie::setTray()
@@ -47,15 +52,14 @@ void QMoorie::setTray()
     tray = new QSystemTrayIcon();
     tray->setIcon(QIcon(":/images/hi64-app-qmoorie.png") );
     connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-    this,SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
+            this,SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
     contextMenu = new QMenu();
-    contextMenu -> addAction(addAct);
-    contextMenu -> addAction(settingsAct);
-    contextMenu -> addSeparator();
-    contextMenu -> addAction(exitAct);
-    tray -> setContextMenu(contextMenu);
+    contextMenu->addAction(addAct);
+    contextMenu->addAction(settingsAct);
+    contextMenu->addSeparator();
+    contextMenu->addAction(exitAct);
+    tray->setContextMenu(contextMenu);
     if(Zmienne().TRAY) tray->show();
-
 }
 void QMoorie::trayActivated(QSystemTrayIcon::ActivationReason reason)
 {
@@ -76,56 +80,72 @@ void QMoorie::toggleVisibility()
     }
     else hide();
 }
- void QMoorie::createActions()
- {
+void QMoorie::createActions()
+{
 
-     addAct = new QAction(QIcon(":/images/add.png"), tr("&Nowy"), this);
-     addAct->setShortcut(tr("Ctrl+N"));
-     addAct->setStatusTip(tr("Dodanie nowego pliku"));
-     connect(addAct, SIGNAL(triggered()), this, SLOT(addDialog()));
+    fileToolBar = addToolBar(tr("Plik"));
+    int iconSize = fileToolBar->iconSize().width();
+    if(iconSize <= 16) iconSize = 16;
+    if(iconSize > 16 && iconSize <= 22) iconSize = 22;
+    if(iconSize > 22 && iconSize <= 32) iconSize = 32;
+    if(iconSize > 32) iconSize = 48;
 
-     settingsAct = new QAction(QIcon(":images/tool2.png"),tr("&Ustawienia"),this);
-     settingsAct -> setShortcut(tr("Ctrl+Alt+S"));
-     settingsAct -> setStatusTip(tr("Konfiguracja aplikacji"));
-     connect(settingsAct, SIGNAL(triggered()), this ,SLOT(showSettings()));
+#if QT_VERSION >= 0x040600
+    addAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Nowy"), this);
+    settingsAct = new QAction(QIcon::fromTheme("configure", QIcon(":images/hi"+QString::number(iconSize)+"-configure.png")),tr("&Ustawienia"),this);
+    pauseAct = new QAction(QIcon::fromTheme("media-playback-pause", QIcon(":images/hi"+QString::number(iconSize)+"-media-playback-pause.png")),tr("Wstrzymaj wszystko"),this);
+    removeAct = new QAction(QIcon::fromTheme("list-remove", QIcon(":images/hi"+QString::number(iconSize)+"-list-remove.png")),tr("&Usuń"),this);
+    aboutAct = new QAction(QIcon::fromTheme("help-about", QIcon(":images/hi"+QString::number(iconSize)+"-help-about.png")), tr("&O programie"), this);
+    exitAct = new QAction(QIcon::fromTheme("application-exit", QIcon(":images/hi"+QString::number(iconSize)+"-application-exit.png")), tr("Zakończ"), this);
+#else
+    addAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png"), tr("&Nowy"), this);
+    settingsAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-configure.png"),tr("&Ustawienia"),this);
+    pauseAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-media-playback-pause.png"),this);
+    removeAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-remove.png"),tr("&Usuń"),this);
+    aboutAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-help-about.png"), tr("&O programie"), this);
+    exitAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-application-exit.png"), tr("Zakończ"), this);
+#endif
 
-     pauseAct = new QAction(QIcon(":images/pause.png"),tr("Wstrzymaj wszystko"),this);
-     pauseAct->setDisabled(true);
-     pauseAct -> setStatusTip(tr("Wstrzymanie/wznowienie pobierania wszystkich plików"));
+    addAct->setShortcut(tr("Ctrl+N"));
+    addAct->setStatusTip(tr("Dodanie nowego pliku"));
+    connect(addAct, SIGNAL(triggered()), this, SLOT(addDialog()));
 
-     removeAct = new QAction(QIcon(":images/remove.png"),tr("&Usuń"),this);
-     removeAct -> setStatusTip(tr("Usunięcie pobierania"));
+    settingsAct -> setShortcut(tr("Ctrl+Alt+S"));
+    settingsAct -> setStatusTip(tr("Konfiguracja aplikacji"));
+    connect(settingsAct, SIGNAL(triggered()), this ,SLOT(showSettings()));
 
-     aboutAct = new QAction(QIcon(":/images/help_about.png"), tr("&O programie"), this);
-     aboutAct->setStatusTip(tr("Informacje o aplikacji"));
-     connect(aboutAct, SIGNAL(triggered()), this, SLOT(aboutDialog()));
+    pauseAct->setDisabled(true);
+    pauseAct -> setStatusTip(tr("Wstrzymanie/wznowienie pobierania wszystkich plików"));
 
-     exitAct = new QAction(QIcon(":/images/exit.png"), tr("Zakończ"), this);
-     exitAct->setShortcut(tr("Ctrl+Q"));
-     exitAct->setStatusTip(tr("Wyjście z aplikacji"));
-     connect(exitAct, SIGNAL(triggered()), this, SLOT(exitApp()));
+    removeAct -> setStatusTip(tr("Usunięcie pobierania"));
 
-     connect(tabela->tRemoveAct, SIGNAL(triggered()), this, SLOT(removeDownload()));
-     connect(tabela->tPauseAct, SIGNAL(triggered()), this, SLOT(pauseDownload()));
+    aboutAct->setStatusTip(tr("Informacje o aplikacji"));
+    connect(aboutAct, SIGNAL(triggered()), this, SLOT(aboutDialog()));
+
+    exitAct->setShortcut(tr("Ctrl+Q"));
+    exitAct->setStatusTip(tr("Wyjście z aplikacji"));
+    connect(exitAct, SIGNAL(triggered()), this, SLOT(exitApp()));
+
+    connect(tabela->tRemoveAct, SIGNAL(triggered()), this, SLOT(removeDownload()));
+    connect(tabela->tPauseAct, SIGNAL(triggered()), this, SLOT(pauseDownload()));
+    connect(&statuses, SIGNAL(refresh()), this, SLOT(refreshStatuses()));
 }
 
- void QMoorie::createToolBars()
- {
-     fileToolBar = addToolBar(tr("Plik"));
-     fileToolBar->addAction(addAct);
-     fileToolBar->addAction(removeAct);
-     fileToolBar->addSeparator();
-     fileToolBar->addAction(pauseAct);
-     fileToolBar->addAction(settingsAct);
-     fileToolBar->addSeparator();
-     fileToolBar->addAction(exitAct);
-     fileToolBar->addAction(aboutAct);
-     fileToolBar->addSeparator();
-     fileToolBar->addAction(exitAct);
-     fileToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-     fileToolBar->setIconSize(QSize(24,24));
-     fileToolBar->setMovable(false);
- }
+void QMoorie::createToolBars()
+{
+    fileToolBar->addAction(addAct);
+    fileToolBar->addAction(removeAct);
+    fileToolBar->addSeparator();
+    fileToolBar->addAction(pauseAct);
+    fileToolBar->addAction(settingsAct);
+    fileToolBar->addSeparator();
+    fileToolBar->addAction(exitAct);
+    fileToolBar->addAction(aboutAct);
+    fileToolBar->addSeparator();
+    fileToolBar->addAction(exitAct);
+    fileToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    fileToolBar->setMovable(false);
+}
 void QMoorie::createTable()
 {
     tabela = new myTableWidget();
@@ -200,145 +220,125 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
 */
 void QMoorie::refreshStatuses()
 {
-
-    while(1)
+    quint64 allBytesReadSession = 0;
+    for (int i = 0; i < tInstance.size(); ++i)
     {
-        quint64 allBytesReadSession = 0;
-        sleepMs(2000);
-        for (int i = 0; i < tInstance.size(); ++i)
-        {
-            if(tInstance.at(i)->Instance->downloadDone)
-            {
-                Status status = tInstance.at(i)->Instance->getStatus();
-
-                if(status.state == Status::Finished)
-                {
-                    for(int j = 0 ; j < 7; j++ )
-                    {
-                        tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 100));
-                    }
-                    tInstance.remove(i);
-                    saveDownloads();
-                }
-                if(status.state == Status::FileError && !tInstance.at(i)->pobrano)
-                {
-                    QTableWidgetItem *PobranoPliku = new QTableWidgetItem("0.00 MB");
-                    tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
-                    QTableWidgetItem *postepPobierania = new QTableWidgetItem;
-                    postepPobierania->setData(Qt::DisplayRole, 0);
-                    tabela->setItem(tInstance.at(i)->itemRow, 3, postepPobierania);
-                    QTableWidgetItem *statusPobierania = new QTableWidgetItem("No valid account found");
-                    tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
-                    QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                    tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
-                    for(int j = 0 ; j < 7; j++ )
-                    {
-                        tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(255, 0, 0, 200));
-                    }
-                    tInstance.at(i)->pobrano = true;
-                }
-            }
-        }
-
-        for (int i = 0; i < tInstance.size(); ++i)
+        if(tInstance.at(i)->Instance->downloadDone)
         {
             Status status = tInstance.at(i)->Instance->getStatus();
-            if(!(tInstance.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
+
+            if(status.state == Status::Finished)
             {
-                allBytesReadSession += status.bytesRead;
-
-                QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize(tInstance.at(i)->size - tInstance.at(i)->pobranoLS - status.bytesRead));
-                tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
-                int percentDownloaded = 100.0f * (status.bytesRead + tInstance.at(i)->pobranoLS)  / tInstance.at(i)->size;
-                QTableWidgetItem *postepPobierania = new QTableWidgetItem;
-                postepPobierania->setData(Qt::DisplayRole, percentDownloaded);
-                tabela->setItem(tInstance.at(i)->itemRow, 3, postepPobierania);
-
-                const double speed( static_cast<double>( status.speed) / 1024.0f );
-                std::stringstream s;
-                s.setf( std::ios::fixed);
-                if ( speed - round( speed ) < 0.1f )
-                {
-                    s << std::setprecision( 0 );
-                }
-                else
-                {
-                    s << std::setprecision( 2 );
-                }
-                s << speed;
-                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(QString::fromStdString(s.str()) + " KB/s");
-                tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
-
-                QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
-                    " " + QString::number(status.downloadSegment) + "/" + QString::number(tInstance.at(i)->totalSegments));
-                if(status.state == Status::Connecting || status.state == Status::Connected)
-                {
-                   statusPobierania->setForeground(QColor(204, 210, 55, 255));
-                }
-                else if(status.state == Status::Downloading || status.state == Status::Downloaded)
-                { 
-                   statusPobierania->setForeground(QColor(0, 100, 0, 255));
-                }
-                else if(status.state == Status::Finished)
-                {
-                   statusPobierania->setForeground(QColor(0, 0, 200, 255));
-                }
-                else if(status.state == Status::ConnectionError || status.state == Status::FileError || status.state == Status::SegmentError)
-                {
-                   statusPobierania->setForeground(QColor(255, 0, 0, 200));
-                }
-                tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
-                //qDebug() << status.downloadSegment;
-                QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
-                tabela->setItem(tInstance.at(i)->itemRow, 6, SkrzynkaPobierania);
-            }
-            else if(tInstance.at(i)->Instance->downloadPaused)
-            {
-                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
-                QTableWidgetItem *statusPobierania = new QTableWidgetItem("Wstrzymane");
-                tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
                 for(int j = 0 ; j < 7; j++ )
                 {
-                    tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(255, 255, 0, 100));
+                    tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 100));
                 }
+                tInstance.remove(i);
+                saveDownloads();
             }
-        }
-        if(tInstance.size())
-        {
-            ui->allBytesReadSession->setText(fileSize(allBytesReadSession));
-            ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
-            QSettings settings;
-            if(settings.isWritable())
+            if(status.state == Status::FileError && !tInstance.at(i)->pobrano)
             {
-                settings.beginGroup("VARIABLES_QMOORIE");
-                settings.setValue("allBytesRead", allBytesRead+allBytesReadSession);
-                settings.endGroup();
+                QTableWidgetItem *PobranoPliku = new QTableWidgetItem("0.00 MB");
+                tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
+                QTableWidgetItem *postepPobierania = new QTableWidgetItem;
+                postepPobierania->setData(Qt::DisplayRole, 0);
+                tabela->setItem(tInstance.at(i)->itemRow, 3, postepPobierania);
+                QTableWidgetItem *statusPobierania = new QTableWidgetItem("No valid account found");
+                tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
+                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
+                tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
+                for(int j = 0 ; j < 7; j++ )
+                {
+                    tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(255, 0, 0, 200));
+                }
+                tInstance.at(i)->pobrano = true;
             }
         }
     }
-}
 
-/**
-* Funkcja odpowiedzialna za wyświetlanie logów
-*/
-void QMoorie::refreshLogs()
-{
-    unsigned int logLevel(Zmienne().LLEVEL);
-    logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
-    LogGuiHandle *logh = new LogGuiHandle(static_cast<Log::Level>( logLevel ) );
-    Log::getLog()->addHandle(logh);
-    LogConsoleHandle *logh2 = new LogConsoleHandle(static_cast<Log::Level>( logLevel ) );
-    Log::getLog()->addHandle(logh2);
-
-    while(1)
+    for (int i = 0; i < tInstance.size(); ++i)
     {
-        sleepMs(2000);
-        if(Zmienne().logs != ""){
-            ui->log->append(Zmienne().logs);
-            Zmienne().logs = "";
+        Status status = tInstance.at(i)->Instance->getStatus();
+        if(!(tInstance.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
+        {
+            allBytesReadSession += status.bytesRead;
+
+            QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize(tInstance.at(i)->size - tInstance.at(i)->pobranoLS - status.bytesRead));
+            tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
+            int percentDownloaded = 100.0f * (status.bytesRead + tInstance.at(i)->pobranoLS)  / tInstance.at(i)->size;
+            QTableWidgetItem *postepPobierania = new QTableWidgetItem;
+            postepPobierania->setData(Qt::DisplayRole, percentDownloaded);
+            tabela->setItem(tInstance.at(i)->itemRow, 3, postepPobierania);
+
+            const double speed( static_cast<double>( status.speed) / 1024.0f );
+            std::stringstream s;
+            s.setf( std::ios::fixed);
+            if ( speed - round( speed ) < 0.1f )
+            {
+                s << std::setprecision( 0 );
+            }
+            else
+            {
+                s << std::setprecision( 2 );
+            }
+            s << speed;
+            QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(QString::fromStdString(s.str()) + " KB/s");
+            tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
+
+            QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
+                                                                      " " + QString::number(status.downloadSegment+1) + "/" + QString::number(tInstance.at(i)->totalSegments));
+            if(status.state == Status::Connecting || status.state == Status::Connected)
+            {
+                statusPobierania->setForeground(QColor(204, 210, 55, 255));
+            }
+            else if(status.state == Status::Downloading || status.state == Status::Downloaded)
+            {
+                statusPobierania->setForeground(QColor(0, 100, 0, 255));
+            }
+            else if(status.state == Status::Finished)
+            {
+                statusPobierania->setForeground(QColor(0, 0, 200, 255));
+            }
+            else if(status.state == Status::ConnectionError || status.state == Status::FileError || status.state == Status::SegmentError)
+            {
+                statusPobierania->setForeground(QColor(255, 0, 0, 200));
+            }
+            tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
+            //qDebug() << status.downloadSegment;
+            QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
+            tabela->setItem(tInstance.at(i)->itemRow, 6, SkrzynkaPobierania);
+        }
+        else if(tInstance.at(i)->Instance->downloadPaused)
+        {
+            QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
+            tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
+            QTableWidgetItem *statusPobierania = new QTableWidgetItem("Wstrzymane");
+            tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
+            for(int j = 0 ; j < 7; j++ )
+            {
+                tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(255, 255, 0, 100));
+            }
         }
     }
+    if(tInstance.size())
+    {
+        ui->allBytesReadSession->setText(fileSize(allBytesReadSession));
+        ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
+        QSettings settings;
+        if(settings.isWritable())
+        {
+            settings.beginGroup("VARIABLES_QMOORIE");
+            settings.setValue("allBytesRead", allBytesRead+allBytesReadSession);
+            settings.endGroup();
+        }
+        QString tip = "<table cellpadding='2' cellspacing='2' align='center'><tr><td><b>Szybkość:</b></td><td></td></tr><tr><td>Pobieranie: <font color='#1c9a1c'>0 KB/s</font></td><td>Wysyłanie: <font color='#990000'>0 KB/s</font></td></tr><tr><td><b>Transfer:</b></td><td></td></tr><tr><td>Pobrano: <font color='#1c9a1c'>"+ fileSize(allBytesReadSession) +"</font></td><td>Wysłano: <font color='#990000'>0 MB</font></td></tr></table>";
+        tray->setToolTip(tip);
+    }
+    if(Zmienne().logs != ""){
+        ui->log->append(Zmienne().logs);
+        Zmienne().logs = "";
+    }
+
 }
 void QMoorie::removeDownload()
 {
@@ -360,12 +360,12 @@ void QMoorie::removeDownload()
 
     for (int i = 0; i < tInstance.size(); ++i)
     {
-            tInstance.at(i)->itemRow = i;
-            QTableWidgetItem *nazwaPliku = new QTableWidgetItem(tInstance.at(i)->filename);
-            tabela->setItem(tInstance.at(i)->itemRow, 0, nazwaPliku);
-            QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(tInstance.at(i)->size));
-            tabela->setItem(tInstance.at(i)->itemRow, 1, rozmiarPliku);
-            
+        tInstance.at(i)->itemRow = i;
+        QTableWidgetItem *nazwaPliku = new QTableWidgetItem(tInstance.at(i)->filename);
+        tabela->setItem(tInstance.at(i)->itemRow, 0, nazwaPliku);
+        QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(tInstance.at(i)->size));
+        tabela->setItem(tInstance.at(i)->itemRow, 1, rozmiarPliku);
+
 
     }
 }
@@ -430,7 +430,7 @@ void QMoorie::loadDownloads()
                     addInstance(hash.text(), pass.text(), pathstr);
                 }
                 else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));
-                }
+            }
             else QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
         }
         catch (std::exception& e)
@@ -500,7 +500,6 @@ void QMoorie::readConfigFile()
     QHeaderView *header = tabela->horizontalHeader();
     header->setDefaultAlignment(Qt::AlignLeft);
     QSettings settings;
-    settings.setDefaultFormat(QSettings::IniFormat);
     settings.beginGroup("CONFIG_PAGE");
     Zmienne().PATH = settings.value("PATH", "home").toString();
     Zmienne().LLEVEL = settings.value("LLEVEL", 6).toInt();
@@ -535,7 +534,6 @@ void QMoorie::writeConfigFile()
 {
     QHeaderView *header = tabela->horizontalHeader();
     QSettings settings;
-    settings.setDefaultFormat(QSettings::IniFormat);
     if(settings.isWritable()){
         settings.beginGroup("CONFIG_PAGE");
         settings.setValue("PATH", Zmienne().PATH);

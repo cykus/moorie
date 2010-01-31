@@ -1,16 +1,36 @@
 <RCC>
     <qresource prefix="/">
-        <file>images/add.png</file>
-        <file>images/help_about.png</file>
-        <file>images/exit.png</file>
-        <file>images/remove.png</file>
-        <file>images/pause.png</file>
-        <file>images/play.png</file>
-        <file>images/tool2.png</file>
-        <file>images/query.png</file>
-        <file>images/config.png</file>
-        <file>images/update.png</file>
-        <file>images/qtlogo.png</file>
         <file>images/hi64-app-qmoorie.png</file>
+        <file>images/hi16-application-exit.png</file>
+        <file>images/hi16-configure.png</file>
+        <file>images/hi16-help-about.png</file>
+        <file>images/hi16-list-add.png</file>
+        <file>images/hi16-list-remove.png</file>
+        <file>images/hi16-media-playback-pause.png</file>
+        <file>images/hi16-media-playback-start.png</file>
+        <file>images/hi22-application-exit.png</file>
+        <file>images/hi22-configure.png</file>
+        <file>images/hi22-help-about.png</file>
+        <file>images/hi22-list-add.png</file>
+        <file>images/hi22-list-remove.png</file>
+        <file>images/hi22-media-playback-pause.png</file>
+        <file>images/hi22-media-playback-start.png</file>
+        <file>images/hi32-application-exit.png</file>
+        <file>images/hi32-configure.png</file>
+        <file>images/hi32-help-about.png</file>
+        <file>images/hi32-list-add.png</file>
+        <file>images/hi32-list-remove.png</file>
+        <file>images/hi32-media-playback-pause.png</file>
+        <file>images/hi32-media-playback-start.png</file>
+        <file>images/hi48-application-exit.png</file>
+        <file>images/hi48-configure.png</file>
+        <file>images/hi48-help-about.png</file>
+        <file>images/hi48-list-add.png</file>
+        <file>images/hi48-list-remove.png</file>
+        <file>images/hi48-media-playback-pause.png</file>
+        <file>images/hi48-media-playback-start.png</file>
+        <file>images/preferences-other.png</file>
+        <file>images/preferences-system-network.png</file>
+        <file>images/preferences-system.png</file>
     </qresource>
 </RCC>

@@ -32,6 +32,7 @@
 #include "myTableWidget.h"
 #include "tabledelegate.h"
 #include "threadinstance.h"
+#include "threadstatuses.h"
 #include "tools.h"
 // moorie
 #include <boost/bind.hpp>
@@ -47,7 +48,7 @@
 #include <map>
 #include <sstream>
 
-#ifdef _WIN32
+#ifdef Q_OS_WIN
     #include <windows.h>
     inline void sleepMs(int ms) {
     {
@@ -92,11 +93,13 @@ class QMoorie:public QMainWindow
     boost::thread *statusesThread; //!< Wątek odpowiedzialny za wyświetlanie statusów
     boost::thread *logsThread; //!< Wątek odpowiedzialny za wyświetlanie logów
     boost::mutex mutex; 
+    threadStatuses statuses;
+    QTableWidgetItem tableItem;
 
     void createTable(); //!< Tworzy myTableview dla karty pobieranie
     void createToolBars(); //!< Tworzy pasek narzędziowy
     void createActions(); //!< Tworzy akcje dla przycisków
-    void refreshStatuses();
+
     void refreshLogs();
 
     class LogGuiHandle: public LogHandle
@@ -136,8 +139,7 @@ public Q_SLOTS:
     void toggleVisibility();
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
     void removeDownload(); //!< Usuwa wybrane pobieranie
-    void pauseDownload(); //!< Wstrzymuje wybrane pobierani
-
-
+    void pauseDownload(); //!< Wstrzymuje wybrane pobieranie
+    void refreshStatuses();
 };
 #endif

@@ -32,10 +32,10 @@ ConfigDialog::ConfigDialog()
     warning->setText("<b>Niektóre zmiany wymagają uruchomienia aplikacji ponownie.<b>");
     contentsWidget = new QListWidget;
     contentsWidget->setViewMode(QListView::IconMode);
-    contentsWidget->setIconSize(QSize(112, 112));
+    contentsWidget->setIconSize(QSize(64, 64));
     contentsWidget->setMovement(QListView::Static);
-    contentsWidget->setMaximumWidth(120);
-    contentsWidget->setMinimumSize(120,300);
+    contentsWidget->setMaximumWidth(100);
+    contentsWidget->setMinimumSize(90,300);
     contentsWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     contentsWidget->setResizeMode(QListView::Adjust);
     contentsWidget->setSpacing(12);
@@ -76,22 +76,30 @@ ConfigDialog::ConfigDialog()
 void ConfigDialog::createIcons()
 {
     QListWidgetItem *configButton = new QListWidgetItem(contentsWidget);
-    configButton->setIcon(QIcon(":/images/config.png"));
+    QListWidgetItem *uploadButton = new QListWidgetItem(contentsWidget);
+    QListWidgetItem *otherButton = new QListWidgetItem(contentsWidget);
+
+#if QT_VERSION >= 0x040600
+    configButton->setIcon(QIcon::fromTheme("preferences-system", QIcon(":images/preferences-system.png")));
+    uploadButton->setIcon(QIcon::fromTheme("preferences-system-network", QIcon(":images/preferences-system-network.png")));
+    otherButton->setIcon(QIcon::fromTheme("preferences-other", QIcon(":images/preferences-other.png")));
+#else
+    configButton->setIcon(QIcon(":/images/preferences-system.png"));
+    uploadButton->setIcon(QIcon(":/images/preferences-system-network.png"));
+    otherButton->setIcon(QIcon(":/images/preferences-other.png"));
+#endif
+
     configButton->setText(tr("Konfiguracja"));
     configButton->setTextAlignment(Qt::AlignHCenter);
     configButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-    QListWidgetItem *updateButton = new QListWidgetItem(contentsWidget);
-    updateButton->setIcon(QIcon(":/images/update.png"));
-    updateButton->setText(tr("Upload"));
-    updateButton->setTextAlignment(Qt::AlignHCenter);
-    updateButton->setFlags(Qt::NoItemFlags);
+    uploadButton->setText(tr("Upload"));
+    uploadButton->setTextAlignment(Qt::AlignHCenter);
+    uploadButton->setFlags(Qt::NoItemFlags);
 
-    QListWidgetItem *queryButton = new QListWidgetItem(contentsWidget);
-    queryButton->setIcon(QIcon(":/images/query.png"));
-    queryButton->setText(tr("Inne"));
-    queryButton->setTextAlignment(Qt::AlignHCenter);
-    queryButton->setFlags(Qt::NoItemFlags);
+    otherButton->setText(tr("Inne"));
+    otherButton->setTextAlignment(Qt::AlignHCenter);
+    otherButton->setFlags(Qt::NoItemFlags);
 
     connect(contentsWidget,
             SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
