@@ -36,6 +36,7 @@ message(STATUS)
 
 set(ENABLE_GUI ${ENABLE_GUI} CACHE BOOL
 		"Set to ON to build with Qmoorie" FORCE)
+
 CONFIGURE_FILE(
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"

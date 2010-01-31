@@ -35,9 +35,6 @@
 #include "threadstatuses.h"
 #include "tools.h"
 // moorie
-#include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/thread.hpp>
 #include <HashManager.h>
 #include <Status.h>
 #include <Log.h>
@@ -90,11 +87,7 @@ class QMoorie:public QMainWindow
     QToolBar *fileToolBar;
 
     Ui::MainWindow *ui;
-    boost::thread *statusesThread; //!< Wątek odpowiedzialny za wyświetlanie statusów
-    boost::thread *logsThread; //!< Wątek odpowiedzialny za wyświetlanie logów
-    boost::mutex mutex; 
     threadStatuses statuses;
-    QTableWidgetItem tableItem;
 
     void createTable(); //!< Tworzy myTableview dla karty pobieranie
     void createToolBars(); //!< Tworzy pasek narzędziowy
