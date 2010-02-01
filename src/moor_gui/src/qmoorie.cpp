@@ -221,6 +221,7 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
 void QMoorie::refreshStatuses()
 {
     quint64 allBytesReadSession = 0;
+    double allSpeed = 0;
     for (int i = 0; i < tInstance.size(); ++i)
     {
         if(tInstance.at(i)->Instance->downloadDone)
@@ -270,6 +271,7 @@ void QMoorie::refreshStatuses()
             postepPobierania->setData(Qt::DisplayRole, percentDownloaded);
             tabela->setItem(tInstance.at(i)->itemRow, 3, postepPobierania);
 
+            allSpeed += static_cast<double>( status.speed) / 1024.0f;
             const double speed( static_cast<double>( status.speed) / 1024.0f );
             std::stringstream s;
             s.setf( std::ios::fixed);
@@ -331,7 +333,18 @@ void QMoorie::refreshStatuses()
             settings.setValue("allBytesRead", allBytesRead+allBytesReadSession);
             settings.endGroup();
         }
-        QString tip = "<table cellpadding='2' cellspacing='2' align='center'><tr><td><b>Szybkość:</b></td><td></td></tr><tr><td>Pobieranie: <font color='#1c9a1c'>0 KB/s</font></td><td>Wysyłanie: <font color='#990000'>0 KB/s</font></td></tr><tr><td><b>Transfer:</b></td><td></td></tr><tr><td>Pobrano: <font color='#1c9a1c'>"+ fileSize(allBytesReadSession) +"</font></td><td>Wysłano: <font color='#990000'>0 MB</font></td></tr></table>";
+        std::stringstream allS;
+        allS.setf( std::ios::fixed);
+        if ( allSpeed - round( allSpeed ) < 0.1f )
+        {
+            allS << std::setprecision( 0 );
+        }
+        else
+        {
+            allS << std::setprecision( 2 );
+        }
+        allS << allSpeed;
+        QString tip = "<table cellpadding='2' cellspacing='2' align='center'><tr><td><b>Szybkość:</b></td><td></td></tr><tr><td>Pobieranie: <font color='#1c9a1c'>"+ QString::fromStdString(allS.str()) +" KB/s</font></td><td>Wysyłanie: <font color='#990000'>0 KB/s</font></td></tr><tr><td><b>Transfer:</b></td><td></td></tr><tr><td>Pobrano: <font color='#1c9a1c'>"+ fileSize(allBytesReadSession) +"</font></td><td>Wysłano: <font color='#990000'>0 MB</font></td></tr></table>";
         tray->setToolTip(tip);
     }
     if(Zmienne().logs != ""){

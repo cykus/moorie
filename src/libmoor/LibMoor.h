@@ -43,7 +43,7 @@ class CLibMoor {
 		CMailBox* myMailBox;
 		int mySeg;
 		std::string myPath;
-        Status::State state;
+                Status::State state;
 
                 // upload
 		std::string myUploadFilename;
