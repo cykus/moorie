@@ -29,6 +29,7 @@
 #include "addDownload.h"
 #include "configdialog.h"
 #include "infoDialog.h"
+#include "mySystemTrayIcon.h"
 #include "myTableWidget.h"
 #include "tabledelegate.h"
 #include "threadinstance.h"
@@ -63,7 +64,6 @@ namespace Ui
 {
     class MainWindow;
 }
-
 class QMoorie:public QMainWindow
 {
     Q_OBJECT
@@ -83,7 +83,7 @@ class QMoorie:public QMainWindow
     QAction *removeAct;
 
     QStringList headerH;
-    QSystemTrayIcon *tray;
+    mySystemTrayIcon *tray;
     QToolBar *fileToolBar;
 
     Ui::MainWindow *ui;

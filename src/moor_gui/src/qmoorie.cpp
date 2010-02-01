@@ -22,7 +22,7 @@
 QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new Ui::MainWindow)
 {
     setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png"));
-    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Hashcode Downloader");
+    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Klient P2M");
 
     ui->setupUi(this);
     QTextCodec::setCodecForTr (QTextCodec::codecForName ("UTF-8"));
@@ -44,12 +44,13 @@ QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new 
     Log::getLog()->addHandle(logh2);
 
     loadDownloads();
-    
+
+
 }
 
 void QMoorie::setTray()
 {
-    tray = new QSystemTrayIcon();
+    tray = new mySystemTrayIcon();
     tray->setIcon(QIcon(":/images/hi64-app-qmoorie.png") );
     connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this,SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
@@ -213,6 +214,7 @@ void QMoorie::addInstance(QString hash, QString pass, QString path)
     tabela->setItem(tInstance.last()->itemRow, 5, statusPobierania);
     QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem();
     tabela->setItem(tInstance.last()->itemRow, 6, SkrzynkaPobierania);
+
 }
 
 /**
@@ -234,6 +236,7 @@ void QMoorie::refreshStatuses()
                 {
                     tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 100));
                 }
+                tray->showHints("Pobrano pomyślnie", "Pobieranie pliku: <br/><b><i>"+tInstance.at(i)->filename+"</b></i><br/>zakończono pomyślnie.");
                 tInstance.remove(i);
                 saveDownloads();
             }
@@ -253,6 +256,7 @@ void QMoorie::refreshStatuses()
                     tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(255, 0, 0, 200));
                 }
                 tInstance.at(i)->pobrano = true;
+                tray->showHints("Błąd pobierania", "Niestety nie udało się pobrać pliku:<br/><b><i>"+tInstance.at(i)->filename+"</i></b>");
             }
         }
     }
@@ -286,7 +290,6 @@ void QMoorie::refreshStatuses()
             s << speed;
             QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(QString::fromStdString(s.str()) + " KB/s");
             tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
-
             QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
                                                                       " " + QString::number(status.downloadSegment+1) + "/" + QString::number(tInstance.at(i)->totalSegments));
             if(status.state == Status::Connecting || status.state == Status::Connected)
@@ -324,8 +327,7 @@ void QMoorie::refreshStatuses()
     }
     if(tInstance.size())
     {
-        ui->allBytesReadSession->setText(fileSize(allBytesReadSession));
-        ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
+
         QSettings settings;
         if(settings.isWritable())
         {
@@ -344,9 +346,14 @@ void QMoorie::refreshStatuses()
             allS << std::setprecision( 2 );
         }
         allS << allSpeed;
+
+        ui->allBytesReadSession->setText(fileSize(allBytesReadSession));
+        ui->maxDownloadSpeed->setText(QString::fromStdString(allS.str()) +" KB/s");
+
         QString tip = "<table cellpadding='2' cellspacing='2' align='center'><tr><td><b>Szybkość:</b></td><td></td></tr><tr><td>Pobieranie: <font color='#1c9a1c'>"+ QString::fromStdString(allS.str()) +" KB/s</font></td><td>Wysyłanie: <font color='#990000'>0 KB/s</font></td></tr><tr><td><b>Transfer:</b></td><td></td></tr><tr><td>Pobrano: <font color='#1c9a1c'>"+ fileSize(allBytesReadSession) +"</font></td><td>Wysłano: <font color='#990000'>0 MB</font></td></tr></table>";
         tray->setToolTip(tip);
     }
+    ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
     if(Zmienne().logs != ""){
         ui->log->append(Zmienne().logs);
         Zmienne().logs = "";
@@ -517,6 +524,7 @@ void QMoorie::readConfigFile()
     Zmienne().PATH = settings.value("PATH", "home").toString();
     Zmienne().LLEVEL = settings.value("LLEVEL", 6).toInt();
     Zmienne().DLEVEL = settings.value("DLEVEL", 2).toInt();
+    Zmienne().NLEVEL = settings.value("NLEVEL", 0).toInt();
     Zmienne().KSEGMENTS = settings.value("KSEGMENTS", 1).toBool();
     Zmienne().TRAY = settings.value("TRAY", true).toBool();
     settings.endGroup();
@@ -552,6 +560,7 @@ void QMoorie::writeConfigFile()
         settings.setValue("PATH", Zmienne().PATH);
         settings.setValue("LLEVEL", Zmienne().LLEVEL);
         settings.setValue("DLEVEL", Zmienne().DLEVEL);
+        settings.setValue("NLEVEL", Zmienne().NLEVEL);
         settings.setValue("KSEGMENTS", Zmienne().KSEGMENTS);
         settings.setValue("TRAY", Zmienne().TRAY);
         settings.endGroup();

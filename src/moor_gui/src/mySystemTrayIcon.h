@@ -17,29 +17,34 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef SINGLETON_H
-#define SINGLETON_H
+#ifndef MYSYSTEMTRAYICON_H
+#define MYSYSTEMTRAYICON_H
+#include <QtGui>
+#include <QtCore>
+#include <QtDBus/QDBusInterface>
+#include <QDBusReply>
+#include "singleton.h"
 
-#include <QString>
-#include <string>
-#include <QTextStream> 
-class Singleton {
-// definicja klasy o nazwie Singleton - jest 
-// to nazwa wlasna :)
+class diall : public QWidget
+{
+    Q_OBJECT
+    void mousePressEvent(QMouseEvent * event);
+public :
+    diall(QRect pos, QWidget *parent = 0);
+    QTimer *timer;
+    QLabel *label;
+    QRect pos;
+    void setPosition();
+public Q_SLOTS:
+    void closeD();
+};
+class mySystemTrayIcon: public QSystemTrayIcon
+{
+    QDBusInterface *KNotify;
 public:
-    QString logs; //!< Przechowuje logi do czasu wyświetlania w zakładce logi
-    QString caption;
-    QString PATH;
-    QString configPath;
-    int LLEVEL, DLEVEL, NLEVEL;
-    bool KSEGMENTS;
-    bool TRAY;
-private:
-    Singleton();
-    Singleton(const Singleton&);
-    // konstruktor klasy 
-    friend Singleton& Zmienne();
+    mySystemTrayIcon(QWidget *parent = 0);
+    void showHints(QString, QString, int seconds = 10);
+
 };
 
-Singleton& Zmienne();
-#endif
+#endif MYSYSTEMTRAYICON_H

@@ -28,6 +28,8 @@ class ConfigurationPage : public QWidget
 public:
     QCheckBox *kBox, *tBox;
     QSpinBox *dBox, *lBox;
+    QGroupBox *notifyGroup;
+    QRadioButton *xdgNotification, *hintNotification, *noneNotification ;
     QLineEdit *pathEdit;
     ConfigurationPage(QWidget *parent = 0);
 private:  
