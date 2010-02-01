@@ -4,6 +4,7 @@
 /** @file */
 
 #include <string>
+#include <cstdlib>
 
 /**
  * Implementation of ROT13 cipher.
@@ -22,4 +23,7 @@ std::string Rot13(std::string str);
  */
 std::string rot13(const std::string& str);
 
+/**
+*/
+char hexToAscii(char first, char second);
 #endif // TOOLS_H__

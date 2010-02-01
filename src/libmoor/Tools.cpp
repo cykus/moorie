@@ -5,13 +5,13 @@
 //                          std::string &subject)
 // {
 // 	std::string buffer;
-// 
+//
 // 	int sealeng = search.length();
 // 	int strleng = subject.length();
-// 
+//
 // 	if (sealeng==0)
 // 			return subject;//no change
-// 
+//
 // 	for(int i=0, j=0; i<strleng; j=0 )
 // 	{
 // 			while (i+j<strleng && j<sealeng && subject[i+j]==search[j])
@@ -68,4 +68,15 @@ std::string rot13(const std::string& str) {
 	}
 
 	return result;
+}
+
+char hexToAscii(char first, char second)
+{
+	char hex[5], *stop;
+	hex[0] = '0';
+	hex[1] = 'x';
+	hex[2] = first;
+	hex[3] = second;
+	hex[4] = 0;
+	return strtol(hex, &stop, 16);
 }

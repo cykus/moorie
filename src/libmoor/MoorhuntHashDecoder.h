@@ -16,6 +16,7 @@
 #include <string>
 
 #include "HashDecoder.h"
+#include "Tools.h"
 
 class MoorhuntHashDecoder : public HashDecoder {
 	public:
@@ -26,10 +27,41 @@ class MoorhuntHashDecoder : public HashDecoder {
 };
 
 class MoorhuntHashEncoder {
+	    std::string myFilename;
+	    std::string myCRC;
+	    int myFileSize;
+	    bool myRound;
+	    bool myRandName;
+	    int mySegmentCount;
+	    int myMinSize;
+	    int myMaxSize;
+	    const char *myDownloadPassword;
+	    int myMirrors;
+	    // tutaj lista mirrorow
+	    std::string myAvartLink;
+	    const char *myEditPassword;
+	    std::string myFor;
+	    std::string myFullDescriptionLink;
+	    std::string myFullTitle;
+	    std::string myUploader;
+	    std::string myComment;
+	    
 	public:
 		MoorhuntHashEncoder();
 		~MoorhuntHashEncoder();
-		std::string encode(std::string data);
+		void setFilename(std::string data) { myFilename = data; };
+		void setCRC(std::string data) { myCRC = data; };
+		void setFileSize(int data) { myFileSize = data; };
+		void setRound(bool data) { myRound = data; };
+		void setRandName(bool data) { myRandName = data; };
+		void setSegmentCount(int data) { mySegmentCount = data; };
+		void setSegSize(int data) { myMinSize = data; myMaxSize = data; };
+		void setDownloadPassword(std::string data) { myDownloadPassword = data.c_str(); };
+		void setMirrors(int data) { myMirrors = data; };
+		void setAvartLink(std::string data) { myAvartLink = data; };
+		void setEditPassword(std::string data) { myEditPassword = data.c_str(); };
+		
+		std::string encode();
 };
 
 
