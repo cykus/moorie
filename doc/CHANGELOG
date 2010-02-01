@@ -1,5 +1,11 @@
+0.2.0 
+- moorie przepisane od nowa
+- dodano kilka nowych skrzynek
+- dodano poczatek kodowania ygoowa
+
 0.2.1
 - Dodany upload
+- Dodano generowanie hasha
 - Upload dzialajacy na gazeta.pl
 - Upload dzialajacy na gmail.com
-- Upload dzialajacy na volny.cz
+- Dodano skrzynke volny.cz

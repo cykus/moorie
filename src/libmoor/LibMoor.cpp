@@ -196,7 +196,7 @@ int CLibMoor::splitFile(std::string filename, int size) {
 		read = in.gcount();
 		out->write(buffer, read);
 		bytes += read;
-
+		myUploadFilesize+=read;
 // 		std::cout << "Read: " << read << std::endl;
 
 		if (bytes == mysegsize) {
@@ -209,6 +209,7 @@ int CLibMoor::splitFile(std::string filename, int size) {
 			LOG(Log::Debug, boost::format( "Seg: %1%" )	%segments);
 		}
 	}
+	myUploadNumOfSeg = segments;
 	return 0;
 
 }
@@ -229,7 +230,7 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 			myUploadFileCRC = myMailBox->getFileCRC();
 			LOG(Log::Debug, boost::format( "CRC Pliku: %1%" ) %myMailBox->getFileCRC());
 
-// 			std::cout << generateCleanHashcode() << std::endl;
+ 			std::cout << generateCleanHashcode() << std::endl;
 
 			for (int i=fromseg; i <= segments; i++) {
 				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
@@ -250,24 +251,25 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 }
 
 std::string CLibMoor::generateCleanHashcode() {
-/*	std::stringstream ss, ss2, ss3, ss4;
-	ss << myUploadFilesize;
-	ss2 << myUploadNumOfSeg;
-	ss3 << myUploadSegSize;
-	ss4 << std::dec << myUploadFileCRC;
-
-	myUploadAccessPasswd = "098f6bcd4621d373cade4e832627b4f6";
-	myUploadEditPasswd = "098f6bcd4621d373cade4e832627b4f6";
-
-
-	std::string clearData = myUploadFilename+"|"+"[CRC]"+"|"+ss.str()+"|False|False|"+ss2.str()+"|"+ss3.str()+"|"+ss3.str()+"|"+myUploadAccessPasswd+"|0||"+myUploadEditPasswd+"||||||$$$$$$$$$$$$$$$$$$¾=á¿o";
 
 	MoorhuntHashEncoder *hashEncoder;
 
-	std::string hash = "<<ah"+hashEncoder->encode(clearData)+">>";
-	return hash; */
+	std::string downpass = "p2mforum.info";
+	std::string editpass = "test";
 
-	return "";
+	hashEncoder->setFilename(myUploadFilename);
+	hashEncoder->setCRC(myUploadFileCRC);
+	hashEncoder->setFileSize(myUploadFilesize);
+	hashEncoder->setSegmentCount(myUploadNumOfSeg);
+	hashEncoder->setSegSize(myUploadSegSize);
+ 	hashEncoder->setDownloadPassword(downpass);
+ 	hashEncoder->setMirrors(0); // na razie 0 mirrorow
+ 	hashEncoder->setEditPassword(editpass);
+
+	std::string hash = hashEncoder->encode();
+
+// 	std::cout << "HASH: " << hash << std::endl;
+	return hash;
 }
 
 
