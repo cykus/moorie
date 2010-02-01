@@ -18,6 +18,7 @@
 #include "HashDecoder.h"
 #include "Tools.h"
 
+
 class MoorhuntHashDecoder : public HashDecoder {
 	public:
 		~MoorhuntHashDecoder() {}
