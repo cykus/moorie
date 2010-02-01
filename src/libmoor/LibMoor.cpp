@@ -250,22 +250,12 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 }
 
 std::string CLibMoor::generateCleanHashcode() {
-/*	std::stringstream ss, ss2, ss3, ss4;
-	ss << myUploadFilesize;
-	ss2 << myUploadNumOfSeg;
-	ss3 << myUploadSegSize;
-	ss4 << std::dec << myUploadFileCRC;
 
-	myUploadAccessPasswd = "098f6bcd4621d373cade4e832627b4f6";
-	myUploadEditPasswd = "098f6bcd4621d373cade4e832627b4f6";
-
-
-	std::string clearData = myUploadFilename+"|"+"[CRC]"+"|"+ss.str()+"|False|False|"+ss2.str()+"|"+ss3.str()+"|"+ss3.str()+"|"+myUploadAccessPasswd+"|0||"+myUploadEditPasswd+"||||||$$$$$$$$$$$$$$$$$$¾=á¿o";
-
+	std::string clearData = "";
 	MoorhuntHashEncoder *hashEncoder;
 
 	std::string hash = "<<ah"+hashEncoder->encode(clearData)+">>";
-	return hash; */
+
 
 	return "";
 }
