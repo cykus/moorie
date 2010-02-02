@@ -32,7 +32,7 @@
 #include "mySystemTrayIcon.h"
 #include "myTableWidget.h"
 #include "tabledelegate.h"
-#include "threadinstance.h"
+#include "downloadInstance.h"
 #include "threadstatuses.h"
 #include "tools.h"
 // moorie
@@ -110,7 +110,8 @@ public:
     QMoorie(QWidget * parent = 0, Qt::WFlags f = 0 );
     ~QMoorie();
 
-    void addInstance(QString, QString, QString = ""); //!< Tworzymy nową instację pobierania
+    void addDownloadInstance(QString, QString, QString = ""); //!< Tworzymy nową instację pobierania
+    void addUploadInstance(QString, QString, QString = ""); //!< Tworzymy nową instację wysyłania
     void readConfigFile(); //!< Wczytuje konfigurację z pliku
     void writeConfigFile(); //!< Zapisuje konfiguracje do pliku
     void loadDownloads(); //!< Wczytuje listę plików do pobrania z poprzedniej sesji
@@ -121,7 +122,8 @@ public:
     bool stop;
     addDownload *dodaj;
     myTableWidget *tabela; //!< Klasa dziedzicząca po QTableWidget
-    QVector<threadInstance*> tInstance; //!< Wektor instancji klasy threadInstance
+    QVector<downloadInstance*> downloadInstanceV; //!< Wektor instancji klasy downloadInstance
+//    QVector<uploadInstance*> uploadInstance; //!< Wektor instancji klasy uploadInstance
     
 public Q_SLOTS:
     void addDialog();

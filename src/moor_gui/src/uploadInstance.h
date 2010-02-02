@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2010 by Patryk Połomski
+ *   Copyright (C) 2008-2009 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -17,23 +17,27 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef THREADSTATUSES_H
-#define THREADSTATUSES_H
+#ifndef UPLOADINSTANCE_H
+#define UPLOADINSTANCE_H
 #include <QtCore>
 #include <QThread>
 #include <QTime>
 
-class threadStatuses : public QThread
+#include <LibMoor.h>
+#include <iostream>
+
+class uploadInstance : public QThread
 {
-Q_OBJECT
-
-Q_SIGNALS:
-    void refresh();
-
 public:
-    threadStatuses();
+    uploadInstance(QString, QString, QString, int msize = 7);
+    CLibMoor * Instance; //!< Instancja klasy CLibMoor
 
-protected:
     void run();
+    bool wyslano;
+    QString file; //!< Nazwa pliku do wysłania
+    QString user; //!< Nazwa użytkownika do skrzynki
+    QString pass; //!< Hasło do skrzynki
+    int msize; //!< Rozmiar segmentu
 };
-#endif // THREADSTATUSES_H
+
+#endif // UPLOADINSTANCE_H

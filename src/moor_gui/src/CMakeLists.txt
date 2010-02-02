@@ -9,7 +9,8 @@ set( QMOORIE_SRCS
     singleton.cpp
     configdialog.cpp
     configurationpage.cpp
-    threadinstance.cpp
+    downloadInstance.cpp
+    uploadInstance.cpp
     threadstatuses.cpp
     tools.cpp
     mySystemTrayIcon.cpp

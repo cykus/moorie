@@ -17,20 +17,31 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "threadinstance.h"
+#ifndef DOWNLOADINSTANCE_H
+#define DOWNLOADINSTANCE_H
+#include <QtCore>
+#include <QThread>
+#include <QTime>
 
+#include <LibMoor.h>
+#include <iostream>
 
-threadInstance::threadInstance(QString hash, QString pass, QString path)
+class downloadInstance : public QThread
 {
-    pobrano = false;
-    pobranoLS = 0;
-    this->hash = hash;
-    this->path = path;
-    this->pass = pass;
-}
-void threadInstance::run()
-{
-    Instance = new CLibMoor();
-    Instance->Dehash(hash.toStdString());
-    Instance->selectDownloadMailBox(0, path.toStdString());
-}
+public:
+    downloadInstance(QString, QString, QString = "");
+    CLibMoor * Instance; //!< Instancja klasy CLibMoor
+
+    void run();
+    bool pobrano;
+    quint64 size; //!< rozmiar pliku
+    int totalSegments; //!< liczba wszystkich segmentów
+    unsigned int itemRow; //!< Nr. wiersza w tabeli
+    quint64 pobranoLS; //!< Ile pobrano w poprzedniej sesji
+    QString hash; //!< hashcode pliku
+    QString path; //!< Ścieżka pobierania pliku
+    QString pass; //!< hasło pliku
+    QString filename; //!< nazwa pliku
+};
+
+#endif // DOWNLOADINSTANCE_H

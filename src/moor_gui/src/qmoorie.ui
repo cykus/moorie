@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>732</width>
-    <height>286</height>
+    <height>294</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,6 +29,11 @@
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
         <string>Pobieranie </string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Wysyłanie</string>
        </attribute>
       </widget>
       <widget class="QWidget" name="tab_3">
@@ -172,7 +177,7 @@
      <x>0</x>
      <y>0</y>
      <width>732</width>
-     <height>19</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>
