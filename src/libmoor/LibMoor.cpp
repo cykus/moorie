@@ -164,12 +164,16 @@ int CLibMoor::startDownload() {
 	return segValid;
 }
 
-int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd) {
-// 	myUploadMailbox = getMailboxName(id);
+int CLibMoor::selectUploadMailBox(std::string login, std::string passwd) {
 
-	myLogin = login;
+// 	myUploadMailbox = getMailboxName(id);
+        boost::regex mail_rgx("^(.*)@(.*)");
+        boost::smatch result_sth;
+        boost::regex_match(login, result_sth, mail_rgx);
+
+        myLogin = result_sth[1];
 	myPasswd = passwd;
-	myUploadMailbox = getMailboxName(id); // TODO - wybieranie skrzynki po id;
+        myUploadMailbox = result_sth[2]; // TODO - wybieranie skrzynki po id;
 	return 0;
 }
 

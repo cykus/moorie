@@ -27,25 +27,25 @@ std::string Status::getStateText() const
 	switch (state)
 	{
 		case Status::Awaiting:
-			return "Awaiting";
+                        return "Oczekiwanie";
 		case Status::Connecting:
-			return "Connecting";
+                        return "Łączenie";
 		case Status::Connected:
-			return "Connected";
+                        return "Połączono";
 		case Status::Downloading:
-			return "Downloading";
+                        return "Pobieranie";
 		case Status::Downloaded:
-			return "All segments downloaded";
+                        return "Pobrano wszystkie segmenty";
 		case Status::ConnectionError:
-			return "Connection Error";
+                        return "Błąd połączenia";
 		case Status::SegmentError:
-			return "Segment CRC Error";
+                        return "Nieprawidłowy CRC segmentu";
                 case Status::FileError:
-                        return "File CRC Error";
+                        return "Nieprawidłowy CRC pliku";
 		case Status::GivingUp:
-			return "Giving up";
+                        return "Poddaję się i płaczę";
 		case Status::Finished:
-                        return std::string("Download complete! ");
+                        return std::string("Pobieranie Zakończone");
 		default:
 			return "";
 	}
