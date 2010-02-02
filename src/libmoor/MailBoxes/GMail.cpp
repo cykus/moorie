@@ -160,11 +160,13 @@ int GMailMailbox::uploadRequest(std::string filename, std::string to, int seg) {
 	} else
 		return 1;
 
+	addPostData("filename",filename);
 	addPostData("to",to);
 	addPostData("subject",EncodeHeader(filename, segCRC, getFileCRC(), seg));
 	addPostData("body","tresc wiadomosci");
 	addPostData("nvp_bu_send",to);
 	addPostData("to","Wy�ij");
+	addPostData("filename",filename);
 	page = doHTTPUpload(postlink, filename, true);
 
 	return 0;
