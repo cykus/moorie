@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2010 by Patryk Połomski
+ *   Copyright (C) 2008-2009 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -17,13 +17,17 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef TOOLS_H
-#define TOOLS_H
+#include "uploadInstance.h"
 
-#include <QString>
-#include <QtDBus/QDBusInterface>
 
-QString fileSize(quint64);
-bool checkXDG();
-
-#endif
+uploadInstance::uploadInstance(QString file, QString user, QString pass, int msize):
+        file(file),
+        user(user),
+        pass(pass),
+        msize(msize),
+        wyslano(false)
+{
+}
+void uploadInstance::run()
+{
+}

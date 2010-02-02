@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef THREADINSTANCE_H
-#define THREADINSTANCE_H
+#ifndef DOWNLOADINSTANCE_H
+#define DOWNLOADINSTANCE_H
 #include <QtCore>
 #include <QThread>
 #include <QTime>
@@ -26,10 +26,10 @@
 #include <LibMoor.h>
 #include <iostream>
 
-class threadInstance : public QThread
+class downloadInstance : public QThread
 {
 public:
-    threadInstance(QString, QString, QString = "");
+    downloadInstance(QString, QString, QString = "");
     CLibMoor * Instance; //!< Instancja klasy CLibMoor
 
     void run();
@@ -44,4 +44,4 @@ public:
     QString filename; //!< nazwa pliku
 };
 
-#endif // THREADINSTANCE_H
+#endif // DOWNLOADINSTANCE_H

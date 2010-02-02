@@ -51,6 +51,22 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     tBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     tBox->setChecked(Zmienne().TRAY);
 
+    notifyGroup = new QGroupBox(parent);
+    notifyGroup->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    xdgNotification = new QRadioButton(notifyGroup);
+    hintNotification = new QRadioButton(notifyGroup);
+    noneNotification = new QRadioButton(notifyGroup);
+    notifyGroup->setTitle(tr("Powiadomienia"));
+    xdgNotification->setText(tr("Powiadomienia XDG"));
+    hintNotification->setText(tr("Dymki"));
+    noneNotification->setText(tr("Brak powiadomień"));
+    xdgNotification->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    hintNotification->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    noneNotification->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    if(Zmienne().NLEVEL == 2) xdgNotification->setChecked(true);
+    else if(Zmienne().NLEVEL == 1) hintNotification->setChecked(true);
+    else noneNotification->setChecked(true);
+    if(!checkXDG()) xdgNotification->setEnabled(false);
     QHBoxLayout *pathLayout = new QHBoxLayout;
     pathLayout -> addWidget(pathEdit);
     pathLayout -> addWidget(pathButton);
@@ -80,9 +96,15 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     trayLayout->addLayout(tLayout);
     otherGroup->setLayout(trayLayout);
 
+    QVBoxLayout *nGroupLayout = new QVBoxLayout(notifyGroup);
+    nGroupLayout->addWidget(xdgNotification);
+    nGroupLayout->addWidget(hintNotification);
+    nGroupLayout->addWidget(noneNotification);
+
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(downloadGroup);
     mainLayout->addWidget(logGroup);
+    mainLayout->addWidget(notifyGroup);
     mainLayout->addWidget(otherGroup);
     mainLayout->addStretch(1);
     setLayout(mainLayout);
@@ -94,8 +116,8 @@ void ConfigurationPage::setDir()
 {
     QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
     QString directory = QFileDialog::getExistingDirectory(this,
-                                 tr("Wybierz folder"),
-                                 "",
-                                 options);
+                                                          tr("Wybierz folder"),
+                                                          "",
+                                                          options);
     if (!directory.isEmpty()) pathEdit->setText(directory);
 }

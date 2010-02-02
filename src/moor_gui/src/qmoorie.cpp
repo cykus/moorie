@@ -22,7 +22,7 @@
 QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new Ui::MainWindow)
 {
     setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png"));
-    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Hashcode Downloader");
+    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Klient P2M");
 
     ui->setupUi(this);
     QTextCodec::setCodecForTr (QTextCodec::codecForName ("UTF-8"));
@@ -44,12 +44,13 @@ QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new 
     Log::getLog()->addHandle(logh2);
 
     loadDownloads();
-    
+
+
 }
 
 void QMoorie::setTray()
 {
-    tray = new QSystemTrayIcon();
+    tray = new mySystemTrayIcon();
     tray->setIcon(QIcon(":/images/hi64-app-qmoorie.png") );
     connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this,SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
@@ -167,7 +168,7 @@ void QMoorie::addDialog()
     {
         QString path = get->pathEdit->text();
         if((path.lastIndexOf(QDir::separator()) != path.length() - 1) && (path.length() > 1)) path += QDir::separator();
-        addInstance(get->text->toPlainText(), get->edit->text(), path);
+        addDownloadInstance(get->text->toPlainText(), get->edit->text(), path);
         saveDownloads();
     }
     delete get;
@@ -179,40 +180,41 @@ void QMoorie::addDialog()
 * @param pass zawiera hasło pobierania
 * @param path zawiera ścieżkę pobierania
 */
-void QMoorie::addInstance(QString hash, QString pass, QString path)
+void QMoorie::addDownloadInstance(QString hash, QString pass, QString path)
 {
-    tInstance.append(new threadInstance(hash, pass, path));
-    boost::shared_ptr<Hash> hashcode(HashManager::fromString((tInstance.last()->hash.toStdString())));
-    tInstance.last()->filename = QString::fromStdString(hashcode->getInfo().fileName);
-    tInstance.last()->size = hashcode->getInfo().fileSize;
-    tInstance.last()->totalSegments = hashcode->getInfo().numOfSegments;
-    tInstance.last()->pobrano = false;
-    tInstance.last()->itemRow = tabela->rowCount();
-    tInstance.last()->start();
+    downloadInstanceV.append(new downloadInstance(hash, pass, path));
+    boost::shared_ptr<Hash> hashcode(HashManager::fromString((downloadInstanceV.last()->hash.toStdString())));
+    downloadInstanceV.last()->filename = QString::fromStdString(hashcode->getInfo().fileName);
+    downloadInstanceV.last()->size = hashcode->getInfo().fileSize;
+    downloadInstanceV.last()->totalSegments = hashcode->getInfo().numOfSegments;
+    downloadInstanceV.last()->pobrano = false;
+    downloadInstanceV.last()->itemRow = tabela->rowCount();
+    downloadInstanceV.last()->start();
 
     tabela->setRowCount(tabela->rowCount() + 1);
 
     QFileInfo fileInfo;
-    fileInfo.setFile(tInstance.last()->path+tInstance.last()->filename);
+    fileInfo.setFile(downloadInstanceV.last()->path+downloadInstanceV.last()->filename);
 
-    if(fileInfo.exists()) tInstance.last()->pobranoLS = fileInfo.size();
-    else tInstance.last()->pobranoLS = 0;
+    if(fileInfo.exists()) downloadInstanceV.last()->pobranoLS = fileInfo.size();
+    else downloadInstanceV.last()->pobranoLS = 0;
 
-    QTableWidgetItem *nazwaPliku = new QTableWidgetItem(tInstance.last()->filename);
-    tabela->setItem(tInstance.last()->itemRow, 0, nazwaPliku);
-    QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(tInstance.last()->size));
-    tabela->setItem(tInstance.last()->itemRow, 1, rozmiarPliku);
+    QTableWidgetItem *nazwaPliku = new QTableWidgetItem(downloadInstanceV.last()->filename);
+    tabela->setItem(downloadInstanceV.last()->itemRow, 0, nazwaPliku);
+    QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(downloadInstanceV.last()->size));
+    tabela->setItem(downloadInstanceV.last()->itemRow, 1, rozmiarPliku);
     QTableWidgetItem *PobranoPliku = new QTableWidgetItem("?");
-    tabela->setItem(tInstance.last()->itemRow, 2, PobranoPliku);
+    tabela->setItem(downloadInstanceV.last()->itemRow, 2, PobranoPliku);
     QTableWidgetItem *postepPobierania = new QTableWidgetItem;
     postepPobierania->setData(Qt::DisplayRole, 0);
-    tabela->setItem(tInstance.last()->itemRow, 3, postepPobierania);
+    tabela->setItem(downloadInstanceV.last()->itemRow, 3, postepPobierania);
     QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("?");
-    tabela->setItem(tInstance.last()->itemRow, 4, SzybkoscPobierania);
+    tabela->setItem(downloadInstanceV.last()->itemRow, 4, SzybkoscPobierania);
     QTableWidgetItem *statusPobierania = new QTableWidgetItem();
-    tabela->setItem(tInstance.last()->itemRow, 5, statusPobierania);
+    tabela->setItem(downloadInstanceV.last()->itemRow, 5, statusPobierania);
     QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem();
-    tabela->setItem(tInstance.last()->itemRow, 6, SkrzynkaPobierania);
+    tabela->setItem(downloadInstanceV.last()->itemRow, 6, SkrzynkaPobierania);
+
 }
 
 /**
@@ -222,54 +224,56 @@ void QMoorie::refreshStatuses()
 {
     quint64 allBytesReadSession = 0;
     double allSpeed = 0;
-    for (int i = 0; i < tInstance.size(); ++i)
+    for (int i = 0; i < downloadInstanceV.size(); ++i)
     {
-        if(tInstance.at(i)->Instance->downloadDone)
+        if(downloadInstanceV.at(i)->Instance->downloadDone)
         {
-            Status status = tInstance.at(i)->Instance->getStatus();
+            Status status = downloadInstanceV.at(i)->Instance->getStatus();
 
             if(status.state == Status::Finished)
             {
                 for(int j = 0 ; j < 7; j++ )
                 {
-                    tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 100));
+                    tabela->item(downloadInstanceV.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 100));
                 }
-                tInstance.remove(i);
+                tray->showHints("Pobrano pomyślnie", "Pobieranie pliku: <br/><b><i>"+downloadInstanceV.at(i)->filename+"</b></i><br/>zakończono pomyślnie.");
+                downloadInstanceV.remove(i);
                 saveDownloads();
             }
-            if(status.state == Status::FileError && !tInstance.at(i)->pobrano)
+            if(status.state == Status::FileError && !downloadInstanceV.at(i)->pobrano)
             {
                 QTableWidgetItem *PobranoPliku = new QTableWidgetItem("0.00 MB");
-                tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
+                tabela->setItem(downloadInstanceV.at(i)->itemRow, 2, PobranoPliku);
                 QTableWidgetItem *postepPobierania = new QTableWidgetItem;
                 postepPobierania->setData(Qt::DisplayRole, 0);
-                tabela->setItem(tInstance.at(i)->itemRow, 3, postepPobierania);
+                tabela->setItem(downloadInstanceV.at(i)->itemRow, 3, postepPobierania);
                 QTableWidgetItem *statusPobierania = new QTableWidgetItem("No valid account found");
-                tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
+                tabela->setItem(downloadInstanceV.at(i)->itemRow, 5, statusPobierania);
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
+                tabela->setItem(downloadInstanceV.at(i)->itemRow, 4, SzybkoscPobierania);
                 for(int j = 0 ; j < 7; j++ )
                 {
-                    tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(255, 0, 0, 200));
+                    tabela->item(downloadInstanceV.at(i)->itemRow, j)->setBackground(QColor(255, 0, 0, 200));
                 }
-                tInstance.at(i)->pobrano = true;
+                downloadInstanceV.at(i)->pobrano = true;
+                tray->showHints("Błąd pobierania", "Niestety nie udało się pobrać pliku:<br/><b><i>"+downloadInstanceV.at(i)->filename+"</i></b>");
             }
         }
     }
 
-    for (int i = 0; i < tInstance.size(); ++i)
+    for (int i = 0; i < downloadInstanceV.size(); ++i)
     {
-        Status status = tInstance.at(i)->Instance->getStatus();
-        if(!(tInstance.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
+        Status status = downloadInstanceV.at(i)->Instance->getStatus();
+        if(!(downloadInstanceV.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
         {
             allBytesReadSession += status.bytesRead;
 
-            QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize(tInstance.at(i)->size - tInstance.at(i)->pobranoLS - status.bytesRead));
-            tabela->setItem(tInstance.at(i)->itemRow, 2, PobranoPliku);
-            int percentDownloaded = 100.0f * (status.bytesRead + tInstance.at(i)->pobranoLS)  / tInstance.at(i)->size;
+            QTableWidgetItem *PobranoPliku = new QTableWidgetItem(fileSize(downloadInstanceV.at(i)->size - downloadInstanceV.at(i)->pobranoLS - status.bytesRead));
+            tabela->setItem(downloadInstanceV.at(i)->itemRow, 2, PobranoPliku);
+            int percentDownloaded = 100.0f * (status.bytesRead + downloadInstanceV.at(i)->pobranoLS)  / downloadInstanceV.at(i)->size;
             QTableWidgetItem *postepPobierania = new QTableWidgetItem;
             postepPobierania->setData(Qt::DisplayRole, percentDownloaded);
-            tabela->setItem(tInstance.at(i)->itemRow, 3, postepPobierania);
+            tabela->setItem(downloadInstanceV.at(i)->itemRow, 3, postepPobierania);
 
             allSpeed += static_cast<double>( status.speed) / 1024.0f;
             const double speed( static_cast<double>( status.speed) / 1024.0f );
@@ -285,10 +289,9 @@ void QMoorie::refreshStatuses()
             }
             s << speed;
             QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(QString::fromStdString(s.str()) + " KB/s");
-            tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
-
+            tabela->setItem(downloadInstanceV.at(i)->itemRow, 4, SzybkoscPobierania);
             QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
-                                                                      " " + QString::number(status.downloadSegment+1) + "/" + QString::number(tInstance.at(i)->totalSegments));
+                                                                      " " + QString::number(status.downloadSegment+1) + "/" + QString::number(downloadInstanceV.at(i)->totalSegments));
             if(status.state == Status::Connecting || status.state == Status::Connected)
             {
                 statusPobierania->setForeground(QColor(204, 210, 55, 255));
@@ -305,27 +308,26 @@ void QMoorie::refreshStatuses()
             {
                 statusPobierania->setForeground(QColor(255, 0, 0, 200));
             }
-            tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
+            tabela->setItem(downloadInstanceV.at(i)->itemRow, 5, statusPobierania);
             //qDebug() << status.downloadSegment;
             QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
-            tabela->setItem(tInstance.at(i)->itemRow, 6, SkrzynkaPobierania);
+            tabela->setItem(downloadInstanceV.at(i)->itemRow, 6, SkrzynkaPobierania);
         }
-        else if(tInstance.at(i)->Instance->downloadPaused)
+        else if(downloadInstanceV.at(i)->Instance->downloadPaused)
         {
             QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-            tabela->setItem(tInstance.at(i)->itemRow, 4, SzybkoscPobierania);
+            tabela->setItem(downloadInstanceV.at(i)->itemRow, 4, SzybkoscPobierania);
             QTableWidgetItem *statusPobierania = new QTableWidgetItem("Wstrzymane");
-            tabela->setItem(tInstance.at(i)->itemRow, 5, statusPobierania);
+            tabela->setItem(downloadInstanceV.at(i)->itemRow, 5, statusPobierania);
             for(int j = 0 ; j < 7; j++ )
             {
-                tabela->item(tInstance.at(i)->itemRow, j)->setBackground(QColor(255, 255, 0, 100));
+                tabela->item(downloadInstanceV.at(i)->itemRow, j)->setBackground(QColor(255, 255, 0, 100));
             }
         }
     }
-    if(tInstance.size())
+    if(downloadInstanceV.size())
     {
-        ui->allBytesReadSession->setText(fileSize(allBytesReadSession));
-        ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
+
         QSettings settings;
         if(settings.isWritable())
         {
@@ -344,9 +346,14 @@ void QMoorie::refreshStatuses()
             allS << std::setprecision( 2 );
         }
         allS << allSpeed;
+
+        ui->allBytesReadSession->setText(fileSize(allBytesReadSession));
+        ui->maxDownloadSpeed->setText(QString::fromStdString(allS.str()) +" KB/s");
+
         QString tip = "<table cellpadding='2' cellspacing='2' align='center'><tr><td><b>Szybkość:</b></td><td></td></tr><tr><td>Pobieranie: <font color='#1c9a1c'>"+ QString::fromStdString(allS.str()) +" KB/s</font></td><td>Wysyłanie: <font color='#990000'>0 KB/s</font></td></tr><tr><td><b>Transfer:</b></td><td></td></tr><tr><td>Pobrano: <font color='#1c9a1c'>"+ fileSize(allBytesReadSession) +"</font></td><td>Wysłano: <font color='#990000'>0 MB</font></td></tr></table>";
         tray->setToolTip(tip);
     }
+    ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
     if(Zmienne().logs != ""){
         ui->log->append(Zmienne().logs);
         Zmienne().logs = "";
@@ -356,14 +363,14 @@ void QMoorie::refreshStatuses()
 void QMoorie::removeDownload()
 {
     int row = tabela->currentRow();
-    for (int i = 0; i < tInstance.size(); ++i)
+    for (int i = 0; i < downloadInstanceV.size(); ++i)
     {
         //qDebug() << 'tIns.size: ' << tInstance.size() << ' tabela.rowcount: ' << tabela->rowCount();
-        if(tInstance.at(i)->itemRow == row)
+        if(downloadInstanceV.at(i)->itemRow == row)
         {
-            QString fileName = tInstance.at(i)->path + tInstance.at(i)->filename;
-            tInstance.at(i)->terminate();
-            tInstance.remove(i);
+            QString fileName = downloadInstanceV.at(i)->path + downloadInstanceV.at(i)->filename;
+            downloadInstanceV.at(i)->terminate();
+            downloadInstanceV.remove(i);
             tabela->removeRow(row);
             if (QFile::exists(fileName)) QFile::remove(fileName);
             if (QFile::exists(fileName + ".seg")) QFile::remove(fileName + ".seg");
@@ -371,13 +378,13 @@ void QMoorie::removeDownload()
         }
     }
 
-    for (int i = 0; i < tInstance.size(); ++i)
+    for (int i = 0; i < downloadInstanceV.size(); ++i)
     {
-        tInstance.at(i)->itemRow = i;
-        QTableWidgetItem *nazwaPliku = new QTableWidgetItem(tInstance.at(i)->filename);
-        tabela->setItem(tInstance.at(i)->itemRow, 0, nazwaPliku);
-        QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(tInstance.at(i)->size));
-        tabela->setItem(tInstance.at(i)->itemRow, 1, rozmiarPliku);
+        downloadInstanceV.at(i)->itemRow = i;
+        QTableWidgetItem *nazwaPliku = new QTableWidgetItem(downloadInstanceV.at(i)->filename);
+        tabela->setItem(downloadInstanceV.at(i)->itemRow, 0, nazwaPliku);
+        QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(downloadInstanceV.at(i)->size));
+        tabela->setItem(downloadInstanceV.at(i)->itemRow, 1, rozmiarPliku);
 
 
     }
@@ -385,21 +392,21 @@ void QMoorie::removeDownload()
 void QMoorie::pauseDownload()
 {
     int row = tabela->currentRow();
-    for (int i = 0; i < tInstance.size(); ++i)
+    for (int i = 0; i < downloadInstanceV.size(); ++i)
     {
-        if(tInstance.at(i)->itemRow == row)
+        if(downloadInstanceV.at(i)->itemRow == row)
         {
-            if(tInstance.at(i)->Instance->downloadPaused)
+            if(downloadInstanceV.at(i)->Instance->downloadPaused)
             {
-                tInstance.at(i)->Instance->unpauseDownload();
-                QTableWidgetItem *nazwaPliku = new QTableWidgetItem(tInstance.last()->filename);
-                tabela->setItem(tInstance.at(i)->itemRow, 0, nazwaPliku);
-                QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(tInstance.at(i)->size));
-                tabela->setItem(tInstance.at(i)->itemRow, 1, rozmiarPliku);
+                downloadInstanceV.at(i)->Instance->unpauseDownload();
+                QTableWidgetItem *nazwaPliku = new QTableWidgetItem(downloadInstanceV.last()->filename);
+                tabela->setItem(downloadInstanceV.at(i)->itemRow, 0, nazwaPliku);
+                QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(downloadInstanceV.at(i)->size));
+                tabela->setItem(downloadInstanceV.at(i)->itemRow, 1, rozmiarPliku);
             }
             else
             {
-                tInstance.at(i)->Instance->pauseDownload();
+                downloadInstanceV.at(i)->Instance->pauseDownload();
             }
         }
     }
@@ -440,7 +447,7 @@ void QMoorie::loadDownloads()
                     
                     if((pathstr.lastIndexOf(QDir::separator()) != pathstr.length() - 1) && (pathstr.length() > 1)) pathstr += QDir::separator();
 
-                    addInstance(hash.text(), pass.text(), pathstr);
+                    addDownloadInstance(hash.text(), pass.text(), pathstr);
                 }
                 else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));
             }
@@ -462,23 +469,23 @@ void QMoorie::saveDownloads()
     downloads = dokument_xml.createElement( "downloads" );
     dokument_xml.appendChild(downloads);
 
-    for(int i = 0; i < tInstance.size(); ++i) {
+    for(int i = 0; i < downloadInstanceV.size(); ++i) {
         download = dokument_xml.createElement( "download" );
         downloads.appendChild(download);
 
         hash = dokument_xml.createElement( "hash");
         download.appendChild(hash);
-        val = dokument_xml.createTextNode(tInstance.at(i)->hash);
+        val = dokument_xml.createTextNode(downloadInstanceV.at(i)->hash);
         hash.appendChild(val);
 
         pass = dokument_xml.createElement( "pass");
         download.appendChild(pass);
-        val = dokument_xml.createTextNode(tInstance.at(i)->pass);
+        val = dokument_xml.createTextNode(downloadInstanceV.at(i)->pass);
         pass.appendChild(val);
 
         path = dokument_xml.createElement( "path");
         download.appendChild(path);
-        val = dokument_xml.createTextNode(tInstance.at(i)->path);
+        val = dokument_xml.createTextNode(downloadInstanceV.at(i)->path);
         path.appendChild(val);
     }
     QFile dokument(Zmienne().configPath+"hashcodes.xml");
@@ -517,6 +524,7 @@ void QMoorie::readConfigFile()
     Zmienne().PATH = settings.value("PATH", "home").toString();
     Zmienne().LLEVEL = settings.value("LLEVEL", 6).toInt();
     Zmienne().DLEVEL = settings.value("DLEVEL", 2).toInt();
+    Zmienne().NLEVEL = settings.value("NLEVEL", 0).toInt();
     Zmienne().KSEGMENTS = settings.value("KSEGMENTS", 1).toBool();
     Zmienne().TRAY = settings.value("TRAY", true).toBool();
     settings.endGroup();
@@ -552,6 +560,7 @@ void QMoorie::writeConfigFile()
         settings.setValue("PATH", Zmienne().PATH);
         settings.setValue("LLEVEL", Zmienne().LLEVEL);
         settings.setValue("DLEVEL", Zmienne().DLEVEL);
+        settings.setValue("NLEVEL", Zmienne().NLEVEL);
         settings.setValue("KSEGMENTS", Zmienne().KSEGMENTS);
         settings.setValue("TRAY", Zmienne().TRAY);
         settings.endGroup();

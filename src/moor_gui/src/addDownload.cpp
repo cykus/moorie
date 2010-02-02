@@ -24,7 +24,7 @@
 addDownload::addDownload(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 {
     setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png") );
-    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Dodaj pobieranie");
+    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Dodaj plik");
     QSize size(500,250);
     resize(size);
     label[0]=new QLabel(tr("Hashcode: "));

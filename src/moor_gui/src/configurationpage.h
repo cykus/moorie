@@ -22,12 +22,16 @@
 #include <QWidget>
 #include <QtGui>
 #include "singleton.h"
+#include "tools.h"
+
 class ConfigurationPage : public QWidget
 {
     Q_OBJECT
 public:
     QCheckBox *kBox, *tBox;
     QSpinBox *dBox, *lBox;
+    QGroupBox *notifyGroup;
+    QRadioButton *xdgNotification, *hintNotification, *noneNotification ;
     QLineEdit *pathEdit;
     ConfigurationPage(QWidget *parent = 0);
 private:  

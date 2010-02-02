@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2009 by Patryk Połomski
+ *   Copyright (C) 2008-2010 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -17,11 +17,7 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include <QtGui>
-#include <iostream>
-#include <QSettings>
 #include "configdialog.h"
-
 
 ConfigDialog::ConfigDialog()
 {
@@ -34,10 +30,11 @@ ConfigDialog::ConfigDialog()
     contentsWidget->setViewMode(QListView::IconMode);
     contentsWidget->setIconSize(QSize(64, 64));
     contentsWidget->setMovement(QListView::Static);
-    contentsWidget->setMaximumWidth(100);
-    contentsWidget->setMinimumSize(90,300);
-    contentsWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    contentsWidget->setResizeMode(QListView::Adjust);
+    contentsWidget->setWrapping(false);
+    contentsWidget->setFlow(QListView::TopToBottom);
+    contentsWidget->setMinimumHeight(300);
+    contentsWidget->setMaximumWidth(110);
+    contentsWidget->setResizeMode(QListView::Fixed);
     contentsWidget->setSpacing(12);
 
     pagesWidget = new QStackedWidget;
@@ -120,6 +117,9 @@ void ConfigDialog::saveConfigFile()
     Zmienne().DLEVEL = confpage->dBox->value();
     Zmienne().KSEGMENTS = confpage->kBox->isChecked();
     Zmienne().TRAY = confpage->tBox->isChecked();
+    if(confpage->xdgNotification->isChecked()) Zmienne().NLEVEL = 2;
+    else if(confpage->hintNotification->isChecked()) Zmienne().NLEVEL = 1;
+    else if(confpage->xdgNotification->isChecked()) Zmienne().NLEVEL = 0;
 
     QSettings settings;
     if(settings.isWritable()){
@@ -127,6 +127,7 @@ void ConfigDialog::saveConfigFile()
         settings.setValue("PATH", confpage->pathEdit->text());
         settings.setValue("LLEVEL", confpage->lBox->value());
         settings.setValue("DLEVEL", confpage->dBox->value());
+        settings.setValue("NLEVEL", Zmienne().NLEVEL);
         settings.setValue("KSEGMENTS", confpage->kBox->isChecked());
         settings.setValue("TRAY", confpage->tBox->isChecked());
         settings.endGroup();

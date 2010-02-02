@@ -31,7 +31,7 @@ public:
     QString caption;
     QString PATH;
     QString configPath;
-    int LLEVEL, DLEVEL;
+    int LLEVEL, DLEVEL, NLEVEL;
     bool KSEGMENTS;
     bool TRAY;
 private:

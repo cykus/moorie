@@ -9,9 +9,11 @@ set( QMOORIE_SRCS
     singleton.cpp
     configdialog.cpp
     configurationpage.cpp
-    threadinstance.cpp
+    downloadInstance.cpp
+    uploadInstance.cpp
     threadstatuses.cpp
     tools.cpp
+    mySystemTrayIcon.cpp
 )
 set( QMOORIE_MOC_HDRS
     qmoorie.h
@@ -23,6 +25,7 @@ set( QMOORIE_MOC_HDRS
     configdialog.h
     configurationpage.h
     threadstatuses.h
+    mySystemTrayIcon.h
 )
 set( QMOORIE_UIS
     qmoorie.ui
@@ -33,6 +36,7 @@ set( QMOORIE_RCS
 )
  
 SET(QT_USE_QTXML TRUE)
+SET(QT_USE_QTDBUS TRUE)
 
 include( ${QT_USE_FILE} )
 

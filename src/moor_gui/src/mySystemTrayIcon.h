@@ -17,20 +17,35 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "threadinstance.h"
+#ifndef MYSYSTEMTRAYICON_H
+#define MYSYSTEMTRAYICON_H
+#include <QtGui>
+#include <QtCore>
+#include <QtDBus/QDBusInterface>
+#include <QDBusReply>
+#include "singleton.h"
 
+class diall : public QWidget
+{
+    Q_OBJECT
+    void mousePressEvent(QMouseEvent * event);
+public :
+    diall(QRect pos, QWidget *parent = 0);
+    QTimer *timer;
+    QLabel *label;
+    QRect pos;
+    void setPosition();
+public Q_SLOTS:
+    void closeD();
+};
 
-threadInstance::threadInstance(QString hash, QString pass, QString path)
+class mySystemTrayIcon: public QSystemTrayIcon
 {
-    pobrano = false;
-    pobranoLS = 0;
-    this->hash = hash;
-    this->path = path;
-    this->pass = pass;
-}
-void threadInstance::run()
-{
-    Instance = new CLibMoor();
-    Instance->Dehash(hash.toStdString());
-    Instance->selectDownloadMailBox(0, path.toStdString());
-}
+    QDBusInterface *KNotify;
+public:
+    mySystemTrayIcon(QWidget *parent = 0);
+    void showHints(QString, QString, int seconds = 10);
+
+};
+
+#endif MYSYSTEMTRAYICON_H
