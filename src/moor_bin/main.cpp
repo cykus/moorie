@@ -69,9 +69,9 @@ int main(int argc, char **argv) {
                 return 0;
         }
 
-        if ( vars["log-level"] )
+        if ( vars.count("log-level") )
     {
-        logLevel = vars["log-level"].as<std::string>();
+        logLevel = vars["log-level"].as<unsigned int>();
         logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
         LogFileHandle *logh = new LogFileHandle( "moorie.log", static_cast<Log::Level>( logLevel ) );
         Log::getLog()->addHandle(logh);
