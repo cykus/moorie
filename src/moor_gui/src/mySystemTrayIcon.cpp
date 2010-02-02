@@ -37,7 +37,7 @@ void diall::mousePressEvent(QMouseEvent * event)
 }
 void diall::setPosition()
 {
-    move(pos.x()-width(), pos.y()-height()-5);
+    move(pos.x(), pos.y()-height()-5);
 }
 mySystemTrayIcon::mySystemTrayIcon(QWidget *parent) : QSystemTrayIcon(parent)
 {
@@ -68,16 +68,19 @@ void mySystemTrayIcon::showHints(QString  title, QString  message, int seconds )
             args.append(QVariantMap());
             args.append(seconds*1000);
             QDBusReply<unsigned int> reply = KNotify->callWithArgumentList(QDBus::Block, "Notify", args);
+            if (reply.isValid())
+            {
+            }
         }
         else{
             Zmienne().NLEVEL = 1;
         }
     }
-    if(Zmienne().NLEVEL == 1)
+    if(Zmienne().NLEVEL == 1 && seconds>0)
     {
         diall *dial = new diall(geometry());
         dial->label->setText("<b>"+ title + "</b><br/>" + message) ;
-        if(seconds>0) dial->timer->start(seconds*1000);
+        dial->timer->start(seconds*1000);
         dial->show();
         dial->setPosition();
     }

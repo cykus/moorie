@@ -20,7 +20,8 @@
 #ifndef CONFIGDIALOG_H
 #define CONFIGDIALOG_H
 
-#include <QDialog>
+#include <QtGui>
+#include <iostream>
 #include "singleton.h"
 #include "configurationpage.h"
 

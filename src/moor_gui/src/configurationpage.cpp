@@ -66,6 +66,7 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     if(Zmienne().NLEVEL == 2) xdgNotification->setChecked(true);
     else if(Zmienne().NLEVEL == 1) hintNotification->setChecked(true);
     else noneNotification->setChecked(true);
+    if(!checkXDG()) xdgNotification->setEnabled(false);
     QHBoxLayout *pathLayout = new QHBoxLayout;
     pathLayout -> addWidget(pathEdit);
     pathLayout -> addWidget(pathButton);

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2009 by Patryk Połomski
+ *   Copyright (C) 2008-2010 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,9 @@
 #define TOOLS_H
 
 #include <QString>
+#include <QtDBus/QDBusInterface>
 
 QString fileSize(quint64);
+bool checkXDG();
 
 #endif

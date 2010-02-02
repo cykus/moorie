@@ -22,6 +22,8 @@
 #include <QWidget>
 #include <QtGui>
 #include "singleton.h"
+#include "tools.h"
+
 class ConfigurationPage : public QWidget
 {
     Q_OBJECT

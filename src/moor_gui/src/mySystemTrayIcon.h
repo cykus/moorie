@@ -38,6 +38,7 @@ public :
 public Q_SLOTS:
     void closeD();
 };
+
 class mySystemTrayIcon: public QSystemTrayIcon
 {
     QDBusInterface *KNotify;
