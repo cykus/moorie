@@ -19,10 +19,10 @@
  */
 #ifndef MYTABLEWIDGET_H
 #define MYTABLEWIDGET_H
-#include <QtCore>
 #include <QDialog>
 #include <QAction>
 #include <QTableWidget>
+#include <QMessageBox>
 
 class myTableWidget : public QTableWidget
 {

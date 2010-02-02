@@ -247,7 +247,7 @@ void QMoorie::refreshStatuses()
                 QTableWidgetItem *postepPobierania = new QTableWidgetItem;
                 postepPobierania->setData(Qt::DisplayRole, 0);
                 tabela->setItem(downloadInstanceV.at(i)->itemRow, 3, postepPobierania);
-                QTableWidgetItem *statusPobierania = new QTableWidgetItem("No valid account found");
+                QTableWidgetItem *statusPobierania = new QTableWidgetItem("Nie udało się pobrać pliku z żadnej ze skrzynek");
                 tabela->setItem(downloadInstanceV.at(i)->itemRow, 5, statusPobierania);
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
                 tabela->setItem(downloadInstanceV.at(i)->itemRow, 4, SzybkoscPobierania);

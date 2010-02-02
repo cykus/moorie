@@ -19,7 +19,6 @@
  */
 #ifndef UPLOADINSTANCE_H
 #define UPLOADINSTANCE_H
-#include <QtCore>
 #include <QThread>
 #include <QTime>
 

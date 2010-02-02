@@ -19,10 +19,13 @@
  */
 #ifndef MYSYSTEMTRAYICON_H
 #define MYSYSTEMTRAYICON_H
-#include <QtGui>
-#include <QtCore>
 #include <QtDBus/QDBusInterface>
 #include <QDBusReply>
+#include <QMouseEvent>
+#include <QSystemTrayIcon>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QTimer>
 #include "singleton.h"
 
 class diall : public QWidget

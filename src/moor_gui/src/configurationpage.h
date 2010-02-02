@@ -19,8 +19,17 @@
  */
 #ifndef CONFIGURATIONPAGE_H
 #define CONFIGURATIONPAGE_H
-#include <QWidget>
-#include <QtGui>
+#include <QCheckBox>
+#include <QSpinBox>
+#include <QGroupBox>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QDir>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFileDialog>
+#include <QRadioButton>
 #include "singleton.h"
 #include "tools.h"
 

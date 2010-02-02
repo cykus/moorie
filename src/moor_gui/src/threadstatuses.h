@@ -19,7 +19,6 @@
  */
 #ifndef THREADSTATUSES_H
 #define THREADSTATUSES_H
-#include <QtCore>
 #include <QThread>
 #include <QTime>
 

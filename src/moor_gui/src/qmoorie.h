@@ -19,9 +19,12 @@
  */
 #ifndef QMOORIE_H
 #define QMOORIE_H
-#include <QtGui>
-#include <QtCore>
+
 #include <QDomDocument>
+#include <QTextCodec>
+#include <QToolBar>
+#include <QSettings>
+#include <QTextStream>
 
 #include "ui_qmoorie.h"
 

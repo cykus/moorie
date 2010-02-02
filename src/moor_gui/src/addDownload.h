@@ -33,6 +33,7 @@
 #include "singleton.h"
 #include <boost/shared_ptr.hpp>
 #include <HashManager.h>
+#include <Hash.h>
 #include <iostream>
 
  class addDownload: public QDialog

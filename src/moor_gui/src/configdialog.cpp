@@ -49,8 +49,8 @@ ConfigDialog::ConfigDialog()
     contentsWidget->setCurrentRow(0);
 
     //QObject::connect(pathButton,SIGNAL(clicked()),this,SLOT(setDir()));
-    QObject::connect(cancelButton,SIGNAL(clicked()),this,SLOT(close()));
-    QObject::connect(okButton, SIGNAL(clicked()),this,SLOT(saveConfigFile()));
+    connect(cancelButton,SIGNAL(clicked()),this,SLOT(close()));
+    connect(okButton, SIGNAL(clicked()),this,SLOT(saveConfigFile()));
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout;
     horizontalLayout->addWidget(contentsWidget);

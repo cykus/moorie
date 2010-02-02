@@ -57,8 +57,8 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     hintNotification = new QRadioButton(notifyGroup);
     noneNotification = new QRadioButton(notifyGroup);
     notifyGroup->setTitle(tr("Powiadomienia"));
-    xdgNotification->setText(tr("Powiadomienia XDG"));
-    hintNotification->setText(tr("Dymki"));
+    xdgNotification->setText(tr("Powiadomienia systemowe"));
+    hintNotification->setText(tr("Powiadomienia w dymkach"));
     noneNotification->setText(tr("Brak powiadomień"));
     xdgNotification->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     hintNotification->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);

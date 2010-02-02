@@ -19,7 +19,6 @@
  */
 #ifndef DOWNLOADINSTANCE_H
 #define DOWNLOADINSTANCE_H
-#include <QtCore>
 #include <QThread>
 #include <QTime>
 

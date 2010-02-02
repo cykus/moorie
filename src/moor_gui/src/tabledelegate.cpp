@@ -18,10 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 #include "tabledelegate.h"
-#include <QStyleOptionProgressBarV2>
-#include <QStyle>
-#include <QApplication>
-#include <assert.h>
 
 TrackDelegate::TrackDelegate(QObject *parent)
     : QItemDelegate(parent)

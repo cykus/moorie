@@ -21,8 +21,6 @@
 #define SINGLETON_H
 
 #include <QString>
-#include <string>
-#include <QTextStream> 
 class Singleton {
 // definicja klasy o nazwie Singleton - jest 
 // to nazwa wlasna :)

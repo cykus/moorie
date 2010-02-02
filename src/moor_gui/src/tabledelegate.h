@@ -22,8 +22,11 @@
 
 #include <QItemDelegate>
 #include <QModelIndex>
-#include <QObject>
 #include <QProgressBar>
+#include <QStyleOptionProgressBarV2>
+#include <QStyle>
+#include <QApplication>
+#include <assert.h>
 
 class TrackDelegate : public QItemDelegate
 {
