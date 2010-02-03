@@ -525,7 +525,9 @@ void QMoorie::readConfigFile()
     Zmienne().LLEVEL = settings.value("LLEVEL", 6).toInt();
     Zmienne().DLEVEL = settings.value("DLEVEL", 2).toInt();
     Zmienne().NLEVEL = settings.value("NLEVEL", 0).toInt();
-    Zmienne().KSEGMENTS = settings.value("KSEGMENTS", 1).toBool();
+    Zmienne().RUNINTRAY = settings.value("RUNINTRAY", false).toBool();
+    Zmienne().ASKBEFORECLOSE = settings.value("ASKBEFORECLOSE", false).toBool();
+    Zmienne().KSEGMENTS = settings.value("KSEGMENTS", true).toBool();
     Zmienne().TRAY = settings.value("TRAY", true).toBool();
     settings.endGroup();
 
@@ -583,6 +585,28 @@ void QMoorie::writeConfigFile()
         this->close();
     }
 }
+bool QMoorie::showExitAppConfirmDialog()
+{
+    QMessageBox msgBox;
+
+    msgBox.setText("Potwierdzenie zakończenia");
+    msgBox.setInformativeText("Czy na pewno chcesz zakończyć aplikację?");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    int ret = msgBox.exec();
+    switch (ret) {
+    case QMessageBox::Yes:
+        return true;
+        break;
+    case QMessageBox::No:
+        return false;
+        break;
+    default:
+        // should never be reached
+        break;
+    }
+
+}
 void QMoorie::closeEvent(QCloseEvent *event)
 {
     writeConfigFile();
@@ -590,12 +614,20 @@ void QMoorie::closeEvent(QCloseEvent *event)
         event->ignore();
         hide();
     }
+    if(Zmienne().ASKBEFORECLOSE)
+    {
+        if(showExitAppConfirmDialog()) qApp->quit();
+    }
     else qApp->quit();
 }
 void QMoorie::exitApp()
 {
     writeConfigFile();
-    qApp->quit();
+    if(Zmienne().ASKBEFORECLOSE)
+    {
+        if(showExitAppConfirmDialog()) qApp->quit();
+    }
+    else qApp->quit();
 }
 QMoorie::~QMoorie()
 {

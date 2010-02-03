@@ -117,6 +117,8 @@ void ConfigDialog::saveConfigFile()
     Zmienne().DLEVEL = confpage->dBox->value();
     Zmienne().KSEGMENTS = confpage->kBox->isChecked();
     Zmienne().TRAY = confpage->tBox->isChecked();
+    Zmienne().RUNINTRAY = confpage->thBox->isChecked();
+    Zmienne().ASKBEFORECLOSE = confpage->abcBox->isChecked();
     if(confpage->xdgNotification->isChecked()) Zmienne().NLEVEL = 2;
     else if(confpage->hintNotification->isChecked()) Zmienne().NLEVEL = 1;
     else if(confpage->xdgNotification->isChecked()) Zmienne().NLEVEL = 0;
@@ -130,6 +132,8 @@ void ConfigDialog::saveConfigFile()
         settings.setValue("NLEVEL", Zmienne().NLEVEL);
         settings.setValue("KSEGMENTS", confpage->kBox->isChecked());
         settings.setValue("TRAY", confpage->tBox->isChecked());
+        settings.setValue("RUNINTRAY", confpage->thBox->isChecked());
+        settings.setValue("ASKBEFORECLOSE", confpage->abcBox->isChecked());
         settings.endGroup();
         this->close();
     }

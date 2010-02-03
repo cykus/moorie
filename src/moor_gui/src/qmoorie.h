@@ -21,6 +21,7 @@
 #define QMOORIE_H
 
 #include <QDomDocument>
+#include <QDebug>
 #include <QTextCodec>
 #include <QToolBar>
 #include <QSettings>
@@ -107,6 +108,7 @@ class QMoorie:public QMainWindow
     void saveDownloads(); //!< Zapisuje listę plików aktualnie pobieranych
     void addDownloadInstance(QString, QString, QString = ""); //!< Tworzymy nową instację pobierania
     void addUploadInstance(QString, QString, QString = ""); //!< Tworzymy nową instację wysyłania
+    bool showExitAppConfirmDialog();
 
 
     class LogGuiHandle: public LogHandle

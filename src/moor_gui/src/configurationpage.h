@@ -37,7 +37,7 @@ class ConfigurationPage : public QWidget
 {
     Q_OBJECT
 public:
-    QCheckBox *kBox, *tBox;
+    QCheckBox *kBox, *tBox, *thBox, *abcBox;
     QSpinBox *dBox, *lBox;
     QGroupBox *notifyGroup;
     QRadioButton *xdgNotification, *hintNotification, *noneNotification ;
@@ -47,5 +47,6 @@ private:
 
 public Q_SLOTS :
     void setDir();
+    void setCheckedState();
 };
 #endif

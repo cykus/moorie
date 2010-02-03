@@ -29,12 +29,12 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     QPushButton *pathButton = new QPushButton(tr("Przeglądaj"));
     pathEdit->setEnabled(false);
 
-    QLabel *dLabel = new QLabel(tr("Maksymalna liczba pobierań:"));
+    QLabel *dLabel = new QLabel(tr("Maksymalna liczba pobieranych plików:"));
     dBox = new QSpinBox();
     dBox ->setRange(1,10);
     dBox -> setValue(Zmienne().DLEVEL);
-    QLabel *kLabel = new QLabel(tr("Pozostaw segmenty po scalaniu:"));
     kBox = new QCheckBox();
+    kBox->setText("Pozostaw segmenty po scalaniu:");
     kBox -> setChecked(Zmienne().KSEGMENTS);
 
     QGroupBox *logGroup = new QGroupBox(tr("Dziennik zdarzeń"));
@@ -46,10 +46,19 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
 
     QGroupBox *otherGroup = new QGroupBox(tr("Inne"));
 
-    QLabel *tLabel = new QLabel(tr("Ikonka systemowa"));
     tBox = new QCheckBox();
     tBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    tBox->setText("Pokazuj ikonę w tacce systemowej");
     tBox->setChecked(Zmienne().TRAY);
+    thBox = new QCheckBox();
+    thBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    thBox->setText("Uruchomiaj zminimalizowane do tacki.");
+    thBox->setChecked(Zmienne().RUNINTRAY);
+    if(!Zmienne().TRAY) thBox->setEnabled(false);
+    abcBox = new QCheckBox();
+    abcBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    abcBox->setText("Pytaj o potwierdzenie przed zamnknięciem");
+    abcBox->setChecked(Zmienne().ASKBEFORECLOSE);
 
     notifyGroup = new QGroupBox(parent);
     notifyGroup->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
@@ -67,6 +76,7 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     else if(Zmienne().NLEVEL == 1) hintNotification->setChecked(true);
     else noneNotification->setChecked(true);
     if(!checkXDG()) xdgNotification->setEnabled(false);
+
     QHBoxLayout *pathLayout = new QHBoxLayout;
     pathLayout -> addWidget(pathEdit);
     pathLayout -> addWidget(pathButton);
@@ -88,13 +98,11 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     logLayout->addLayout(lLayout);
     logGroup->setLayout(logLayout);
 
-    QHBoxLayout *tLayout = new QHBoxLayout;
-    tLayout -> addWidget(tBox);
-    tLayout -> addWidget(tLabel);
-
-    QVBoxLayout *trayLayout = new QVBoxLayout;
-    trayLayout->addLayout(tLayout);
-    otherGroup->setLayout(trayLayout);
+    QVBoxLayout *otherLayout = new QVBoxLayout;
+    otherLayout->addWidget(tBox);
+    otherLayout->addWidget(thBox);
+    otherLayout->addWidget(abcBox);
+    otherGroup->setLayout(otherLayout);
 
     QVBoxLayout *nGroupLayout = new QVBoxLayout(notifyGroup);
     nGroupLayout->addWidget(xdgNotification);
@@ -109,7 +117,8 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     mainLayout->addStretch(1);
     setLayout(mainLayout);
 
-    QObject::connect(pathButton,SIGNAL(clicked()),this,SLOT(setDir()));
+    connect(pathButton,SIGNAL(clicked()),this,SLOT(setDir()));
+    connect(tBox,SIGNAL(stateChanged(int)),this,SLOT(setCheckedState()));
 
 }
 void ConfigurationPage::setDir()
@@ -120,4 +129,9 @@ void ConfigurationPage::setDir()
                                                           "",
                                                           options);
     if (!directory.isEmpty()) pathEdit->setText(directory);
+}
+void ConfigurationPage::setCheckedState()
+{
+    if(tBox->isChecked()) thBox->setEnabled(true);
+    else thBox->setEnabled(false);
 }

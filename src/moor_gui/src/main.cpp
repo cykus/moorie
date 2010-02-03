@@ -24,12 +24,12 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     app.setApplicationName("Qmoorie");
     app.setOrganizationName("Moorie Team");
-    app.setOrganizationDomain("moorie.mahho.net");
-    app.setApplicationVersion ("GIT(20100201)");
+    app.setOrganizationDomain("moorie.pl");
+    app.setApplicationVersion ("GIT(20100203)");
     app.setQuitOnLastWindowClosed(true);
     Q_INIT_RESOURCE(application);
     QMoorie * mw = new QMoorie();
-    mw->show();
+    if(!Zmienne().RUNINTRAY || (Zmienne().RUNINTRAY && !Zmienne().TRAY)) mw->show();
     return app.exec();
 }
 

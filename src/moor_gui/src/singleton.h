@@ -30,8 +30,7 @@ public:
     QString PATH;
     QString configPath;
     int LLEVEL, DLEVEL, NLEVEL;
-    bool KSEGMENTS;
-    bool TRAY;
+    bool KSEGMENTS, TRAY, RUNINTRAY, ASKBEFORECLOSE;
 private:
     Singleton();
     Singleton(const Singleton&);
