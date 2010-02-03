@@ -36,6 +36,10 @@ std::string Status::getStateText() const
                         return "Pobieranie";
 		case Status::Downloaded:
                         return "Pobrano wszystkie segmenty";
+                case Status::Uploaded:
+                        return "Wysłano wszystkie segmenty";
+                case Status::Uploading:
+                        return "Wysyłanie";
 		case Status::ConnectionError:
                         return "Błąd połączenia";
 		case Status::SegmentError:

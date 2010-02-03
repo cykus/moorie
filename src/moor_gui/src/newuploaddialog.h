@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef NEWDOWNLOADDIALOG_H
-#define NEWDOWNLOADDIALOG_H
+#ifndef NEWUPLOADDIALOG_H
+#define NEWUPLOADDIALOG_H
 #include <QApplication>
 #include <QDialog>
 #include <QFileDialog>
@@ -36,7 +36,7 @@
 #include <Hash.h>
 #include <iostream>
 
- class newDownloadDialog: public QDialog
+ class newUploadDialog: public QDialog
  {
     Q_OBJECT
 public:
@@ -47,10 +47,10 @@ public:
     QPushButton *button[2];
     QTextEdit *text;
     QHBoxLayout *lay[6];
-    newDownloadDialog(QWidget * parent = 0, Qt::WFlags f = 0 );
+    newUploadDialog(QWidget * parent = 0, Qt::WFlags f = 0 );
 private Q_SLOTS:
     void ok();
     void setDir();
 };
-#endif // NEWDOWNLOADDIALOG_H
+#endif // NEWUPLOADDIALOG_H
 

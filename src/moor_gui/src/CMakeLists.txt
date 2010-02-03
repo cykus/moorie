@@ -4,6 +4,7 @@ set( QMOORIE_SRCS
     aboutdialog.cpp
     configdialog.cpp
     newdownloaddialog.cpp
+    newuploaddialog.cpp
     infodialog.cpp
     tabledelegate.cpp
     mytablewidget.cpp
@@ -18,6 +19,7 @@ set( QMOORIE_SRCS
 set( QMOORIE_MOC_HDRS
     qmoorie.h
     newdownloaddialog.h
+    newuploaddialog.h
     aboutdialog.h
     configdialog.h
     infodialog.h

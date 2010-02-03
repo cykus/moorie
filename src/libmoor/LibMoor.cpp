@@ -228,8 +228,10 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 	if (myMailBox) {
  		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %address);
 // 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
+                state = Status::Connecting;
  		if (myMailBox->loginRequest() == 0) {
 			LOG(Log::Info, boost::format( "Zalogowano pomyslnie!" ));
+                        state = Status::Connected;
 			myMailBox->calculateFileCRC(myUploadFilename);
 			myUploadFileCRC = myMailBox->getFileCRC();
 			LOG(Log::Debug, boost::format( "CRC Pliku: %1%" ) %myMailBox->getFileCRC());
@@ -237,18 +239,21 @@ int CLibMoor::startUpload(unsigned int fromseg) {
  			std::cout << generateCleanHashcode() << std::endl;
 
 			for (int i=fromseg; i <= segments; i++) {
-				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
+                                LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
+                                state = Status::Uploading;
 
 				ss.str("");
 				ss << myUploadFilename << "." << i;
 				if (myMailBox->uploadRequest(ss.str(), address, i) == 0)
-					LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
+                                        LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
 				else
 					LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%i);
 			}
-			LOG(Log::Info, boost::format( "Upload zakonczony!" ));
+                        LOG(Log::Info, boost::format( "Upload zakonczony!" ));
+                        state = Status::Uploaded;
  		} else
  			LOG(Log::Info, boost::format( "Logowanie nie powiodlo sie, przerywam." ));
+                        state = Status::ConnectionError;
 	}
 
 	return 0;

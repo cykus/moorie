@@ -26,6 +26,8 @@ class Status
 			ProcessStarted,   //!< Download subprocess started
 			Connecting,       //!< Connecting or logging to mailbox
 			Connected,        //!< Succesfully connected to mailbox
+                        Uploaded,         //!< All segments send
+                        Uploading,
 			Downloading,      //!< A segment is being downloaded
 			ConnectionError,  //!< Network or mailbox login error
                         SegmentError,     //!< CRC or other error for segment

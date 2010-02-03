@@ -109,7 +109,7 @@ void QMoorie::createActions()
 
     addAct->setShortcut(tr("Ctrl+N"));
     addAct->setStatusTip(tr("Dodanie nowego pliku"));
-    connect(addAct, SIGNAL(triggered()), this, SLOT(addDialog()));
+    connect(addAct, SIGNAL(triggered()), this, SLOT(showNewDownloadDialog()));
 
     settingsAct -> setShortcut(tr("Ctrl+Alt+S"));
     settingsAct -> setStatusTip(tr("Konfiguracja aplikacji"));
@@ -160,7 +160,7 @@ void QMoorie::createTable()
     headerH  << "Nazwa pliku" << "Rozmiar" << "Pozostało"<< "Postęp " << "Prędkość" << "Status" << "Skrzynka";
     tabela->setHorizontalHeaderLabels(headerH);
 }
-void QMoorie::addDialog()
+void QMoorie::showNewDownloadDialog()
 {
     newDownloadDialog *get = new newDownloadDialog(this);
     get->exec();
