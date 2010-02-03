@@ -113,7 +113,7 @@ void QMoorie::createActions()
 
     settingsAct -> setShortcut(tr("Ctrl+Alt+S"));
     settingsAct -> setStatusTip(tr("Konfiguracja aplikacji"));
-    connect(settingsAct, SIGNAL(triggered()), this ,SLOT(showSettings()));
+    connect(settingsAct, SIGNAL(triggered()), this ,SLOT(showConfigDialog()));
 
     pauseAct->setDisabled(true);
     pauseAct -> setStatusTip(tr("Wstrzymanie/wznowienie pobierania wszystkich plików"));
@@ -121,7 +121,7 @@ void QMoorie::createActions()
     removeAct -> setStatusTip(tr("Usunięcie pobierania"));
 
     aboutAct->setStatusTip(tr("Informacje o aplikacji"));
-    connect(aboutAct, SIGNAL(triggered()), this, SLOT(aboutDialog()));
+    connect(aboutAct, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
 
     exitAct->setShortcut(tr("Ctrl+Q"));
     exitAct->setStatusTip(tr("Wyjście z aplikacji"));
@@ -162,7 +162,7 @@ void QMoorie::createTable()
 }
 void QMoorie::addDialog()
 {
-    addDownload *get = new addDownload(this);
+    newDownloadDialog *get = new newDownloadDialog(this);
     get->exec();
     if(get->result())
     {
@@ -495,19 +495,19 @@ void QMoorie::saveDownloads()
         ts << dokument_xml.toString();
     }
 }
-void QMoorie::aboutDialog()
+void QMoorie::showAboutDialog()
 {
-    about *get = new about(this);
+    aboutDialog *get = new aboutDialog(this);
     get->exec();
     delete get;
 }
-void QMoorie::infoDialog()
+void QMoorie::showInfoDialog()
 {
     InfoDialog *get = new InfoDialog(this);
     get->exec();
     delete get;
 }
-void QMoorie::showSettings()
+void QMoorie::showConfigDialog()
 {
     ConfigDialog *get = new ConfigDialog();
     get->exec();

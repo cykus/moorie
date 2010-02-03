@@ -28,15 +28,15 @@
 
 #include "ui_qmoorie.h"
 
-#include "about.h"
-#include "addDownload.h"
+#include "aboutdialog.h"
+#include "newdownloaddialog.h"
 #include "configdialog.h"
-#include "infoDialog.h"
-#include "mySystemTrayIcon.h"
-#include "myTableWidget.h"
+#include "infodialog.h"
+#include "mysystemtrayicon.h"
+#include "mytablewidget.h"
 #include "tabledelegate.h"
-#include "downloadInstance.h"
-#include "threadstatuses.h"
+#include "downloadinstance.h"
+#include "statusesthread.h"
 #include "tools.h"
 // moorie
 #include <HashManager.h>
@@ -90,7 +90,7 @@ class QMoorie:public QMainWindow
     QToolBar *fileToolBar;
 
     Ui::MainWindow *ui;
-    threadStatuses statuses;
+    statusesThread statuses;
 
     void createTable(); //!< Tworzy myTableview dla karty pobieranie
     void createToolBars(); //!< Tworzy pasek narzędziowy
@@ -123,16 +123,16 @@ public:
 
     quint64 allBytesRead;
     bool stop;
-    addDownload *dodaj;
+    newDownloadDialog *dodaj;
     myTableWidget *tabela; //!< Klasa dziedzicząca po QTableWidget
     QVector<downloadInstance*> downloadInstanceV; //!< Wektor instancji klasy downloadInstance
 //    QVector<uploadInstance*> uploadInstance; //!< Wektor instancji klasy uploadInstance
     
 public Q_SLOTS:
     void addDialog();
-    void aboutDialog();
-    void infoDialog();
-    void showSettings();
+    void showAboutDialog();
+    void showInfoDialog();
+    void showConfigDialog();
     void exitApp();
     void toggleVisibility();
     void trayActivated(QSystemTrayIcon::ActivationReason reason);

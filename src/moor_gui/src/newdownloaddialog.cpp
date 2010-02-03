@@ -17,9 +17,9 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "addDownload.h"
+#include "newdownloaddialog.h"
 
-addDownload::addDownload(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
+newDownloadDialog::newDownloadDialog(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 {
     setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png") );
     setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Dodaj plik");
@@ -65,7 +65,7 @@ addDownload::addDownload(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 
 
 }
-void addDownload::ok()
+void newDownloadDialog::ok()
 {
     try {
         boost::shared_ptr<Hash> hash(HashManager::fromString(text->toPlainText().toStdString()));
@@ -84,7 +84,7 @@ void addDownload::ok()
         QMessageBox::about(this, tr("Błąd"),tr("Nieobsługiwany hashcode!"));
     }
 }
-void addDownload::setDir()
+void newDownloadDialog::setDir()
 {
     QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
     QString directory = QFileDialog::getExistingDirectory(this,

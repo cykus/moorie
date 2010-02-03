@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2010 by Patryk Połomski
+ *   Copyright (C) 2008-2009 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -17,21 +17,21 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef ABOUT_H
-#define ABOUT_H
+#include "uploadinstance.h"
 
-#include "ui_about.h"
 
-using namespace Ui;
-
-class about: public QDialog
+uploadInstance::uploadInstance(QString file, QString user, QString pass, int msize, int fromseg):
+        file(file),
+        user(user),
+        pass(pass),
+        msize(msize),
+        fromseg(fromseg),
+        wyslano(false)
 {
-Q_OBJECT
-
-  public:
- public:
-   AboutDlg ui;
-   about(QWidget * parent = 0, Qt::WFlags f = 0 );
-};
-
-#endif
+}
+void uploadInstance::run()
+{
+    Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString());
+    Instance -> splitFile(file.toStdString(), msize);
+    Instance -> startUpload(fromseg);
+}

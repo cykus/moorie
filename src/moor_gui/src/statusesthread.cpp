@@ -17,13 +17,17 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "about.h"
+#include "statusesthread.h"
 
-about::about(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
+
+statusesThread::statusesThread()
 {
-    ui.setupUi(this);
-    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - O programie");
-    ui.lb_name->setText(qApp->applicationName() + " " + qApp->applicationVersion());
 }
-
-
+void statusesThread::run()
+{
+    while(1)
+    {
+        sleep(2);
+        Q_EMIT refresh();
+    }
+}

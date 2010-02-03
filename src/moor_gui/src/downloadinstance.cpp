@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2010 by Patryk Połomski
+ *   Copyright (C) 2008-2009 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -17,17 +17,20 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "threadstatuses.h"
+#include "downloadinstance.h"
 
 
-threadStatuses::threadStatuses()
+downloadInstance::downloadInstance(QString hash, QString pass, QString path):
+        hash(hash),
+        pass(pass),
+        path(path),
+        pobrano(false),
+        pobranoLS(0)
 {
 }
-void threadStatuses::run()
+void downloadInstance::run()
 {
-    while(1)
-    {
-        sleep(2);
-        Q_EMIT refresh();
-    }
+    Instance = new CLibMoor();
+    Instance->Dehash(hash.toStdString());
+    Instance->selectDownloadMailBox(0, path.toStdString());
 }

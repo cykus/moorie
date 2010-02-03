@@ -17,17 +17,40 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "uploadInstance.h"
+#ifndef NEWDOWNLOADDIALOG_H
+#define NEWDOWNLOADDIALOG_H
+#include <QApplication>
+#include <QDialog>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QDir>
+#include <QTextEdit>
+#include "singleton.h"
+#include <boost/shared_ptr.hpp>
+#include <HashManager.h>
+#include <Hash.h>
+#include <iostream>
 
+ class newDownloadDialog: public QDialog
+ {
+    Q_OBJECT
+public:
+    QLineEdit *edit;
+    QPushButton *pathButton;
+    QLineEdit *pathEdit;
+    QLabel *label[3];
+    QPushButton *button[2];
+    QTextEdit *text;
+    QHBoxLayout *lay[6];
+    newDownloadDialog(QWidget * parent = 0, Qt::WFlags f = 0 );
+private Q_SLOTS:
+    void ok();
+    void setDir();
+};
+#endif // ADDDOWNLOAD_H
 
-uploadInstance::uploadInstance(QString file, QString user, QString pass, int msize):
-        file(file),
-        user(user),
-        pass(pass),
-        msize(msize),
-        wyslano(false)
-{
-}
-void uploadInstance::run()
-{
-}

@@ -17,40 +17,27 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef __ADDDOWNLOAD_H__
-#define __ADDDOWNLOAD_H__
-#include <QApplication>
-#include <QDialog>
-#include <QFileDialog>
-#include <QLineEdit>
-#include <QMessageBox>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QDir>
-#include <QTextEdit>
-#include "singleton.h"
-#include <boost/shared_ptr.hpp>
-#include <HashManager.h>
-#include <Hash.h>
+#ifndef UPLOADINSTANCE_H
+#define UPLOADINSTANCE_H
+#include <QThread>
+#include <QTime>
+
+#include <LibMoor.h>
 #include <iostream>
 
- class addDownload: public QDialog
- {
-    Q_OBJECT
+class uploadInstance : public QThread
+{
 public:
-    QLineEdit *edit;
-    QPushButton *pathButton;
-    QLineEdit *pathEdit;
-    QLabel *label[3];
-    QPushButton *button[2];
-    QTextEdit *text;
-    QHBoxLayout *lay[6];
-    addDownload(QWidget * parent = 0, Qt::WFlags f = 0 );
-private Q_SLOTS:
-    void ok();
-    void setDir();
-};
-#endif // __ADDDOWNLOAD_H__
+    uploadInstance(QString, QString, QString, int, int);
+    CLibMoor * Instance; //!< Instancja klasy CLibMoor
 
+    void run();
+    bool wyslano;
+    QString file; //!< Nazwa pliku do wysłania
+    QString user; //!< Nazwa użytkownika do skrzynki
+    QString pass; //!< Hasło do skrzynki
+    int msize; //!< Rozmiar segmentu
+    int fromseg; //!< Od którego segmentu
+};
+
+#endif // UPLOADINSTANCE_H

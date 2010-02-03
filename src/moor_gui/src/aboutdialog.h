@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2009 by Patryk Połomski
+ *   Copyright (C) 2008-2010 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -17,20 +17,21 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "downloadInstance.h"
+#ifndef ABOUTDIALOG_H
+#define ABOUTDIALOG_H
 
+#include "ui_aboutdialog.h"
 
-downloadInstance::downloadInstance(QString hash, QString pass, QString path):
-        hash(hash),
-        pass(pass),
-        path(path),
-        pobrano(false),
-        pobranoLS(0)
+using namespace Ui;
+
+class aboutDialog: public QDialog
 {
-}
-void downloadInstance::run()
-{
-    Instance = new CLibMoor();
-    Instance->Dehash(hash.toStdString());
-    Instance->selectDownloadMailBox(0, path.toStdString());
-}
+Q_OBJECT
+
+  public:
+ public:
+   AboutDlg ui;
+   aboutDialog(QWidget * parent = 0, Qt::WFlags f = 0 );
+};
+
+#endif
