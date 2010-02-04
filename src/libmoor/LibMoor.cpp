@@ -164,7 +164,8 @@ int CLibMoor::startDownload() {
 	return segValid;
 }
 
-int CLibMoor::selectUploadMailBox(std::string login, std::string passwd, std::string downPasswd, std::string editPasswd) {
+
+int CLibMoor::selectUploadMailBox(std::string login, std::string passwd, std::string adressee, std::string downPasswd, std::string editPasswd) {
 
 // 	myUploadMailbox = getMailboxName(id);
         boost::regex mail_rgx("^(.*)@(.*)");
@@ -172,9 +173,21 @@ int CLibMoor::selectUploadMailBox(std::string login, std::string passwd, std::st
         boost::regex_match(login, result_sth, mail_rgx);
 
         myLogin = result_sth[1];
-	myPasswd = passwd;
+        myPasswd = passwd;
         myDownPasswd = downPasswd;
         myEditPasswd = editPasswd;
+	int adr_size = adressee.size();
+	int i2=0;
+	for (int i = 0; i<adr_size; ++i)
+	{
+		if (adressee.at(i) == ',')
+		{
+			address.push_back(adressee.substr(i2, i));
+			i2=i+1;
+		}
+		else if(i == (adr_size))
+			address.push_back(adressee.substr(i2,i));
+	}
         myUploadMailbox = result_sth[2]; // TODO - wybieranie skrzynki po id;
 	return 0;
 }
@@ -223,11 +236,11 @@ int CLibMoor::splitFile(std::string filename, int size) {
 int CLibMoor::startUpload(unsigned int fromseg) {
 	LOG(Log::Info, boost::format("Zaczynam upload od segmentu: %1%") %fromseg);
 
-	std::stringstream ss;
-        std::string address = myLogin+"@"+myUploadMailbox;
+        std::stringstream ss;
+	std::string upload_mailbox = myLogin+"@"+myUploadMailbox;
         myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd);
 	if (myMailBox) {
- 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %address);
+ 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %upload_mailbox);
 // 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
                 state = Status::Connecting;
  		if (myMailBox->loginRequest() == 0) {
@@ -240,13 +253,13 @@ int CLibMoor::startUpload(unsigned int fromseg) {
                         LOG(Log::Info, generateCleanHashcode());
 
 			for (int i=fromseg; i <= segments; i++) {
-                                LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
-                                state = Status::Uploading;
-
+				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
+                state = Status::Uploading;
 				ss.str("");
+				
 				ss << myUploadFilename << "." << i;
 				if (myMailBox->uploadRequest(ss.str(), address, i) == 0)
-                                        LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
+					LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
 				else
 					LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%i);
 			}

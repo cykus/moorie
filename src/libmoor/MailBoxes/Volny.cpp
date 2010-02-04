@@ -93,9 +93,9 @@ int VolnyMailbox::downloadRequest(int seg)
  return 1;
 }
 
-int VolnyMailbox::uploadRequest(std::string filename, std::string to, int seg) {
+int VolnyMailbox::uploadRequest(std::string filename, std::vector<std::string> to, int seg) {
 	std::string segCRC = getSegCRC(filename);
-
+	std::cout<<"ok";
 	boost::smatch match;
 	//boost::regex re("<a href=\"list\\.php\\?id\\=(.{,50})\">Doručené</a");
 	boost::regex re("<a href=\"(compose.php\\?.{0,50}\")>Napsat zprávu</a>");
@@ -103,7 +103,11 @@ int VolnyMailbox::uploadRequest(std::string filename, std::string to, int seg) {
 	url = url+match[1];
 
 	page = doGet(url);
-
+	std::string to_m;
+	for (int i = 0; i < to.size(); ++i)
+	{
+		 to_m+=to[i]+",";
+	}
 
 	boost::regex re1("\"astore_uid\" value=\"(.{0,50})\">");
 	boost::smatch match1;
@@ -122,7 +126,7 @@ int VolnyMailbox::uploadRequest(std::string filename, std::string to, int seg) {
 	addPostData("html_mode", "");
 	addPostData("last_saved_draft_id", "");
 	addPostData("from", "0");
-	addPostData("to", to);//to
+	addPostData("to", to_m);//to
 	addPostData("addrbook_to", "");
 	addPostData("cc", "");
 	addPostData("addrbook_cc", "");
@@ -153,7 +157,7 @@ int VolnyMailbox::uploadRequest(std::string filename, std::string to, int seg) {
 	std::string fs_md5 = match[1];
 	
 	setCookie("agent_uid="+astore);
-	
+
 	addPostData("","");
 	addPostData("astore_uid",astore);
 	addPostData("re_message_id", "");
@@ -163,7 +167,7 @@ int VolnyMailbox::uploadRequest(std::string filename, std::string to, int seg) {
 	addPostData("html_mode", "");
 	addPostData("last_saved_draft_id", "");
 	addPostData("from", "");
-	addPostData("to", to);//to
+	addPostData("to", to_m);//to
 	addPostData("addrbook_to", "");
 	addPostData("cc", "");
 	addPostData("addrbook_cc", "");

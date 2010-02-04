@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     std::string path = "";
         std::string upload_filename;
         unsigned int logLevel(6);
-        std::string ul, up, dp, ep;
+        std::string ul, up, dp, ep, to;
         unsigned int ss (7);
         unsigned int fromseg (1);
         bool download = false, upload = false;
@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
                         ("upload,u", boost::program_options::value<std::string>(), "Upload file")
                         ("ul", boost::program_options::value<std::string>(), "Upload mailbox login")
                         ("up", boost::program_options::value<std::string>(), "Upload mailbox password")
+                        ("to", boost::program_options::value<std::string>(), "Upload adressee")
                         ("dp", boost::program_options::value<std::string>(), "Download password")
                         ("ep", boost::program_options::value<std::string>(), "Edit password")
                         ("ss", boost::program_options::value<unsigned int>( &ss )->default_value( 7 ), "Upload segment size (1-10 mb), default 7mb")
@@ -137,6 +138,13 @@ int main(int argc, char **argv) {
 // 			return 1;
                 } else
                         up = vars["up"].as<std::string>();
+                if (!vars.count ("to")) {
+    // 			std::cout << "Upload adresse (-to) is not set" << std::endl;
+                            std::cout << "Podaj adresatow: ";
+                            std::cin >> to;
+    // 			return 1;
+                    } else
+                            to = vars["to"].as<std::string>();
                 if (!vars.count ("dp")) {
                         std::cout << "Podaj hasło pobierania: ";
                         std::cin >> dp;
@@ -188,7 +196,7 @@ int main(int argc, char **argv) {
                 try
                 {
                         Instance = new CLibMoor();
-                        Instance -> selectUploadMailBox(ul, up, dp, ep);
+                        Instance -> selectUploadMailBox(ul, up, to, dp, ep);
                         Instance -> splitFile(upload_filename, ss);
                         Instance -> startUpload(fromseg);
 

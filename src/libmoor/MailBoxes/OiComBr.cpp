@@ -148,7 +148,7 @@ int OiComBrMailbox::downloadRequest(int seg)
 	}
 }
 
-int OiComBrMailbox::uploadRequest(std::string filename, std::string to, int seg)
+int OiComBrMailbox::uploadRequest(std::string filename, std::vector<std::string> to, int seg)
 {
 }
 

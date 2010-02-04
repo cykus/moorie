@@ -137,7 +137,7 @@ int MyNetMailbox::downloadRequest(int seg)
 		return 1;
 }
 
-int MyNetMailbox::uploadRequest(std::string filename, std::string to, int seg)
+int MyNetMailbox::uploadRequest(std::string filename, std::vector<std::string> to, int seg)
 {
 }
 

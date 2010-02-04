@@ -132,7 +132,7 @@ int OnetMailbox::downloadRequest(int seg/*const EmailHeader &hdr, Segment *s*/)
 		return 1;
 }
 
-int OnetMailbox::uploadRequest(std::string filename, std::string to, int seg)
+int OnetMailbox::uploadRequest(std::string filename, std::vector<std::string> to, int seg)
 {
 // 	const std::string vars = std::string("to=")
 // 			+ escape(getUser()) + escape("@"+domain) + "&su="
