@@ -137,7 +137,7 @@ int GMailMailbox::downloadRequest(int seg)
 	else return 1;
 }
 
-int GMailMailbox::uploadRequest(std::string filename, std::string to, int seg) {
+int GMailMailbox::uploadRequest(std::string filename, std::vector<std::string> to, int seg) {
 	std::string segCRC = getSegCRC(filename);
 
 	url = "https://mail.google.com/mail/h/?v=b&pv=tl&cs=b";
@@ -160,11 +160,16 @@ int GMailMailbox::uploadRequest(std::string filename, std::string to, int seg) {
 	} else
 		return 1;
 
+	std::string to_m;
+	for (int i = 0; i < to.size(); ++i)
+	{
+		 to_m+=to[i]+";";
+	}
 	addPostData("filename",filename);
-	addPostData("to",to);
+	addPostData("to",to_m);
 	addPostData("subject",EncodeHeader(filename, segCRC, getFileCRC(), seg));
 	addPostData("body","tresc wiadomosci");
-	addPostData("nvp_bu_send",to);
+	addPostData("nvp_bu_send",to_m);
 	addPostData("to","Wy�ij");
 	addPostData("filename",filename);
 	page = doHTTPUpload(postlink, filename, true);

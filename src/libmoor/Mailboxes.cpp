@@ -14,7 +14,6 @@ std::string getMailboxName(int id) {
 //      case GMX:   return "gmx.net";
 //      case M2X:   return "m2x.net";
 //      case Lycos: return "lycos.com";
-//      case PortugalMail: return "portugalmail";
 //      case Rediff: return "rediff";
 //      case CentrumSk: return "centrum.sk";
 //      case CentrumCz: return "centrum.cz";
@@ -47,6 +46,7 @@ std::string getMailboxName(int id) {
                 case LivedoorCom: return "livedoor.com";
                 case OneindiaIn : return "oneindia.in";
                 case VolnyCz : return "volny.cz";
+               case PortugalMail : return  "portugalmail.pt";
  		default:    return "Nieobslugiwana !";
 	}
 

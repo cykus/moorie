@@ -164,11 +164,23 @@ int CLibMoor::startDownload() {
 	return segValid;
 }
 
-int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd) {
+int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd, std::string adressee) {
 // 	myUploadMailbox = getMailboxName(id);
 
 	myLogin = login;
 	myPasswd = passwd;
+	int adr_size = adressee.size();
+	int i2=0;
+	for (int i = 0; i<adr_size; ++i)
+	{
+		if (adressee.at(i) == ',')
+		{
+			address.push_back(adressee.substr(i2, i));
+			i2=i+1;
+		}
+		else if(i == (adr_size-1))
+			address.push_back(adressee.substr(i2,i));
+	}
 	myUploadMailbox = getMailboxName(id); // TODO - wybieranie skrzynki po id;
 	return 0;
 }
@@ -218,11 +230,11 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 	LOG(Log::Info, boost::format("Zaczynam upload od segmentu: %1%") %fromseg);
 
 	std::stringstream ss;
-	std::string address = myLogin+"@"+myUploadMailbox;
+	std::string upload_mailbox = myLogin+"@"+myUploadMailbox;
 
 	myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd);
 	if (myMailBox) {
- 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %address);
+ 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %upload_mailbox);
 // 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
  		if (myMailBox->loginRequest() == 0) {
 			LOG(Log::Info, boost::format( "Zalogowano pomyslnie!" ));
@@ -234,9 +246,11 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 
 			for (int i=fromseg; i <= segments; i++) {
 				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
-
+				std::cout<<"ok0";
 				ss.str("");
+				
 				ss << myUploadFilename << "." << i;
+				std::cout<<"ok";
 				if (myMailBox->uploadRequest(ss.str(), address, i) == 0)
 					LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
 				else

@@ -26,7 +26,7 @@ class CLibMoor {
                 void unpauseDownload();
 
 		// upload
-		int selectUploadMailBox(int mailbox, std::string login, std::string passwd);
+		int selectUploadMailBox(int mailbox, std::string login, std::string passwd, std::string adressee);
 		int splitFile(std::string filename, int size);
 		int startUpload(unsigned int fromseg);
 	private:
@@ -59,6 +59,7 @@ class CLibMoor {
 		std::string myUploadMailbox;
 		std::string myLogin;
 		std::string myPasswd;
+		std::vector<std::string> address;
 
 };
 

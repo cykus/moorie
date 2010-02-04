@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     std::string path = "";
 	std::string upload_filename;
     unsigned int logLevel( 8 );
-	std::string ul, up;
+	std::string ul, up, to;
 	unsigned int ss (7);
 	unsigned int fromseg (1);
 	bool download = false, upload = false;
@@ -34,6 +34,7 @@ int main(int argc, char **argv) {
 			("upload,u", boost::program_options::value<std::string>(), "Upload file")
 			("ul", boost::program_options::value<std::string>(), "Upload mailbox login")
 			("up", boost::program_options::value<std::string>(), "Upload mailbox password")
+			("to", boost::program_options::value<std::string>(), "Upload adressee")
 			("ss", boost::program_options::value<unsigned int>( &ss )->default_value( 7 ), "Upload segment size (1-10 mb), default 7mb")
 			("fromseg", boost::program_options::value<unsigned int>( &fromseg )->default_value( 1 ),  "Upload from given segment")
             ("log-level,l", boost::program_options::value<unsigned int>( &logLevel )->default_value( 8 ), "Log level (0-8)")
@@ -120,6 +121,13 @@ int main(int argc, char **argv) {
 // 			return 1;
 		} else
 			ul = vars["ul"].as<std::string>();
+			
+		if (!vars.count ("to")) {
+// 			std::cout << "Upload adressee (-ul) is not set" << std::endl;
+			std::cout << "Podaj adresata: ";
+			std::cin >> to;
+		} else
+			to = vars["to"].as<std::string>();
 
 		if (!vars.count ("up")) {
 // 			std::cout << "Upload Mailbox password (-up) is not set" << std::endl;
@@ -179,7 +187,7 @@ int main(int argc, char **argv) {
 				default: std::cout << "Zly wybor! Koncze program." << std::endl; return 1;
 			}
 
-			Instance -> selectUploadMailBox(upmailbox, ul, up);
+			Instance -> selectUploadMailBox(upmailbox, ul, up, to);
 			Instance -> splitFile(upload_filename, ss);
 			Instance -> startUpload(fromseg);
 

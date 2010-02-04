@@ -155,9 +155,10 @@ int GoogleAppsMailbox::downloadRequest(int seg)
         else return 1;
 }
 
-int GoogleAppsMailbox::uploadRequest(std::string filename, std::string to, int seg) {
+int GoogleAppsMailbox::uploadRequest(std::string filename, std::vector<std::string> to, int seg) {
 	std::string segCRC = getSegCRC(filename);
 
+std::cout<<"ok";
         url = "https://mail.google.com/a/"+getMailbox()+"/h/?v=b&pv=tl&cs=b";
 
 	page = doGet(url);
@@ -177,12 +178,19 @@ int GoogleAppsMailbox::uploadRequest(std::string filename, std::string to, int s
 		postlink = base + match[1];
 	} else
 		return 1;
-
+		
+	std::string to_m;
+	std::cout<<"ok";
+	for (int i = 0; i < to.size(); ++i)
+	{
+		 to_m+=to[i]+";";
+	}
+	std::cout<<"ok2";
 	addPostData("filename",filename);
-	addPostData("to",to);
+	addPostData("to",to_m);
 	addPostData("subject",EncodeHeader(filename, segCRC, getFileCRC(), seg));
 	addPostData("body","tresc wiadomosci");
-	addPostData("nvp_bu_send",to);
+	addPostData("nvp_bu_send",to_m);
 	addPostData("to","Wy�ij");
 	addPostData("filename",filename);
 	page = doHTTPUpload(postlink, filename, true);

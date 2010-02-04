@@ -116,7 +116,7 @@ class CMailBox {
 		 */
 		virtual void getHeadersRequest() = 0;
 		virtual int downloadRequest(int seg) = 0;
-		virtual int uploadRequest(std::string filename, std::string to, int seg) = 0;
+		virtual int uploadRequest(std::string filename, std::vector<std::string> to, int seg) = 0;
 		std::list<EmailHeader> getHeaders() const;
 		std::vector<std::string> getLinks() const;
 		/**
