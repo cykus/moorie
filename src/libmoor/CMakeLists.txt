@@ -24,6 +24,6 @@ add_library (moor SHARED Decoder.cpp
                          Hash.cpp
                          StringUtils.cpp
                          BinaryStream.cpp)
-target_link_libraries (moor ${PROJECT_SOURCE_DIR}/src/libmoor/libmoorhunt.a)
+target_link_libraries (moor ${PROJECT_SOURCE_DIR}/src/libmoor/Libraries/libmoorhunt.a)
 set_property(TARGET moor PROPERTY LINK_INTERFACE_LIBRARIES "")
 install (TARGETS moor DESTINATION lib${LIB_SUFFIX})

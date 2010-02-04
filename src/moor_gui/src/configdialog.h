@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2009 by Patryk Połomski
+ *   Copyright (C) 2008-2010 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,19 @@
 #ifndef CONFIGDIALOG_H
 #define CONFIGDIALOG_H
 
-#include <QtGui>
+#include <QDialog>
+#include <QSettings>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QApplication>
+#include <QLabel>
+#include <QListWidget>
+#include <QListWidgetItem>
+#include <QStackedWidget>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
 #include <iostream>
 #include "singleton.h"
 #include "configurationpage.h"

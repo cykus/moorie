@@ -19,8 +19,17 @@
  */
 #ifndef CONFIGURATIONPAGE_H
 #define CONFIGURATIONPAGE_H
-#include <QWidget>
-#include <QtGui>
+#include <QCheckBox>
+#include <QSpinBox>
+#include <QGroupBox>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QDir>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFileDialog>
+#include <QRadioButton>
 #include "singleton.h"
 #include "tools.h"
 
@@ -28,7 +37,7 @@ class ConfigurationPage : public QWidget
 {
     Q_OBJECT
 public:
-    QCheckBox *kBox, *tBox;
+    QCheckBox *kBox, *tBox, *thBox, *abcBox;
     QSpinBox *dBox, *lBox;
     QGroupBox *notifyGroup;
     QRadioButton *xdgNotification, *hintNotification, *noneNotification ;
@@ -38,5 +47,6 @@ private:
 
 public Q_SLOTS :
     void setDir();
+    void setCheckedState();
 };
 #endif

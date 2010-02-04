@@ -17,35 +17,40 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef MYSYSTEMTRAYICON_H
-#define MYSYSTEMTRAYICON_H
-#include <QtGui>
-#include <QtCore>
-#include <QtDBus/QDBusInterface>
-#include <QDBusReply>
+#ifndef NEWDOWNLOADDIALOG_H
+#define NEWDOWNLOADDIALOG_H
+#include <QApplication>
+#include <QDialog>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QDir>
+#include <QTextEdit>
 #include "singleton.h"
+#include <boost/shared_ptr.hpp>
+#include <HashManager.h>
+#include <Hash.h>
+#include <iostream>
 
-class diall : public QWidget
-{
+ class newDownloadDialog: public QDialog
+ {
     Q_OBJECT
-    void mousePressEvent(QMouseEvent * event);
-public :
-    diall(QRect pos, QWidget *parent = 0);
-    QTimer *timer;
-    QLabel *label;
-    QRect pos;
-    void setPosition();
-public Q_SLOTS:
-    void closeD();
-};
-
-class mySystemTrayIcon: public QSystemTrayIcon
-{
-    QDBusInterface *KNotify;
 public:
-    mySystemTrayIcon(QWidget *parent = 0);
-    void showHints(QString, QString, int seconds = 10);
-
+    QLineEdit *edit;
+    QPushButton *pathButton;
+    QLineEdit *pathEdit;
+    QLabel *label[3];
+    QPushButton *button[2];
+    QTextEdit *text;
+    QHBoxLayout *lay[6];
+    newDownloadDialog(QWidget * parent = 0, Qt::WFlags f = 0 );
+private Q_SLOTS:
+    void ok();
+    void setDir();
 };
+#endif // NEWDOWNLOADDIALOG_H
 
-#endif MYSYSTEMTRAYICON_H

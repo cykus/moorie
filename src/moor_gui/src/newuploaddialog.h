@@ -17,13 +17,40 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "about.h"
+#ifndef NEWUPLOADDIALOG_H
+#define NEWUPLOADDIALOG_H
+#include <QApplication>
+#include <QDialog>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QDir>
+#include <QTextEdit>
+#include "singleton.h"
+#include <boost/shared_ptr.hpp>
+#include <HashManager.h>
+#include <Hash.h>
+#include <iostream>
 
-about::about(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
-{
-    ui.setupUi(this);
-    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - O programie");
-    ui.lb_name->setText(qApp->applicationName() + " " + qApp->applicationVersion());
-}
-
+ class newUploadDialog: public QDialog
+ {
+    Q_OBJECT
+public:
+    QLineEdit *edit;
+    QPushButton *pathButton;
+    QLineEdit *pathEdit;
+    QLabel *label[3];
+    QPushButton *button[2];
+    QTextEdit *text;
+    QHBoxLayout *lay[6];
+    newUploadDialog(QWidget * parent = 0, Qt::WFlags f = 0 );
+private Q_SLOTS:
+    void ok();
+    void setDir();
+};
+#endif // NEWUPLOADDIALOG_H
 

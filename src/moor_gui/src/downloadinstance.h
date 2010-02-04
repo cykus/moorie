@@ -17,21 +17,30 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef ABOUT_H
-#define ABOUT_H
+#ifndef DOWNLOADINSTANCE_H
+#define DOWNLOADINSTANCE_H
+#include <QThread>
+#include <QTime>
 
-#include "ui_about.h"
+#include <LibMoor.h>
+#include <iostream>
 
-using namespace Ui;
-
-class about: public QDialog
+class downloadInstance : public QThread
 {
-Q_OBJECT
+public:
+    downloadInstance(QString, QString, QString = "");
+    CLibMoor * Instance; //!< Instancja klasy CLibMoor
 
-  public:
- public:
-   AboutDlg ui;
-   about(QWidget * parent = 0, Qt::WFlags f = 0 );
+    void run();
+    bool pobrano;
+    quint64 size; //!< rozmiar pliku
+    int totalSegments; //!< liczba wszystkich segmentów
+    unsigned int itemRow; //!< Nr. wiersza w tabeli
+    quint64 pobranoLS; //!< Ile pobrano w poprzedniej sesji
+    QString hash; //!< hashcode pliku
+    QString path; //!< Ścieżka pobierania pliku
+    QString pass; //!< hasło pliku
+    QString filename; //!< nazwa pliku
 };
 
-#endif
+#endif // DOWNLOADINSTANCE_H

@@ -109,11 +109,11 @@ void QMoorie::createActions()
 
     addAct->setShortcut(tr("Ctrl+N"));
     addAct->setStatusTip(tr("Dodanie nowego pliku"));
-    connect(addAct, SIGNAL(triggered()), this, SLOT(addDialog()));
+    connect(addAct, SIGNAL(triggered()), this, SLOT(showNewDownloadDialog()));
 
     settingsAct -> setShortcut(tr("Ctrl+Alt+S"));
     settingsAct -> setStatusTip(tr("Konfiguracja aplikacji"));
-    connect(settingsAct, SIGNAL(triggered()), this ,SLOT(showSettings()));
+    connect(settingsAct, SIGNAL(triggered()), this ,SLOT(showConfigDialog()));
 
     pauseAct->setDisabled(true);
     pauseAct -> setStatusTip(tr("Wstrzymanie/wznowienie pobierania wszystkich plików"));
@@ -121,7 +121,7 @@ void QMoorie::createActions()
     removeAct -> setStatusTip(tr("Usunięcie pobierania"));
 
     aboutAct->setStatusTip(tr("Informacje o aplikacji"));
-    connect(aboutAct, SIGNAL(triggered()), this, SLOT(aboutDialog()));
+    connect(aboutAct, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
 
     exitAct->setShortcut(tr("Ctrl+Q"));
     exitAct->setStatusTip(tr("Wyjście z aplikacji"));
@@ -160,9 +160,9 @@ void QMoorie::createTable()
     headerH  << "Nazwa pliku" << "Rozmiar" << "Pozostało"<< "Postęp " << "Prędkość" << "Status" << "Skrzynka";
     tabela->setHorizontalHeaderLabels(headerH);
 }
-void QMoorie::addDialog()
+void QMoorie::showNewDownloadDialog()
 {
-    addDownload *get = new addDownload(this);
+    newDownloadDialog *get = new newDownloadDialog(this);
     get->exec();
     if(get->result())
     {
@@ -247,7 +247,7 @@ void QMoorie::refreshStatuses()
                 QTableWidgetItem *postepPobierania = new QTableWidgetItem;
                 postepPobierania->setData(Qt::DisplayRole, 0);
                 tabela->setItem(downloadInstanceV.at(i)->itemRow, 3, postepPobierania);
-                QTableWidgetItem *statusPobierania = new QTableWidgetItem("No valid account found");
+                QTableWidgetItem *statusPobierania = new QTableWidgetItem("Nie udało się pobrać pliku z żadnej ze skrzynek");
                 tabela->setItem(downloadInstanceV.at(i)->itemRow, 5, statusPobierania);
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
                 tabela->setItem(downloadInstanceV.at(i)->itemRow, 4, SzybkoscPobierania);
@@ -495,19 +495,19 @@ void QMoorie::saveDownloads()
         ts << dokument_xml.toString();
     }
 }
-void QMoorie::aboutDialog()
+void QMoorie::showAboutDialog()
 {
-    about *get = new about(this);
+    aboutDialog *get = new aboutDialog(this);
     get->exec();
     delete get;
 }
-void QMoorie::infoDialog()
+void QMoorie::showInfoDialog()
 {
     InfoDialog *get = new InfoDialog(this);
     get->exec();
     delete get;
 }
-void QMoorie::showSettings()
+void QMoorie::showConfigDialog()
 {
     ConfigDialog *get = new ConfigDialog();
     get->exec();
@@ -525,7 +525,9 @@ void QMoorie::readConfigFile()
     Zmienne().LLEVEL = settings.value("LLEVEL", 6).toInt();
     Zmienne().DLEVEL = settings.value("DLEVEL", 2).toInt();
     Zmienne().NLEVEL = settings.value("NLEVEL", 0).toInt();
-    Zmienne().KSEGMENTS = settings.value("KSEGMENTS", 1).toBool();
+    Zmienne().RUNINTRAY = settings.value("RUNINTRAY", false).toBool();
+    Zmienne().ASKBEFORECLOSE = settings.value("ASKBEFORECLOSE", false).toBool();
+    Zmienne().KSEGMENTS = settings.value("KSEGMENTS", true).toBool();
     Zmienne().TRAY = settings.value("TRAY", true).toBool();
     settings.endGroup();
 
@@ -583,6 +585,28 @@ void QMoorie::writeConfigFile()
         this->close();
     }
 }
+bool QMoorie::showExitAppConfirmDialog()
+{
+    QMessageBox msgBox;
+
+    msgBox.setText("Potwierdzenie zakończenia");
+    msgBox.setInformativeText("Czy na pewno chcesz zakończyć aplikację?");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    int ret = msgBox.exec();
+    switch (ret) {
+    case QMessageBox::Yes:
+        return true;
+        break;
+    case QMessageBox::No:
+        return false;
+        break;
+    default:
+        // should never be reached
+        break;
+    }
+
+}
 void QMoorie::closeEvent(QCloseEvent *event)
 {
     writeConfigFile();
@@ -590,12 +614,20 @@ void QMoorie::closeEvent(QCloseEvent *event)
         event->ignore();
         hide();
     }
+    if(Zmienne().ASKBEFORECLOSE)
+    {
+        if(showExitAppConfirmDialog()) qApp->quit();
+    }
     else qApp->quit();
 }
 void QMoorie::exitApp()
 {
     writeConfigFile();
-    qApp->quit();
+    if(Zmienne().ASKBEFORECLOSE)
+    {
+        if(showExitAppConfirmDialog()) qApp->quit();
+    }
+    else qApp->quit();
 }
 QMoorie::~QMoorie()
 {

@@ -17,23 +17,13 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef THREADSTATUSES_H
-#define THREADSTATUSES_H
-#include <QtCore>
-#include <QThread>
-#include <QTime>
+#include "aboutdialog.h"
 
-class threadStatuses : public QThread
+aboutDialog::aboutDialog(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 {
-Q_OBJECT
+    ui.setupUi(this);
+    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - O programie");
+    ui.lb_name->setText(qApp->applicationName() + " " + qApp->applicationVersion());
+}
 
-Q_SIGNALS:
-    void refresh();
 
-public:
-    threadStatuses();
-
-protected:
-    void run();
-};
-#endif // THREADSTATUSES_H

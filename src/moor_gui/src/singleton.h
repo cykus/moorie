@@ -21,8 +21,6 @@
 #define SINGLETON_H
 
 #include <QString>
-#include <string>
-#include <QTextStream> 
 class Singleton {
 // definicja klasy o nazwie Singleton - jest 
 // to nazwa wlasna :)
@@ -32,8 +30,7 @@ public:
     QString PATH;
     QString configPath;
     int LLEVEL, DLEVEL, NLEVEL;
-    bool KSEGMENTS;
-    bool TRAY;
+    bool KSEGMENTS, TRAY, RUNINTRAY, ASKBEFORECLOSE;
 private:
     Singleton();
     Singleton(const Singleton&);

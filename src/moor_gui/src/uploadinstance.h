@@ -17,28 +17,27 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef MYTABLEWIDGET_H
-#define MYTABLEWIDGET_H
-#include <QtCore>
-#include <QDialog>
-#include <QAction>
-#include <QTableWidget>
+#ifndef UPLOADINSTANCE_H
+#define UPLOADINSTANCE_H
+#include <QThread>
+#include <QTime>
 
-class myTableWidget : public QTableWidget
+#include <LibMoor.h>
+#include <iostream>
+
+class uploadInstance : public QThread
 {
-    Q_OBJECT
 public:
-    myTableWidget(QWidget *parent = 0);
-    QClipboard *clip;
-    QTableWidget *table;
-    QAction *tPauseAct;
-    QAction *tInfoAct;
-    QAction *tRemoveAct;
-public Q_SLOTS:
-    //int info();
-    //void paste();
-public:
-    void setUpContextMenu();
-    void createActions();
+    uploadInstance(QString, QString, QString, int, int);
+    CLibMoor * Instance; //!< Instancja klasy CLibMoor
+
+    void run();
+    bool wyslano;
+    QString file; //!< Nazwa pliku do wysłania
+    QString user; //!< Nazwa użytkownika do skrzynki
+    QString pass; //!< Hasło do skrzynki
+    int msize; //!< Rozmiar segmentu
+    int fromseg; //!< Od którego segmentu
 };
-#endif // MYTABLEWIDGET_H
+
+#endif // UPLOADINSTANCE_H

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2009 by Patryk Połomski
+ *   Copyright (C) 2008-2010 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -17,19 +17,17 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include <QApplication>
-#include "qmoorie.h"
-int main(int argc, char *argv[])
-{
-    QApplication app(argc, argv);
-    app.setApplicationName("Qmoorie");
-    app.setOrganizationName("Moorie Team");
-    app.setOrganizationDomain("moorie.pl");
-    app.setApplicationVersion ("GIT(20100203)");
-    app.setQuitOnLastWindowClosed(true);
-    Q_INIT_RESOURCE(application);
-    QMoorie * mw = new QMoorie();
-    if(!Zmienne().RUNINTRAY || (Zmienne().RUNINTRAY && !Zmienne().TRAY)) mw->show();
-    return app.exec();
-}
+#include "statusesthread.h"
 
+
+statusesThread::statusesThread()
+{
+}
+void statusesThread::run()
+{
+    while(1)
+    {
+        sleep(2);
+        Q_EMIT refresh();
+    }
+}

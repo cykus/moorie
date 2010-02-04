@@ -17,27 +17,38 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef UPLOADINSTANCE_H
-#define UPLOADINSTANCE_H
-#include <QtCore>
-#include <QThread>
-#include <QTime>
+#ifndef MYSYSTEMTRAYICON_H
+#define MYSYSTEMTRAYICON_H
+#include <QtDBus/QDBusInterface>
+#include <QDBusReply>
+#include <QMouseEvent>
+#include <QSystemTrayIcon>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QTimer>
+#include "singleton.h"
 
-#include <LibMoor.h>
-#include <iostream>
-
-class uploadInstance : public QThread
+class diall : public QWidget
 {
-public:
-    uploadInstance(QString, QString, QString, int msize = 7);
-    CLibMoor * Instance; //!< Instancja klasy CLibMoor
-
-    void run();
-    bool wyslano;
-    QString file; //!< Nazwa pliku do wysłania
-    QString user; //!< Nazwa użytkownika do skrzynki
-    QString pass; //!< Hasło do skrzynki
-    int msize; //!< Rozmiar segmentu
+    Q_OBJECT
+    void mousePressEvent(QMouseEvent * event);
+public :
+    diall(QRect pos, QWidget *parent = 0);
+    QTimer *timer;
+    QLabel *label;
+    QRect pos;
+    void setPosition();
+public Q_SLOTS:
+    void closeD();
 };
 
-#endif // UPLOADINSTANCE_H
+class mySystemTrayIcon: public QSystemTrayIcon
+{
+    QDBusInterface *KNotify;
+public:
+    mySystemTrayIcon(QWidget *parent = 0);
+    void showHints(QString, QString, int seconds = 10);
+
+};
+
+#endif MYSYSTEMTRAYICON_H

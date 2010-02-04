@@ -17,20 +17,21 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "downloadInstance.h"
+#include "uploadinstance.h"
 
 
-downloadInstance::downloadInstance(QString hash, QString pass, QString path):
-        hash(hash),
+uploadInstance::uploadInstance(QString file, QString user, QString pass, int msize, int fromseg):
+        file(file),
+        user(user),
         pass(pass),
-        path(path),
-        pobrano(false),
-        pobranoLS(0)
+        msize(msize),
+        fromseg(fromseg),
+        wyslano(false)
 {
 }
-void downloadInstance::run()
+void uploadInstance::run()
 {
-    Instance = new CLibMoor();
-    Instance->Dehash(hash.toStdString());
-    Instance->selectDownloadMailBox(0, path.toStdString());
+    Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), "");
+    Instance -> splitFile(file.toStdString(), msize);
+    Instance -> startUpload(fromseg);
 }

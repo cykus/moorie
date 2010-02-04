@@ -164,10 +164,14 @@ int CLibMoor::startDownload() {
 	return segValid;
 }
 
-int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd, std::string adressee) {
-// 	myUploadMailbox = getMailboxName(id);
+int CLibMoor::selectUploadMailBox(std::string login, std::string passwd, std::string adressee) {
 
-	myLogin = login;
+// 	myUploadMailbox = getMailboxName(id);
+        boost::regex mail_rgx("^(.*)@(.*)");
+        boost::smatch result_sth;
+        boost::regex_match(login, result_sth, mail_rgx);
+
+        myLogin = result_sth[1];
 	myPasswd = passwd;
 	int adr_size = adressee.size();
 	int i2=0;
@@ -178,10 +182,10 @@ int CLibMoor::selectUploadMailBox(int id, std::string login, std::string passwd,
 			address.push_back(adressee.substr(i2, i));
 			i2=i+1;
 		}
-		else if(i == (adr_size-1))
+		else if(i == (adr_size))
 			address.push_back(adressee.substr(i2,i));
 	}
-	myUploadMailbox = getMailboxName(id); // TODO - wybieranie skrzynki po id;
+    myUploadMailbox = result_sth[2]; // TODO - wybieranie skrzynki po id;
 	return 0;
 }
 
@@ -236,29 +240,31 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 	if (myMailBox) {
  		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %upload_mailbox);
 // 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
+                state = Status::Connecting;
  		if (myMailBox->loginRequest() == 0) {
 			LOG(Log::Info, boost::format( "Zalogowano pomyslnie!" ));
+                        state = Status::Connected;
 			myMailBox->calculateFileCRC(myUploadFilename);
 			myUploadFileCRC = myMailBox->getFileCRC();
 			LOG(Log::Debug, boost::format( "CRC Pliku: %1%" ) %myMailBox->getFileCRC());
 
  			std::cout << generateCleanHashcode() << std::endl;
-
 			for (int i=fromseg; i <= segments; i++) {
 				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
-				std::cout<<"ok0";
+                state = Status::Uploading;
 				ss.str("");
 				
 				ss << myUploadFilename << "." << i;
-				std::cout<<"ok";
 				if (myMailBox->uploadRequest(ss.str(), address, i) == 0)
 					LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
 				else
 					LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%i);
 			}
-			LOG(Log::Info, boost::format( "Upload zakonczony!" ));
+                        LOG(Log::Info, boost::format( "Upload zakonczony!" ));
+                        state = Status::Uploaded;
  		} else
  			LOG(Log::Info, boost::format( "Logowanie nie powiodlo sie, przerywam." ));
+                        state = Status::ConnectionError;
 	}
 
 	return 0;

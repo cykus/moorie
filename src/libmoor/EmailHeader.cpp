@@ -12,7 +12,7 @@
 
 #include <cctype>
 #include <boost/lexical_cast.hpp>
-//#include <boost/regex.hpp>
+#include <boost/regex.hpp>
 #include <boost/algorithm/string.hpp>
 #include "EmailHeader.h"
 #include "Log.h"
@@ -20,6 +20,16 @@
 #include <iostream>
 std::string EmailHeader::decode( const std::string& code )
 {
+	/** sprawdzamy czy up nie jest wykonany starym mh */
+	boost::smatch match;
+	boost::regex re("\\[.*?\\]\\[.*?\\]\\[.*?\\]");
+// 	\\[" + fileCRC + "\\].+?\\[" + id + "\\]"
+	if (boost::regex_search(code, match, re)) {
+		LOG(Log::Debug, match[0]);
+		return match[0];
+	}
+
+
     std::string code_temp( code );
     boost::erase_all( code_temp, " " );
     std::string code1;

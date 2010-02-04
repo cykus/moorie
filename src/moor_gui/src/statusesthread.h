@@ -17,17 +17,22 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "threadstatuses.h"
+#ifndef STATUSESTHREAD_H
+#define STATUSESTHREAD_H
+#include <QThread>
+#include <QTime>
 
+class statusesThread : public QThread
+{
+Q_OBJECT
 
-threadStatuses::threadStatuses()
-{
-}
-void threadStatuses::run()
-{
-    while(1)
-    {
-        sleep(2);
-        Q_EMIT refresh();
-    }
-}
+Q_SIGNALS:
+    void refresh();
+
+public:
+    statusesThread();
+
+protected:
+    void run();
+};
+#endif // STATUSESTHREAD_H

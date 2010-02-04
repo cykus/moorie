@@ -17,31 +17,28 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef DOWNLOADINSTANCE_H
-#define DOWNLOADINSTANCE_H
-#include <QtCore>
-#include <QThread>
-#include <QTime>
+#ifndef MYTABLEWIDGET_H
+#define MYTABLEWIDGET_H
+#include <QDialog>
+#include <QAction>
+#include <QTableWidget>
+#include <QMessageBox>
 
-#include <LibMoor.h>
-#include <iostream>
-
-class downloadInstance : public QThread
+class myTableWidget : public QTableWidget
 {
+    Q_OBJECT
 public:
-    downloadInstance(QString, QString, QString = "");
-    CLibMoor * Instance; //!< Instancja klasy CLibMoor
-
-    void run();
-    bool pobrano;
-    quint64 size; //!< rozmiar pliku
-    int totalSegments; //!< liczba wszystkich segmentów
-    unsigned int itemRow; //!< Nr. wiersza w tabeli
-    quint64 pobranoLS; //!< Ile pobrano w poprzedniej sesji
-    QString hash; //!< hashcode pliku
-    QString path; //!< Ścieżka pobierania pliku
-    QString pass; //!< hasło pliku
-    QString filename; //!< nazwa pliku
+    myTableWidget(QWidget *parent = 0);
+    QClipboard *clip;
+    QTableWidget *table;
+    QAction *tPauseAct;
+    QAction *tInfoAct;
+    QAction *tRemoveAct;
+public Q_SLOTS:
+    //int info();
+    //void paste();
+public:
+    void setUpContextMenu();
+    void createActions();
 };
-
-#endif // DOWNLOADINSTANCE_H
+#endif // MYTABLEWIDGET_H

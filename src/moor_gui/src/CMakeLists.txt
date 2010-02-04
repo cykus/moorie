@@ -1,35 +1,37 @@
 set( QMOORIE_SRCS
-    qmoorie.cpp
     main.cpp
-    addDownload.cpp
-    about.cpp
-    tabledelegate.cpp
-    infoDialog.cpp
-    myTableWidget.cpp
-    singleton.cpp
+    qmoorie.cpp
+    aboutdialog.cpp
     configdialog.cpp
+    newdownloaddialog.cpp
+    newuploaddialog.cpp
+    infodialog.cpp
+    tabledelegate.cpp
+    mytablewidget.cpp
+    mysystemtrayicon.cpp
     configurationpage.cpp
-    downloadInstance.cpp
-    uploadInstance.cpp
-    threadstatuses.cpp
+    singleton.cpp
+    downloadinstance.cpp
+    uploadinstance.cpp
+    statusesthread.cpp
     tools.cpp
-    mySystemTrayIcon.cpp
 )
 set( QMOORIE_MOC_HDRS
     qmoorie.h
-    addDownload.h
-    about.h
-    tabledelegate.h
-    infoDialog.h
-    myTableWidget.h
+    newdownloaddialog.h
+    newuploaddialog.h
+    aboutdialog.h
     configdialog.h
+    infodialog.h
+    tabledelegate.h
+    mytablewidget.h
+    mysystemtrayicon.h
     configurationpage.h
-    threadstatuses.h
-    mySystemTrayIcon.h
+    statusesthread.h
 )
 set( QMOORIE_UIS
     qmoorie.ui
-    about.ui
+    aboutdialog.ui
 )
 set( QMOORIE_RCS
      application.qrc

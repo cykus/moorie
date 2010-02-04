@@ -19,21 +19,25 @@
  */
 #ifndef QMOORIE_H
 #define QMOORIE_H
-#include <QtGui>
-#include <QtCore>
+
 #include <QDomDocument>
+#include <QDebug>
+#include <QTextCodec>
+#include <QToolBar>
+#include <QSettings>
+#include <QTextStream>
 
 #include "ui_qmoorie.h"
 
-#include "about.h"
-#include "addDownload.h"
+#include "aboutdialog.h"
+#include "newdownloaddialog.h"
 #include "configdialog.h"
-#include "infoDialog.h"
-#include "mySystemTrayIcon.h"
-#include "myTableWidget.h"
+#include "infodialog.h"
+#include "mysystemtrayicon.h"
+#include "mytablewidget.h"
 #include "tabledelegate.h"
-#include "downloadInstance.h"
-#include "threadstatuses.h"
+#include "downloadinstance.h"
+#include "statusesthread.h"
 #include "tools.h"
 // moorie
 #include <HashManager.h>
@@ -68,6 +72,7 @@ class QMoorie:public QMainWindow
 {
     Q_OBJECT
 
+    Ui::MainWindow *ui;
     QMenu *fileMenu;
     QMenu *helpMenu;
     QMenu *contextMenu;
@@ -82,18 +87,29 @@ class QMoorie:public QMainWindow
     QAction *infoAct;
     QAction *removeAct;
 
-    QStringList headerH;
-    mySystemTrayIcon *tray;
     QToolBar *fileToolBar;
 
-    Ui::MainWindow *ui;
-    threadStatuses statuses;
+    QStringList headerH;
+
+    quint64 allBytesRead; //!< Całkowity rozmiar pobranych danych
+    mySystemTrayIcon *tray; //!< Klasa dziedzicząca po QTableWidget
+    myTableWidget *tabela; //!< Klasa dziedzicząca po QTableWidget
+    statusesThread statuses;
+    QVector<downloadInstance*> downloadInstanceV; //!< Wektor instancji klasy downloadInstance
+//    QVector<uploadInstance*> uploadInstance; //!< Wektor instancji klasy uploadInstance
 
     void createTable(); //!< Tworzy myTableview dla karty pobieranie
     void createToolBars(); //!< Tworzy pasek narzędziowy
     void createActions(); //!< Tworzy akcje dla przycisków
+    void readConfigFile(); //!< Wczytuje konfigurację z pliku
+    void writeConfigFile(); //!< Zapisuje konfiguracje do pliku
+    void setTray(); //!< Ustawia ikonkę w tacce systemowej
+    void loadDownloads(); //!< Wczytuje listę plików do pobrania z poprzedniej sesji
+    void saveDownloads(); //!< Zapisuje listę plików aktualnie pobieranych
+    void addDownloadInstance(QString, QString, QString = ""); //!< Tworzymy nową instację pobierania
+    void addUploadInstance(QString, QString, QString = ""); //!< Tworzymy nową instację wysyłania
+    bool showExitAppConfirmDialog();
 
-    void refreshLogs();
 
     class LogGuiHandle: public LogHandle
     {
@@ -109,32 +125,17 @@ protected:
 public:
     QMoorie(QWidget * parent = 0, Qt::WFlags f = 0 );
     ~QMoorie();
-
-    void addDownloadInstance(QString, QString, QString = ""); //!< Tworzymy nową instację pobierania
-    void addUploadInstance(QString, QString, QString = ""); //!< Tworzymy nową instację wysyłania
-    void readConfigFile(); //!< Wczytuje konfigurację z pliku
-    void writeConfigFile(); //!< Zapisuje konfiguracje do pliku
-    void loadDownloads(); //!< Wczytuje listę plików do pobrania z poprzedniej sesji
-    void saveDownloads(); //!< Zapisuje listę plików aktualnie pobieranych
-    void setTray();
-
-    quint64 allBytesRead;
-    bool stop;
-    addDownload *dodaj;
-    myTableWidget *tabela; //!< Klasa dziedzicząca po QTableWidget
-    QVector<downloadInstance*> downloadInstanceV; //!< Wektor instancji klasy downloadInstance
-//    QVector<uploadInstance*> uploadInstance; //!< Wektor instancji klasy uploadInstance
     
 public Q_SLOTS:
-    void addDialog();
-    void aboutDialog();
-    void infoDialog();
-    void showSettings();
-    void exitApp();
+    void showNewDownloadDialog(); //!< Wyświetla okno dodawania pliku do pobrania
+    void showAboutDialog(); //!< Wyświetla okno O programie
+    void showInfoDialog(); //!< Wyświetla okno z informacją o danym pliku
+    void showConfigDialog(); //!< Wyświetla okno konfiguracyjne
+    void exitApp(); //!< Kończy program
     void toggleVisibility();
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
-    void removeDownload(); //!< Usuwa wybrane pobieranie
-    void pauseDownload(); //!< Wstrzymuje wybrane pobieranie
+    void removeDownload(); //!< Usuwa pobieranie wybranego pliku
+    void pauseDownload(); //!< Wstrzymuje/Wznawia pobieranie wybranego pliku
     void refreshStatuses();
 };
 #endif

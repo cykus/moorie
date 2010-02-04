@@ -17,39 +17,20 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef __ADDDOWNLOAD_H__
-#define __ADDDOWNLOAD_H__
-#include <QApplication>
-#include <QDialog>
-#include <QFileDialog>
-#include <QLineEdit>
-#include <QMessageBox>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QDir>
-#include <QTextEdit>
-#include "singleton.h"
-#include <boost/shared_ptr.hpp>
-#include <HashManager.h>
-#include <iostream>
+#include "downloadinstance.h"
 
- class addDownload: public QDialog
- {
-    Q_OBJECT
-public:
-    QLineEdit *edit;
-    QPushButton *pathButton;
-    QLineEdit *pathEdit;
-    QLabel *label[3];
-    QPushButton *button[2];
-    QTextEdit *text;
-    QHBoxLayout *lay[6];
-    addDownload(QWidget * parent = 0, Qt::WFlags f = 0 );
-private Q_SLOTS:
-    void ok();
-    void setDir();
-};
-#endif // __ADDDOWNLOAD_H__
 
+downloadInstance::downloadInstance(QString hash, QString pass, QString path):
+        hash(hash),
+        pass(pass),
+        path(path),
+        pobrano(false),
+        pobranoLS(0)
+{
+}
+void downloadInstance::run()
+{
+    Instance = new CLibMoor();
+    Instance->Dehash(hash.toStdString());
+    Instance->selectDownloadMailBox(0, path.toStdString());
+}
