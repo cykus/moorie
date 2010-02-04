@@ -237,7 +237,7 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 			myUploadFileCRC = myMailBox->getFileCRC();
 			LOG(Log::Debug, boost::format( "CRC Pliku: %1%" ) %myMailBox->getFileCRC());
 
- 			std::cout << generateCleanHashcode() << std::endl;
+                        LOG(Log::Info, generateCleanHashcode());
 
 			for (int i=fromseg; i <= segments; i++) {
                                 LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
