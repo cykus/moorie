@@ -28,7 +28,7 @@
 class uploadInstance : public QThread
 {
 public:
-    uploadInstance(QString, QString, QString, int, int);
+    uploadInstance(QString, QString, QString, QString, QString, int, int);
     CLibMoor * Instance; //!< Instancja klasy CLibMoor
 
     void run();
@@ -36,6 +36,8 @@ public:
     QString file; //!< Nazwa pliku do wysłania
     QString user; //!< Nazwa użytkownika do skrzynki
     QString pass; //!< Hasło do skrzynki
+    QString dpass; //!< Hasło pobierania
+    QString epass; //!< Hasło edycji
     int msize; //!< Rozmiar segmentu
     int fromseg; //!< Od którego segmentu
 };

@@ -20,10 +20,13 @@
 #include "uploadinstance.h"
 
 
-uploadInstance::uploadInstance(QString file, QString user, QString pass, int msize, int fromseg):
+uploadInstance::uploadInstance(QString file, QString user, QString pass, QString dpass, QString epass,
+                               int msize, int fromseg):
         file(file),
         user(user),
         pass(pass),
+        dpass(dpass),
+        epass(epass),
         msize(msize),
         fromseg(fromseg),
         wyslano(false)
@@ -31,7 +34,7 @@ uploadInstance::uploadInstance(QString file, QString user, QString pass, int msi
 }
 void uploadInstance::run()
 {
-    Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString());
+    Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), dpass.toStdString(), epass.toStdString());
     Instance -> splitFile(file.toStdString(), msize);
     Instance -> startUpload(fromseg);
 }

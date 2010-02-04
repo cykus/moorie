@@ -164,7 +164,7 @@ int CLibMoor::startDownload() {
 	return segValid;
 }
 
-int CLibMoor::selectUploadMailBox(std::string login, std::string passwd) {
+int CLibMoor::selectUploadMailBox(std::string login, std::string passwd, std::string downPasswd, std::string editPasswd) {
 
 // 	myUploadMailbox = getMailboxName(id);
         boost::regex mail_rgx("^(.*)@(.*)");
@@ -173,6 +173,8 @@ int CLibMoor::selectUploadMailBox(std::string login, std::string passwd) {
 
         myLogin = result_sth[1];
 	myPasswd = passwd;
+        myDownPasswd = downPasswd;
+        myEditPasswd = editPasswd;
         myUploadMailbox = result_sth[2]; // TODO - wybieranie skrzynki po id;
 	return 0;
 }
@@ -222,9 +224,8 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 	LOG(Log::Info, boost::format("Zaczynam upload od segmentu: %1%") %fromseg);
 
 	std::stringstream ss;
-	std::string address = myLogin+"@"+myUploadMailbox;
-
-	myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd);
+        std::string address = myLogin+"@"+myUploadMailbox;
+        myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd);
 	if (myMailBox) {
  		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %address);
 // 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
@@ -260,20 +261,19 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 }
 
 std::string CLibMoor::generateCleanHashcode() {
-
 	MoorhuntHashEncoder *hashEncoder;
 
-	std::string downpass = "p2mforum.info";
-	std::string editpass = "test";
+        std::string downpass = myDownPasswd;
+        std::string editpass = myEditPasswd;
 
 	hashEncoder->setFilename(myUploadFilename);
 	hashEncoder->setCRC(myUploadFileCRC);
 	hashEncoder->setFileSize(myUploadFilesize);
 	hashEncoder->setSegmentCount(myUploadNumOfSeg);
 	hashEncoder->setSegSize(myUploadSegSize);
- 	hashEncoder->setDownloadPassword(downpass);
+        hashEncoder->setDownloadPassword(downpass);
  	hashEncoder->setMirrors(0); // na razie 0 mirrorow
- 	hashEncoder->setEditPassword(editpass);
+        hashEncoder->setEditPassword(editpass);
 
 	std::string hash = hashEncoder->encode();
 

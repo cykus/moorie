@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     std::string path = "";
         std::string upload_filename;
         unsigned int logLevel(6);
-        std::string ul, up;
+        std::string ul, up, dp, ep;
         unsigned int ss (7);
         unsigned int fromseg (1);
         bool download = false, upload = false;
@@ -41,6 +41,8 @@ int main(int argc, char **argv) {
                         ("upload,u", boost::program_options::value<std::string>(), "Upload file")
                         ("ul", boost::program_options::value<std::string>(), "Upload mailbox login")
                         ("up", boost::program_options::value<std::string>(), "Upload mailbox password")
+                        ("dp", boost::program_options::value<std::string>(), "Download password")
+                        ("ep", boost::program_options::value<std::string>(), "Edit password")
                         ("ss", boost::program_options::value<unsigned int>( &ss )->default_value( 7 ), "Upload segment size (1-10 mb), default 7mb")
                         ("fromseg", boost::program_options::value<unsigned int>( &fromseg )->default_value( 1 ),  "Upload from given segment");
 
@@ -135,6 +137,19 @@ int main(int argc, char **argv) {
 // 			return 1;
                 } else
                         up = vars["up"].as<std::string>();
+                if (!vars.count ("dp")) {
+                        std::cout << "Podaj hasło pobierania: ";
+                        std::cin >> dp;
+                } else
+                        dp = vars["dp"].as<std::string>();
+
+                if (!vars.count ("ep")) {
+// 			std::cout << "Upload Mailbox password (-up) is not set" << std::endl;
+                        std::cout << "Podaj haslo edycji: ";
+                        std::cin >> ep;
+// 			return 1;
+                } else
+                        ep = vars["ep"].as<std::string>();
 
                 if (ss < 1 || ss > 10) {
                         std::cout << "Zla wielkosc segmentu (tylko 1-10)! Koncze program." << std::endl;
@@ -173,20 +188,7 @@ int main(int argc, char **argv) {
                 try
                 {
                         Instance = new CLibMoor();
-//			std::cout << "Wybierz skrzynke do uploadu: " << std::endl;
-//			std::cout << "1. gmail.com" << std::endl;
-//			std::cout << "2. gazeta.pl" << std::endl;
-//			std::cout << "3. volny.cz" << std::endl;
-//			std::cout << "$ ";
-//			std::cin >> mailbox;
-//			switch (mailbox) {
-//				case 1: upmailbox = 0x03; break;
-//				case 2: upmailbox = -93; break;
-//				case 3: upmailbox = 121; break;
-//				default: std::cout << "Zly wybor! Koncze program." << std::endl; return 1;
-//			}
-
-                        Instance -> selectUploadMailBox(ul, up);
+                        Instance -> selectUploadMailBox(ul, up, dp, ep);
                         Instance -> splitFile(upload_filename, ss);
                         Instance -> startUpload(fromseg);
 
