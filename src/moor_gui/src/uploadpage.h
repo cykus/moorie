@@ -17,12 +17,15 @@
  *   Free Software Foundation, Inc.,
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef CONFIGURATIONPAGE_H
-#define CONFIGURATIONPAGE_H
+#ifndef UPLOADPAGE_H
+#define UPLOADPAGE_H
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QGroupBox>
 #include <QLineEdit>
+#include <QTableWidget>
+#include <QSpacerItem>
+#include <QSlider>
 #include <QPushButton>
 #include <QDir>
 #include <QLabel>
@@ -30,23 +33,34 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QRadioButton>
+#include <QHeaderView>
+#include <QDomDocument>
+#include <QTextStream>
 #include "singleton.h"
-#include "tools.h"
 
-class ConfigurationPage : public QWidget
+class UploadPage : public QWidget
 {
     Q_OBJECT
 public:
-    QCheckBox *kBox, *tBox, *thBox, *abcBox;
-    QSpinBox *dBox, *lBox;
-    QGroupBox *notifyGroup;
-    QRadioButton *xdgNotification, *hintNotification, *noneNotification ;
-    QLineEdit *pathEdit;
-    ConfigurationPage(QWidget *parent = 0);
-private:  
 
+    QTableWidget *mailboxTable;
+    QLabel *loginLabel, *passLabel, *segSizeLabel, *segSizeLabel2, *downPassLabel, *editPassLabel;
+    QLineEdit *loginEdit, *passEdit, *segSizeEdit, *downPassEdit, *editPassEdit;
+    QPushButton *saveButton, *addButton, *deleteButton;
+    QGroupBox *mailboxGroup, *dataGroup;
+    QSlider *segSizeSlider;
+    QSpacerItem *spacerItem;
+    QStringList header;
+
+    UploadPage(QWidget *parent = 0);
+
+    void saveMailboxesInFile();
+    void loadMailboxesFromFile();
 public Q_SLOTS :
-    void setDir();
-    void setCheckedState();
+    void setSliderLabel(int);
+    void addMailbox();
+    void editMailbox();
+    void saveMailbox();
+    void deleteMailbox();
 };
-#endif
+#endif // UPLOADPAGE_H

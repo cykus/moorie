@@ -39,7 +39,10 @@ ConfigDialog::ConfigDialog()
 
     pagesWidget = new QStackedWidget;
     confpage = new ConfigurationPage();
+    uploadpage = new UploadPage();
     pagesWidget->addWidget(confpage);
+    pagesWidget->addWidget(uploadpage);
+
     //pagesWidget->addWidget(new UpdatePage);
 
     QPushButton *okButton = new QPushButton(tr("OK"));
@@ -90,9 +93,9 @@ void ConfigDialog::createIcons()
     configButton->setTextAlignment(Qt::AlignHCenter);
     configButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-    uploadButton->setText(tr("Upload"));
+    uploadButton->setText(tr("Wysyłanie"));
     uploadButton->setTextAlignment(Qt::AlignHCenter);
-    uploadButton->setFlags(Qt::NoItemFlags);
+    uploadButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     otherButton->setText(tr("Inne"));
     otherButton->setTextAlignment(Qt::AlignHCenter);
@@ -122,6 +125,9 @@ void ConfigDialog::saveConfigFile()
     if(confpage->xdgNotification->isChecked()) Zmienne().NLEVEL = 2;
     else if(confpage->hintNotification->isChecked()) Zmienne().NLEVEL = 1;
     else if(confpage->xdgNotification->isChecked()) Zmienne().NLEVEL = 0;
+    Zmienne().SEGSIZE = uploadpage->segSizeSlider->value();
+    Zmienne().DOWNPASS =  uploadpage->downPassEdit->text();
+    Zmienne().EDITPASS =  uploadpage->editPassEdit->text();
 
     QSettings settings;
     if(settings.isWritable()){
@@ -134,6 +140,11 @@ void ConfigDialog::saveConfigFile()
         settings.setValue("TRAY", confpage->tBox->isChecked());
         settings.setValue("RUNINTRAY", confpage->thBox->isChecked());
         settings.setValue("ASKBEFORECLOSE", confpage->abcBox->isChecked());
+        settings.endGroup();
+        settings.beginGroup("UPLOAD_PAGE");
+        settings.setValue("SEGSIZE", uploadpage->segSizeSlider->value());
+        settings.setValue("DOWNPASS", uploadpage->downPassEdit->text());
+        settings.setValue("EDITPASS", uploadpage->editPassEdit->text());
         settings.endGroup();
         this->close();
     }

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2009 by Patryk Połomski
+ *   Copyright (C) 2008-2010 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("Qmoorie");
     app.setOrganizationName("Moorie Team");
     app.setOrganizationDomain("moorie.pl");
-    app.setApplicationVersion ("GIT(20100203)");
+    app.setApplicationVersion ("GIT(20100205)");
     app.setQuitOnLastWindowClosed(true);
     Q_INIT_RESOURCE(application);
     QMoorie * mw = new QMoorie();

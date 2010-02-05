@@ -10,6 +10,7 @@ set( QMOORIE_SRCS
     mytablewidget.cpp
     mysystemtrayicon.cpp
     configurationpage.cpp
+    uploadpage.cpp
     singleton.cpp
     downloadinstance.cpp
     uploadinstance.cpp
@@ -27,6 +28,7 @@ set( QMOORIE_MOC_HDRS
     mytablewidget.h
     mysystemtrayicon.h
     configurationpage.h
+    uploadpage.h
     statusesthread.h
 )
 set( QMOORIE_UIS

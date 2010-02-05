@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2009 by Patryk Połomski
+ *   Copyright (C) 2008-2010 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -29,7 +29,8 @@ public:
     QString caption;
     QString PATH;
     QString configPath;
-    int LLEVEL, DLEVEL, NLEVEL;
+    QString EDITPASS, DOWNPASS;
+    int LLEVEL, DLEVEL, NLEVEL, SEGSIZE;
     bool KSEGMENTS, TRAY, RUNINTRAY, ASKBEFORECLOSE;
 private:
     Singleton();

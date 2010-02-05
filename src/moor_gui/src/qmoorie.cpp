@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2008-2009 by Patryk Połomski
+ *   Copyright (C) 2008-2010 by Patryk Połomski
  *   cykuss@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -531,6 +531,12 @@ void QMoorie::readConfigFile()
     Zmienne().TRAY = settings.value("TRAY", true).toBool();
     settings.endGroup();
 
+    settings.beginGroup("UPLOAD_PAGE");
+    Zmienne().SEGSIZE = settings.value("SEGSIZE", 7).toInt();
+    Zmienne().DOWNPASS =  settings.value("DOWNPASS", NULL).toString();
+    Zmienne().EDITPASS =  settings.value("EDITPASS", NULL).toString();
+    settings.endGroup();
+
     settings.beginGroup("GEOMETRY_QMOORIE");
     resize(settings.value("size", QSize(848, 280)).toSize());
     move(settings.value("pos", QPoint(0, 0)).toPoint());
@@ -565,6 +571,12 @@ void QMoorie::writeConfigFile()
         settings.setValue("NLEVEL", Zmienne().NLEVEL);
         settings.setValue("KSEGMENTS", Zmienne().KSEGMENTS);
         settings.setValue("TRAY", Zmienne().TRAY);
+        settings.endGroup();
+
+        settings.beginGroup("UPLOAD_PAGE");
+        settings.setValue("SEGSIZE", Zmienne().SEGSIZE);
+        settings.setValue("DOWNPASS", Zmienne().DOWNPASS);
+        settings.setValue("EDITPASS", Zmienne().EDITPASS);
         settings.endGroup();
 
         settings.beginGroup("GEOMETRY_QMOORIE");

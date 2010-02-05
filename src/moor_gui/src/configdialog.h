@@ -36,6 +36,7 @@
 #include <iostream>
 #include "singleton.h"
 #include "configurationpage.h"
+#include "uploadpage.h"
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -61,6 +62,7 @@ private:
     QListWidget *contentsWidget;
     QStackedWidget *pagesWidget;
     ConfigurationPage *confpage;
+    UploadPage *uploadpage;
     QLabel *warning;
 };
 
