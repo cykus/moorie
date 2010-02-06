@@ -217,9 +217,10 @@ void QMoorie::showNewDownloadDialog()
 */
 void QMoorie::addUploadInstance(QString fileName, QVector<mirrorMailbox*> mirrorMailboxes, QString downPass, QString editPass, int msize, int fromSeg)
 {
-    
+
     uploadInstanceV.append(new uploadInstance(fileName, mirrorMailboxes, downPass, editPass, msize, fromSeg));
 
+    uploadInstanceV.last()->start();
     uploadTable->setRowCount(uploadTable->rowCount() + 1);
 }
 

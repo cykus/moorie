@@ -189,6 +189,7 @@ int CLibMoor::selectUploadMailBox(std::string login, std::string passwd, std::st
 			address.push_back(adressee.substr(i2,i));
 	}
         myUploadMailbox = result_sth[2]; // TODO - wybieranie skrzynki po id;
+
 	return 0;
 }
 
@@ -250,7 +251,6 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 			myUploadFileCRC = myMailBox->getFileCRC();
 			LOG(Log::Debug, boost::format( "CRC Pliku: %1%" ) %myMailBox->getFileCRC());
 
-                        LOG(Log::Info, generateCleanHashcode());
 
 			for (int i=fromseg; i <= segments; i++) {
 				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);

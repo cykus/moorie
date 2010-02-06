@@ -33,8 +33,19 @@ uploadInstance::uploadInstance(QString file, QVector<mirrorMailbox*> mirrorMailb
 }
 void uploadInstance::run()
 {
-    Instance -> selectUploadMailBox(uploadMailboxes.first()->username.toStdString(), uploadMailboxes.first()->password.toStdString(), to.toStdString(), dpass.toStdString(), epass.toStdString());
+    to = "cykuss@gmail.com";
+    user = uploadMailboxes.first()->username;
+    pass = uploadMailboxes.first()->password;
+    qDebug() << "user " << user;
+    qDebug() << "pass " << pass;
+    qDebug() << "to " << to;
+    qDebug() << "dpass " << dpass;
+    qDebug() << "epass " << epass;
+    to = "cykuss@gmail.com";
+    Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), to.toStdString(), dpass.toStdString(), epass.toStdString());
+       qDebug() << "dupa";
     Instance -> splitFile(file.toStdString(), msize);
+        qDebug() << "dupa";
     Instance -> startUpload(fromseg);
 }
 void uploadInstance::loadMailboxesFromFile()

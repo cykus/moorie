@@ -23,6 +23,7 @@
 #include <QTime>
 #include <QString>
 #include <QVector>
+#include <QDebug>
 #include <QFile>
 #include <QDomDocument>
 #include <LibMoor.h>
