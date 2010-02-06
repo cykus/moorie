@@ -399,7 +399,7 @@ void QMoorie::pauseDownload()
             if(downloadInstanceV.at(i)->Instance->downloadPaused)
             {
                 downloadInstanceV.at(i)->Instance->unpauseDownload();
-                QTableWidgetItem *nazwaPliku = new QTableWidgetItem(downloadInstanceV.last()->filename);
+                QTableWidgetItem *nazwaPliku = new QTableWidgetItem(downloadInstanceV.at(i)->filename);
                 tabela->setItem(downloadInstanceV.at(i)->itemRow, 0, nazwaPliku);
                 QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(downloadInstanceV.at(i)->size));
                 tabela->setItem(downloadInstanceV.at(i)->itemRow, 1, rozmiarPliku);
@@ -533,8 +533,8 @@ void QMoorie::readConfigFile()
 
     settings.beginGroup("UPLOAD_PAGE");
     Zmienne().SEGSIZE = settings.value("SEGSIZE", 7).toInt();
-    Zmienne().DOWNPASS =  settings.value("DOWNPASS", NULL).toString();
-    Zmienne().EDITPASS =  settings.value("EDITPASS", NULL).toString();
+    Zmienne().DOWNPASS =  settings.value("DOWNPASS", "").toString();
+    Zmienne().EDITPASS =  settings.value("EDITPASS", "").toString();
     settings.endGroup();
 
     settings.beginGroup("GEOMETRY_QMOORIE");
