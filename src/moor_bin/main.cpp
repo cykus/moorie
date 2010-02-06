@@ -185,18 +185,25 @@ int main(int argc, char **argv) {
                 }
         } else if (vars.count("orighash")) {
 				edit = true;
+				orighash = vars["orighash"].as<std::string>();
+
 				if (!vars.count("editpass")) {
 					std::cout << "Podaj haslo edycji: " << std::endl;
 					std::cin >> editpass;
-				}
+				} else
+					editpass = vars["editpass"].as<std::string>();
+
 				if (!vars.count("mboxaddr")) {
 					std::cout << "Podaj adres skrzynki do dodania: " << std::endl;
 					std::cin >> mboxaddr;
-				}
+				} else
+					mboxaddr = vars["mboxaddr"].as<std::string>();
+
 				if (!vars.count("mboxpass")) {
 					std::cout << "Podaj haslo skrzynki: " << std::endl;
 					std::cin >> mboxpass;
-				}
+				} else
+					mboxpass = vars["mboxpass"].as<std::string>();
 		}
 
         if (!vars.count("hash") && !vars.count("shash") && !vars.count("upload") && !vars.count("orighash")) {

@@ -275,6 +275,7 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 
 std::string CLibMoor::generateCleanHashcode() {
 	MoorhuntHashEncoder *hashEncoder;
+	hashEncoder = new MoorhuntHashEncoder();
 
         std::string downpass = myDownPasswd;
         std::string editpass = myEditPasswd;
@@ -290,16 +291,17 @@ std::string CLibMoor::generateCleanHashcode() {
 
 	std::string hash = hashEncoder->encode();
 
-//	delete hashEncoder;
+	delete hashEncoder;
 // 	std::cout << "HASH: " << hash << std::endl;
 	return hash;
 }
 
 std::string CLibMoor::addMirror(std::string editpass, std::string orighash, std::string mboxaddr, std::string mboxpass) {
  	MoorhuntHashEncoder *encoder;
+	encoder = new MoorhuntHashEncoder();
 	std::string newhash = encoder->addNewMirror(editpass, orighash, mboxaddr, mboxpass);
+ 	delete encoder;
 	return newhash;
-// 	delete myhash;
 }
 
 Status CLibMoor::getStatus() {

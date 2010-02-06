@@ -67,6 +67,8 @@ class MoorhuntHashEncoder {
 		const std::string encode();
 
 		const std::string addNewMirror(std::string editpassword, std::string hashcode, std::string mailbox, std::string password);
+
+		std::string getMD5(unsigned char *string);
 };
 
 
