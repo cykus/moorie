@@ -21,24 +21,36 @@
 #define UPLOADINSTANCE_H
 #include <QThread>
 #include <QTime>
-
+#include <QString>
+#include <QVector>
+#include <QFile>
+#include <QDomDocument>
 #include <LibMoor.h>
+#include "singleton.h"
 #include <iostream>
 
+struct mirrorMailbox{
+    QString username;
+    QString password;
+    //getToUsernames();
+};
 class uploadInstance : public QThread
 {
+    void loadMailboxesFromFile();
 public:
-    uploadInstance(QString, QString, QString, QString, QString, QString, int, int);
+    uploadInstance(QString, QVector<mirrorMailbox*>, QString, QString, int, int);
     CLibMoor * Instance; //!< Instancja klasy CLibMoor
 
     void run();
     bool wyslano;
     QString file; //!< Nazwa pliku do wysłania
     QString user; //!< Nazwa użytkownika do skrzynki
-    QString addresses; //!< adresy email do uploadu
     QString pass; //!< Hasło do skrzynki
     QString dpass; //!< Hasło pobierania
     QString epass; //!< Hasło edycji
+    QString to; //!< ciąg mirrorów
+    QVector<mirrorMailbox*> mirrorMailboxes; //!< Wektor mirrorów
+    QVector<mirrorMailbox*> uploadMailboxes; //!< Wektor skrzynek do uploadu
     int msize; //!< Rozmiar segmentu
     int fromseg; //!< Od którego segmentu
 };

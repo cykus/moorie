@@ -20,22 +20,51 @@
 #include "uploadinstance.h"
 
 
-uploadInstance::uploadInstance(QString file, QString user, QString addresses, QString pass, QString dpass, QString epass,
-                               int msize, int fromseg):
+uploadInstance::uploadInstance(QString file, QVector<mirrorMailbox*> mirrorMailboxes, QString dpass, QString epass, int msize, int fromseg):
         file(file),
-        user(user),
-        pass(pass),
-        addresses(addresses),
+        mirrorMailboxes(mirrorMailboxes),
         dpass(dpass),
         epass(epass),
         msize(msize),
         fromseg(fromseg),
         wyslano(false)
 {
+    loadMailboxesFromFile();
 }
 void uploadInstance::run()
 {
-    Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), addresses.toStdString(), dpass.toStdString(), epass.toStdString());
+    Instance -> selectUploadMailBox(uploadMailboxes.first()->username.toStdString(), uploadMailboxes.first()->password.toStdString(), to.toStdString(), dpass.toStdString(), epass.toStdString());
     Instance -> splitFile(file.toStdString(), msize);
     Instance -> startUpload(fromseg);
+}
+void uploadInstance::loadMailboxesFromFile()
+{
+    QDomDocument dokument_xml;
+    QFile dokument(Zmienne().configPath+"mailboxes.xml");
+    dokument.open( QIODevice::ReadOnly );
+    dokument_xml.setContent( &dokument );
+    dokument.close();
+
+    QDomNode mailboxes;
+    mailboxes = dokument_xml.documentElement();
+
+    QDomNode mailbox, item;
+    mailbox = mailboxes.firstChild();
+
+    while(!mailbox.isNull())
+    {
+        QDomElement login,pass;
+
+        item = mailbox.namedItem("login");
+        login = item.toElement();
+        item = mailbox.namedItem("password");
+        pass = item.toElement();
+
+        uploadMailboxes.append(new mirrorMailbox());
+
+        uploadMailboxes.last()->username = login.text();
+        uploadMailboxes.last()->password = pass.text();
+
+        mailbox = mailbox.nextSibling();
+    }
 }

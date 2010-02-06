@@ -27,30 +27,39 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QTableWidget>
+#include <QHeaderView>
 #include <QLabel>
 #include <QDir>
+#include <QGroupBox>
+#include <QSlider>
+#include <QDebug>
+#include <QSpacerItem>
 #include <QTextEdit>
 #include "singleton.h"
-#include <boost/shared_ptr.hpp>
-#include <HashManager.h>
-#include <Hash.h>
 #include <iostream>
 
- class newUploadDialog: public QDialog
- {
+class newUploadDialog: public QDialog
+{
     Q_OBJECT
 public:
-    QLineEdit *edit;
-    QPushButton *pathButton;
-    QLineEdit *pathEdit;
-    QLabel *label[3];
-    QPushButton *button[2];
-    QTextEdit *text;
-    QHBoxLayout *lay[6];
+    QTableWidget *mirrorTable;
+    QGroupBox *mirrorGroup;
+    QLabel *loginLabel, *passLabel, *fileLabel, *segSizeLabel, *segSizeLabel2, *downPassLabel, *editPassLabel;
+    QLineEdit *loginEdit, *passEdit, *fileEdit, *mirrorEdit, *segSizeEdit, *downPassEdit, *editPassEdit;
+    QPushButton *saveButton, *addButton, *deleteButton, *sendButton, *fileButton, *closeButton;
+    QSlider *segSizeSlider;
+    QSpacerItem *spacerItem;
+    QStringList header;
     newUploadDialog(QWidget * parent = 0, Qt::WFlags f = 0 );
 private Q_SLOTS:
     void ok();
-    void setDir();
+    void setSliderLabel(int);
+    void setFile();
+    void addMailbox();
+    void editMailbox();
+    void saveMailbox();
+    void deleteMailbox();
 };
 #endif // NEWUPLOADDIALOG_H
 

@@ -254,10 +254,10 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 
 			for (int i=fromseg; i <= segments; i++) {
 				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
-                state = Status::Uploading;
+                                state = Status::Uploading;
 				ss.str("");
 				
-				ss << myUploadFilename << "." << i;
+                                ss << myUploadFilename << "." << i;
 				if (myMailBox->uploadRequest(ss.str(), address, i) == 0)
 					LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
 				else

@@ -23,73 +23,177 @@ newUploadDialog::newUploadDialog(QWidget * parent, Qt::WFlags f):QDialog(parent,
 {
     setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png") );
     setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Dodaj plik");
-    QSize size(500,250);
-    resize(size);
-    label[0]=new QLabel(tr("Hashcode: "));
-    text = new QTextEdit();
-    label[1]=new QLabel(tr("Hasło: "));
-    edit = new QLineEdit();
-    label[2] = new QLabel(tr("Folder Pobierania:"));
-    pathEdit = new QLineEdit(Zmienne().PATH);
-    if(Zmienne().PATH=="home") pathEdit->setText(QDir::homePath());
-    pathButton = new QPushButton(tr("Przeglądaj"));
-    pathEdit->setEnabled(false);
 
-    button[0] = new QPushButton(tr("Ok"));
-    button[1] = new QPushButton(tr("Anuluj"));
+    fileLabel = new QLabel("Plik:");
+    fileEdit = new QLineEdit();
+    fileButton = new QPushButton(tr("Przeglądaj"));
+    fileEdit->setEnabled(false);
+
+    segSizeLabel = new QLabel("Rozmiar segmentu:");
+    segSizeSlider = new QSlider(Qt::Horizontal);
+    segSizeSlider->setMinimum(1);
+    segSizeSlider->setMaximum(10);
+    segSizeSlider->setValue(Zmienne().SEGSIZE);
+    segSizeLabel2 = new QLabel();
+    setSliderLabel(Zmienne().SEGSIZE);
+
+    downPassLabel = new QLabel("Hasło pobierania:");
+    downPassEdit = new QLineEdit(Zmienne().DOWNPASS);
+
+    editPassLabel = new QLabel("Hasło edycji:");
+    editPassEdit = new QLineEdit(Zmienne().EDITPASS);
+
+    loginLabel = new QLabel("Użytkownik:");
+    loginEdit = new QLineEdit();
+
+    passLabel = new QLabel("Hasło:");
+    passEdit = new QLineEdit();
+
+    spacerItem = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+    mirrorGroup = new QGroupBox(tr("Mirrory:"));
+    mirrorTable = new QTableWidget();
+    mirrorTable->setEditTriggers(0);
+    mirrorTable->setColumnCount(2);
+    mirrorTable->hideColumn(1);
+    mirrorTable->horizontalHeader()->setStretchLastSection(true);
+    header  << "Użytkownik" << "Hasło" ;
+    mirrorTable->setHorizontalHeaderLabels(header);
+
+    saveButton = new QPushButton("Zapisz");
+    addButton = new QPushButton("Dodaj");
+    deleteButton = new QPushButton("Usuń");
+
+    sendButton = new QPushButton("Wyślij");
+    closeButton = new QPushButton("Zamknij");
+
+    QHBoxLayout *fileLayout = new QHBoxLayout;
+    fileLayout -> addWidget(fileLabel);
+    fileLayout -> addWidget(fileEdit);
+    fileLayout -> addWidget(fileButton);
+
+    QHBoxLayout *segSizeLayout = new QHBoxLayout;
+    segSizeLayout -> addWidget(segSizeLabel);
+    segSizeLayout -> addWidget(segSizeSlider);
+    segSizeLayout -> addWidget(segSizeLabel2);
+
+    QHBoxLayout *downPassLayout = new QHBoxLayout;
+    downPassLayout -> addWidget(downPassLabel);
+    downPassLayout -> addWidget(downPassEdit);
+
+    QHBoxLayout *editPassLayout = new QHBoxLayout;
+    editPassLayout -> addWidget(editPassLabel);
+    editPassLayout -> addWidget(editPassEdit);
+
+    QHBoxLayout *loginLayout = new QHBoxLayout;
+    loginLayout -> addWidget(loginLabel);
+    loginLayout -> addWidget(loginEdit);
+
+    QHBoxLayout *passLayout = new QHBoxLayout;
+    passLayout -> addWidget(passLabel);
+    passLayout -> addWidget(passEdit);
+
+    QHBoxLayout *mirrorButtonLayout = new QHBoxLayout;
+    mirrorButtonLayout -> addWidget(saveButton);
+    mirrorButtonLayout -> addWidget(addButton);
+    mirrorButtonLayout -> addWidget(deleteButton);
+
+    QVBoxLayout *mirrorRightLayout = new QVBoxLayout;
+    mirrorRightLayout -> addLayout(loginLayout);
+    mirrorRightLayout -> addLayout(passLayout);
+    mirrorRightLayout -> addLayout(mirrorButtonLayout);
+    mirrorRightLayout -> addItem(spacerItem);
+
+    QHBoxLayout *mirrorLayout = new QHBoxLayout;
+    mirrorLayout->addWidget(mirrorTable);
+    mirrorLayout->addLayout(mirrorRightLayout);
+    mirrorGroup->setLayout(mirrorLayout);
+
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    buttonLayout -> addWidget(sendButton);
+    buttonLayout -> addWidget(closeButton);
+
     QVBoxLayout *main = new QVBoxLayout;
-    lay[0] = new QHBoxLayout;
-    lay[0] -> addWidget(label[0]);
-    main -> addLayout(lay[0]);
-    lay[1] = new QHBoxLayout;
-    lay[1] -> addWidget(text);
-    main -> addLayout(lay[1]);
-    lay[2] = new QHBoxLayout;
-    lay[2] -> addWidget(label[1]);
-    lay[2] -> addWidget(edit);
-    main -> addLayout(lay[2]);
-    lay[3] = new QHBoxLayout;
-    lay[3] -> addWidget(label[2]);
-    lay[3] -> addWidget(pathEdit);
-    lay[3] -> addWidget(pathButton);
-    main -> addLayout(lay[3]);
-    lay[4] = new QHBoxLayout;
-    lay[4] -> addWidget(button[0]);
-    lay[4] -> addWidget(button[1]);
-    main -> addLayout(lay[4]);
+
+    main -> addLayout(fileLayout);
+    main -> addLayout(segSizeLayout);
+    main -> addLayout(downPassLayout);
+    main -> addLayout(editPassLayout);
+    main -> addWidget(mirrorGroup);
+    main -> addLayout(buttonLayout);
     setLayout(main);
 
-    QObject::connect( button[1], SIGNAL(clicked()), this, SLOT(reject()));
-    QObject::connect( button[0], SIGNAL(clicked()), this, SLOT(ok()));
-    QObject::connect(pathButton,SIGNAL(clicked()),this,SLOT(setDir()));
-
+    //connect( button[1], SIGNAL(clicked()), this, SLOT(reject()));
+    connect(sendButton, SIGNAL(clicked()), this, SLOT(ok()));
+    connect(fileButton,SIGNAL(clicked()),this,SLOT(setFile()));
+    connect(addButton,SIGNAL(clicked()),this,SLOT(addMailbox()));
+    connect(saveButton,SIGNAL(clicked()),this,SLOT(saveMailbox()));
+    connect(deleteButton,SIGNAL(clicked()),this,SLOT(deleteMailbox()));
+    connect(mirrorTable,SIGNAL(currentItemChanged(QTableWidgetItem*, QTableWidgetItem*)),this,SLOT(editMailbox()));
+    connect(segSizeSlider,SIGNAL(valueChanged(int)),this,SLOT(setSliderLabel(int)));
 
 }
 void newUploadDialog::ok()
 {
-    try {
-        boost::shared_ptr<Hash> hash(HashManager::fromString(text->toPlainText().toStdString()));
-        if (hash->getInfo().valid)
-        {
-            if(hash->checkAccessPassword( edit->text().toStdString()))
-            {
-                accept();
-            }
-            else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));
-        }
-        else QMessageBox::about(this, tr("Błąd"),tr("Źle skopiowany lub niepoprawny hashcode!"));
-    }
-    catch (std::exception& e)
+    if (!fileEdit->text().isEmpty())
     {
-        QMessageBox::about(this, tr("Błąd"),tr("Nieobsługiwany hashcode!"));
+        if(!editPassEdit->text().isEmpty())
+        {
+            accept();
+        }
+        else QMessageBox::about(this, tr("Błąd"),tr("Musisz podać hasło edycji"));
+
+    }
+    else QMessageBox::about(this, tr("Błąd"),tr("Musisz wybrać plik do wysłania"));
+}
+void newUploadDialog::setSliderLabel(int value)
+{
+    segSizeLabel2->setText(QString::number(value)+" MB");
+}
+void newUploadDialog::setFile()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Wybierz plik"));
+    if (!fileName.isEmpty()) fileEdit->setText(fileName);
+}
+void newUploadDialog::addMailbox()
+{
+    int row = mirrorTable->rowCount();
+    mirrorTable->setRowCount(mirrorTable->rowCount() + 1);
+    QTableWidgetItem *mailboxLogin = new QTableWidgetItem(loginEdit->text());
+    mirrorTable->setItem(row, 0, mailboxLogin);
+    QTableWidgetItem *mailboxPass = new QTableWidgetItem(passEdit->text());
+    mirrorTable->setItem(row, 1, mailboxPass);
+    loginEdit->clear();
+    passEdit->clear();
+}
+void newUploadDialog::editMailbox()
+{
+    int row = mirrorTable->currentRow();
+    if(row >= 0)
+    {
+        QTableWidgetItem *mailboxLogin = mirrorTable->item(row, 0);
+        loginEdit->setText(mailboxLogin->text());
+        QTableWidgetItem *mailboxPass = mirrorTable->item(row, 1);
+        passEdit->setText(mailboxPass->text());
     }
 }
-void newUploadDialog::setDir()
+void newUploadDialog::saveMailbox()
 {
-    QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
-    QString directory = QFileDialog::getExistingDirectory(this,
-                                 tr("Wybierz folder"),
-                                 "",
-                                 options);
-    if (!directory.isEmpty()) pathEdit->setText(directory);
+    int row = mirrorTable->currentRow();
+    if(row >= 0)
+    {
+        QTableWidgetItem *mailboxLogin = new QTableWidgetItem(loginEdit->text());
+        mirrorTable->setItem(row, 0, mailboxLogin);
+        QTableWidgetItem *mailboxPass = new QTableWidgetItem(passEdit->text());
+        mirrorTable->setItem(row, 1, mailboxPass);
+    }
+
+}
+void newUploadDialog::deleteMailbox()
+{
+    int row = mirrorTable->currentRow();
+    if(row >= 0)
+    {
+        mirrorTable->removeRow(row);
+    }
 }
