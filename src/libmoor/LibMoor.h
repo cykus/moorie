@@ -29,6 +29,8 @@ class CLibMoor {
                 int selectUploadMailBox(std::string login, std::string passwd, std::string adressee, std::string downPasswd, std::string editPasswd);
 		int splitFile(std::string filename, int size);
 		int startUpload(unsigned int fromseg);
+		std::string addMirror(std::string editpass, std::string orighash, std::string mboxaddr, std::string mboxpass); // adding mirror to hashcode
+
 	private:
 		/**
 		 * Gets number of last downloaded segment.

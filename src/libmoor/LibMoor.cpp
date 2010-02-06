@@ -256,7 +256,7 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
                 state = Status::Uploading;
 				ss.str("");
-				
+
 				ss << myUploadFilename << "." << i;
 				if (myMailBox->uploadRequest(ss.str(), address, i) == 0)
 					LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
@@ -290,10 +290,17 @@ std::string CLibMoor::generateCleanHashcode() {
 
 	std::string hash = hashEncoder->encode();
 
+//	delete hashEncoder;
 // 	std::cout << "HASH: " << hash << std::endl;
 	return hash;
 }
 
+std::string CLibMoor::addMirror(std::string editpass, std::string orighash, std::string mboxaddr, std::string mboxpass) {
+ 	MoorhuntHashEncoder *encoder;
+	std::string newhash = encoder->addNewMirror(editpass, orighash, mboxaddr, mboxpass);
+	return newhash;
+// 	delete myhash;
+}
 
 Status CLibMoor::getStatus() {
 	Status s(mySeg, myMailBox->getSpeed(), myMailBox->getBytesRead(),
