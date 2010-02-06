@@ -95,7 +95,7 @@ void ConfigDialog::createIcons()
 
     uploadButton->setText(tr("Wysyłanie"));
     uploadButton->setTextAlignment(Qt::AlignHCenter);
-    uploadButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    uploadButton->setFlags(Qt::NoItemFlags);
 
     otherButton->setText(tr("Inne"));
     otherButton->setTextAlignment(Qt::AlignHCenter);
