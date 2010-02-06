@@ -10,19 +10,31 @@
 int main(int argc, char **argv) {
 
         CLibMoor * Instance;
-        std::string file;   // hash input file
-        std::string strhash;
-        unsigned int mailbox (1) ;
-        int upmailbox;
-    std::string pass; // moorhunt password
-        std::string hash;
-    std::string path = "";
-        std::string upload_filename;
+
         unsigned int logLevel(6);
+		/** zmienne dla downloadu */
+		std::string file;   // hash input file
+		std::string strhash;
+		unsigned int mailbox (1) ;
+		std::string pass; // moorhunt password
+		std::string hash;
+		std::string path = "";
+		bool download = false;
+
+  		/** zmienne dla uploadu */
+		int upmailbox;
+		std::string upload_filename;
         std::string ul, up, dp, ep, to;
         unsigned int ss (7);
         unsigned int fromseg (1);
-        bool download = false, upload = false;
+        bool upload = false;
+
+		/** zmienne dla edycji hashcode'a */
+		std::string orighash;
+		std::string editpass;
+		std::string mboxaddr;
+		std::string mboxpass;
+		bool edit = false;
 
         boost::program_options::options_description general_option("General options");
         general_option.add_options()
@@ -36,7 +48,8 @@ int main(int argc, char **argv) {
                         ("password,p", boost::program_options::value<std::string>(), "Hash password")
                         ("mailbox,m", boost::program_options::value<unsigned int>( &mailbox )->default_value( 1 ), "Select mailbox");
                         ("path,fp",      boost::program_options::value<std::string>(), "Download path");
-        boost::program_options::options_description upload_option("Upload options");
+
+		boost::program_options::options_description upload_option("Upload options");
         upload_option.add_options()
                         ("upload,u", boost::program_options::value<std::string>(), "Upload file")
                         ("ul", boost::program_options::value<std::string>(), "Upload mailbox login")
@@ -45,10 +58,17 @@ int main(int argc, char **argv) {
                         ("dp", boost::program_options::value<std::string>(), "Download password")
                         ("ep", boost::program_options::value<std::string>(), "Edit password")
                         ("ss", boost::program_options::value<unsigned int>( &ss )->default_value( 7 ), "Upload segment size (1-10 mb), default 7mb")
-                        ("fromseg", boost::program_options::value<unsigned int>( &fromseg )->default_value( 1 ),  "Upload from given segment");
+                        ("fromseg", boost::program_options::value<unsigned int>( &fromseg )->default_value( 1 ),  "Upload  from given segment");
+
+		boost::program_options::options_description hashcode_option("Hashcode edition options");
+		hashcode_option.add_options()
+						("orighash", boost::program_options::value<std::string>(), "Original hashcode")
+						("editpass", boost::program_options::value<std::string>(), "Edit password")
+						("mboxaddr", boost::program_options::value<std::string>(), "Mirror address (example@example.com)")
+						("mboxpass", boost::program_options::value<std::string>(), "Password for mirror");
 
         boost::program_options::options_description all("Moorie 0.2.1 (C)by Moorie Team (http://moorie.pl)");
-        all.add(general_option).add(download_option).add(upload_option);
+        all.add(general_option).add(download_option).add(upload_option).add(hashcode_option);
         boost::program_options::variables_map vars;
         try
         {
@@ -163,9 +183,21 @@ int main(int argc, char **argv) {
                         std::cout << "Zla wielkosc segmentu (tylko 1-10)! Koncze program." << std::endl;
                         return 1;
                 }
-        }
+        } else if (vars.count("orighash")) {
+				edit = true;
+				if (!vars.count("editpass")) {
+					std::cout << "Podaj haslo edycji: " << std::endl;
+					std::cin >> editpass;
+				} else if (!vars.count("mboxaddr")) {
+					std::cout << "Podaj adres skrzynki do dodania: " << std::endl;
+					std::cin >> mboxaddr;
+				} else if (!vars.count("mboxpass")) {
+					std::cout << "Podaj haslo skrzynki: " << std::endl;
+					std::cin >> mboxpass;
+				}
+		}
 
-        if (!vars.count("hash") && !vars.count("shash") && !vars.count("upload")) {
+        if (!vars.count("hash") && !vars.count("shash") && !vars.count("upload") && !vars.count("orighashcode")) {
                 std::cout << all << std::endl;
         }
 
@@ -174,7 +206,7 @@ int main(int argc, char **argv) {
         if (download) {
                 try
                 {
-                                boost::shared_ptr<Hash> hhash(HashManager::fromString(hash));
+                    boost::shared_ptr<Hash> hhash(HashManager::fromString(hash));
                     if (hhash->getInfo().valid)
                     {
                         if(hhash->checkAccessPassword(pass))
@@ -188,23 +220,35 @@ int main(int argc, char **argv) {
                         }
                     else std::cerr << "Niepoprawny hashcode" << std::endl;
                 }
-                catch (std::exception& e)
-                {
-                    std::cerr << "Nieobsługiwany hashcode" << std::endl;
-                }
-                } else if (upload) {
-                try
+				catch (std::exception& e)
+				{
+					std::cerr << "Blad! " << e.what() << std::endl;
+				}
+		} else if (upload) {
+             try
                 {
                         Instance = new CLibMoor();
                         Instance -> selectUploadMailBox(ul, up, to, dp, ep);
                         Instance -> splitFile(upload_filename, ss);
                         Instance -> startUpload(fromseg);
+						delete Instance;
 
                 }
                 catch (std::exception& e)
                 {
                                 std::cerr << "Blad! " << e.what() << std::endl;
                 }
-        }
+        } else if (edit) {
+			try {
+				Instance = new CLibMoor();
+				Instance->addMirror(editpass, orighash, mboxaddr, mboxpass);
+				delete Instance;
+
+			}
+			catch (std::exception& e)
+			{
+				std::cerr << "Blad! " << e.what() << std::endl;
+			}
+		}
         return 0;
 }

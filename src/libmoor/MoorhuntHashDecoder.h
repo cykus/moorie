@@ -46,7 +46,8 @@ class MoorhuntHashEncoder {
 	    std::string myFullTitle;
 	    std::string myUploader;
 	    std::string myComment;
-	    
+		std::vector<std::string> mailboxes;
+
 	public:
 		MoorhuntHashEncoder();
 		~MoorhuntHashEncoder();
@@ -61,8 +62,11 @@ class MoorhuntHashEncoder {
 		void setMirrors(int data) { myMirrors = data; };
 		void setAvartLink(std::string data) { myAvartLink = data; };
 		void setEditPassword(std::string data) { myEditPassword = data.c_str(); };
-		
+
+		bool decode(std::string hashcode);
 		std::string encode();
+
+		std::string addNewMirror(std::string editpassword, std::string hashcode, std::string mailbox, std::string password);
 };
 
 
