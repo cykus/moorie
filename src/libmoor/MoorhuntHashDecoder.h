@@ -63,10 +63,10 @@ class MoorhuntHashEncoder {
 		void setAvartLink(std::string data) { myAvartLink = data; };
 		void setEditPassword(std::string data) { myEditPassword = data.c_str(); };
 
-		bool decode(std::string hashcode);
-		std::string encode();
+		const bool decode(std::string hashcode);
+		const std::string encode();
 
-		std::string addNewMirror(std::string editpassword, std::string hashcode, std::string mailbox, std::string password);
+		const std::string addNewMirror(std::string editpassword, std::string hashcode, std::string mailbox, std::string password);
 };
 
 
