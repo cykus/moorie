@@ -92,8 +92,6 @@ class QMoorie:public QMainWindow
 
     QToolBar *fileToolBar;
 
-    QStringList headerH;
-
     quint64 allBytesRead; //!< Całkowity rozmiar pobranych danych
     mySystemTrayIcon *tray; //!< Klasa dziedzicząca po QTableWidget
     myTableWidget *downloadTable; //!< Klasa dziedzicząca po QTableWidget

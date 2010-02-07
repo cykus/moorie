@@ -21,6 +21,7 @@
 #define STATUSESTHREAD_H
 #include <QThread>
 #include <QTime>
+#include "tools.h"
 
 class statusesThread : public QThread
 {

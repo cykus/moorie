@@ -33,18 +33,22 @@
 struct mirrorMailbox{
     QString username;
     QString password;
-    //getToUsernames();
 };
 class uploadInstance : public QThread
 {
     void loadMailboxesFromFile();
+    QString getToUsernames();
+    QString generateInfo();
 public:
     uploadInstance(QString, QVector<mirrorMailbox*>, QString, QString, int, int);
     CLibMoor * Instance; //!< Instancja klasy CLibMoor
 
     void run();
     bool wyslano;
-    QString file; //!< Nazwa pliku do wysłania
+    unsigned int itemRow; //!< Nr. wiersza w tabeli
+    QString file; //!< Nazwa pliku wraz ze ścieżką do wysłania
+    QString fileName; //!< Nazwa pliku do wysłania
+    quint64 fileSize; //!< Rozmiar pliku do wysłania
     QString user; //!< Nazwa użytkownika do skrzynki
     QString pass; //!< Hasło do skrzynki
     QString dpass; //!< Hasło pobierania

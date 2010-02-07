@@ -19,7 +19,6 @@
  */
 #include "uploadinstance.h"
 
-
 uploadInstance::uploadInstance(QString file, QVector<mirrorMailbox*> mirrorMailboxes, QString dpass, QString epass, int msize, int fromseg):
         file(file),
         mirrorMailboxes(mirrorMailboxes),
@@ -33,19 +32,19 @@ uploadInstance::uploadInstance(QString file, QVector<mirrorMailbox*> mirrorMailb
 }
 void uploadInstance::run()
 {
-    to = "cykuss@gmail.com";
     user = uploadMailboxes.first()->username;
     pass = uploadMailboxes.first()->password;
-    qDebug() << "user " << user;
-    qDebug() << "pass " << pass;
-    qDebug() << "to " << to;
-    qDebug() << "dpass " << dpass;
-    qDebug() << "epass " << epass;
-    to = "cykuss@gmail.com";
-    Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), to.toStdString(), dpass.toStdString(), epass.toStdString());
-       qDebug() << "dupa";
+    Instance = new CLibMoor();
+    qDebug() << "user: " << user;
+    qDebug() << "pass: " << pass;
+    qDebug() << "getToUsernames: " << getToUsernames();
+    qDebug() << "dpass: " << dpass;
+    qDebug() << "epass: " << epass;
+    qDebug() << "file: " << file;
+    qDebug() << "msize: " << msize;
+    qDebug() << "fromseg: " << fromseg;
+    Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), getToUsernames().toStdString(), dpass.toStdString(), epass.toStdString());
     Instance -> splitFile(file.toStdString(), msize);
-        qDebug() << "dupa";
     Instance -> startUpload(fromseg);
 }
 void uploadInstance::loadMailboxesFromFile()
@@ -78,4 +77,37 @@ void uploadInstance::loadMailboxesFromFile()
 
         mailbox = mailbox.nextSibling();
     }
+}
+QString uploadInstance::getToUsernames()
+{
+    QString usernames = "";
+    for(int i = 0; i < mirrorMailboxes.count(); ++i)
+    {
+        if(i>0) usernames += ",";
+        usernames += mirrorMailboxes.at(i)->username;
+    }
+    return usernames;
+}
+QString uploadInstance::generateInfo()
+{
+    QString info = "Plik: \n" + fileName +"\n\n";
+    info = info + "Hasło pobierania: " + dpass + "\n";
+    info = info + "Hasło edycji: " + epass + "\n\n";
+    info += "Mirrory:\n\n";
+    for(int i = 0; i < mirrorMailboxes.count(); ++i)
+    {
+        info = info + "Login: " + mirrorMailboxes.at(i)->username + "\n";
+        info = info + "Hasło: " + mirrorMailboxes.at(i)->password + "\n\n";
+    }
+    QString hashcode;
+    hashcode.fromStdString(Instance->generateCleanHashcode());
+    info = info + "Czysty hashcode:\n" + hashcode + "\n\n";
+
+    info = info + "Hashcode z mirrorami:\n";
+    for(int i = 0; i < mirrorMailboxes.count(); ++i)
+    {
+       hashcode.fromStdString(Instance->addMirror(epass.toStdString(),hashcode.toStdString(),mirrorMailboxes.at(i)->username.toStdString(),mirrorMailboxes.at(i)->password.toStdString()));
+    }
+    info = info + hashcode + "\n\n";
+    return info;
 }
