@@ -17,6 +17,7 @@ CMailBox::CMailBox(const std::string &name, const std::string &usr, const std::s
         , allBytesSend( 0 )
         , bytesSend( 0 )
         , allBytesRead( 0 )
+        , bytesRead ( 0 )
         , uploadSpeed( 0 )
         , downloadSpeed( 0 )
 {
@@ -75,6 +76,15 @@ std::string& CMailBox::doGet(std::string url, bool  header)
         {
                 LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
         }
+        else
+        {
+            if (segDownload == true) {
+                CURLcode res;
+                res = curl_easy_getinfo(handle, CURLINFO_SIZE_DOWNLOAD, &bytesRead);
+                if (res == CURLE_OK)
+                    allBytesRead += bytesRead;
+            }
+        }
         //LOG(Log::Debug,"Before request");
 	requestComplete();
 	return this->result;
@@ -97,6 +107,7 @@ std::string& CMailBox::doPost(std::string url, std::string vars, bool header)
         {
 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
+
 	requestComplete();
 	return this->result;
 }
@@ -252,7 +263,6 @@ size_t CMailBox::writeData(void *buffer, size_t size, size_t nmem)
 	if (segDownload == true) {
 		tmp_file -> write(static_cast<char *>(buffer), n);
 //		cout << "Bytes readed: " << bytesRead << " Writed: " << n << endl;
-                allBytesRead += n;
 	}
 	else
 	{
@@ -428,21 +438,38 @@ CMailBox::countAvailableSegments(unsigned int segment) {
 }
 
 unsigned int CMailBox::getBytesRead() {
-        return allBytesRead;
+    CURLcode res;
+    res = curl_easy_getinfo(handle, CURLINFO_SIZE_DOWNLOAD, &bytesRead);
+    if (res == CURLE_OK)
+        return static_cast<int>(allBytesRead+bytesRead);
+    else
+        return static_cast<int>(allBytesRead);
 }
 unsigned int CMailBox::getBytesSend() {
-        curl_easy_getinfo(handle, CURLINFO_SIZE_UPLOAD, &bytesSend);
+    CURLcode res;
+    res = curl_easy_getinfo(handle, CURLINFO_SIZE_UPLOAD, &bytesSend);
+    if (res == CURLE_OK)
         return static_cast<int>(allBytesSend+bytesSend);
+    else
+        return static_cast<int>(allBytesSend);
 }
 unsigned int CMailBox::getDownloadSpeed() const
 {
-        curl_easy_getinfo(handle, CURLINFO_SPEED_DOWNLOAD, &downloadSpeed);
+    CURLcode res;
+    res = curl_easy_getinfo(handle, CURLINFO_SPEED_DOWNLOAD, &downloadSpeed);
+    if (res == CURLE_OK)
         return static_cast<int>(downloadSpeed);
+    else
+        return 0;
 }
 unsigned int CMailBox::getUploadSpeed() const
 {
-        curl_easy_getinfo(handle, CURLINFO_SPEED_UPLOAD, &uploadSpeed);
+    CURLcode res;
+    res = curl_easy_getinfo(handle, CURLINFO_SPEED_UPLOAD, &uploadSpeed);
+    if (res == CURLE_OK)
         return static_cast<int>(uploadSpeed);
+    else
+        return 0;
 }
 int CMailBox::pauseDownload() {
         CURLcode ret;

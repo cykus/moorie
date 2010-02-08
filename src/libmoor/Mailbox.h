@@ -53,6 +53,7 @@ class CMailBox {
 //	mutable mutex speedMutex;
         double allBytesRead;
         double allBytesSend;
+        double bytesRead;
         double bytesSend;
 
         double downloadSpeed;
