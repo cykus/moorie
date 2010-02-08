@@ -15,6 +15,7 @@ CMailBox::CMailBox(const std::string &name, const std::string &usr, const std::s
 	, scoreNeedsUpdate(true)
 	, validAccount(true)
         , allBytesSend( 0 )
+        , bytesSend( 0 )
         , allBytesRead( 0 )
         , uploadSpeed( 0 )
         , downloadSpeed( 0 )
@@ -148,6 +149,11 @@ std::string& CMailBox::doHTTPUpload(std::string url, std::string filename, bool 
 	{
 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
+        else
+        {
+            curl_easy_getinfo(handle, CURLINFO_SIZE_UPLOAD, &bytesSend);
+            allBytesSend += bytesSend;
+        }
 
 // 	curl_formfree(post);
 // 	curl_slist_free_all (headerlist);
@@ -425,9 +431,8 @@ unsigned int CMailBox::getBytesRead() {
         return allBytesRead;
 }
 unsigned int CMailBox::getBytesSend() {
-        curl_easy_getinfo(handle, CURLINFO_SIZE_UPLOAD, &allBytesSend);
-        LOG( Log::Info, boost::format("send: %1%") %allBytesSend);
-        return static_cast<int>(allBytesSend);
+        curl_easy_getinfo(handle, CURLINFO_SIZE_UPLOAD, &bytesSend);
+        return static_cast<int>(allBytesSend+bytesSend);
 }
 unsigned int CMailBox::getDownloadSpeed() const
 {

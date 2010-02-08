@@ -44,7 +44,7 @@ QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new 
     Log::getLog()->addHandle(logh2);
 
     loadDownloads();
-
+    loadUploads();
 
 }
 
@@ -201,6 +201,7 @@ void QMoorie::showNewUploadDialog()
             mirrorMailboxes.last()->password = mailboxPass->text();
         }
         addUploadInstance(get->fileEdit->text(), mirrorMailboxes, get->downPassEdit->text(), get->editPassEdit->text(), get->segSizeSlider->value(), 1);
+        saveUploads();
     }
     delete get;
 }
@@ -229,6 +230,8 @@ void QMoorie::addUploadInstance(QString file, QVector<mirrorMailbox*> mirrorMail
     uploadInstanceV.last()->fileName = fileInfo.fileName();
     uploadInstanceV.last()->fileSize = fileInfo.size();
     uploadInstanceV.last()->itemRow = uploadTable->rowCount();
+//  uploadInstanceV.last()->totalSegments = uploadInstanceV.last()->Instance->getMyUploadNumOfSeg();
+//  uploadInstanceV.last()->fileCRC = QString::fromStdString(uploadInstanceV.last()->Instance->getMyUploadFileCRC());
     uploadInstanceV.last()->start();
     uploadTable->setRowCount(uploadTable->rowCount() + 1);
     
@@ -434,10 +437,10 @@ void QMoorie::refreshStatuses()
         {
             QTableWidgetItem *WyslanoPliku = new QTableWidgetItem(fileSize(status.bytesRead));
             uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 2, WyslanoPliku);
-            int percentDownloaded = 100.0f * status.bytesRead  / downloadInstanceV.at(i)->size;
-            QTableWidgetItem *postepPobierania = new QTableWidgetItem;
-            postepPobierania->setData(Qt::DisplayRole, percentDownloaded);
-            uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 3, postepPobierania);
+            int percentDownloaded = 100.0f * status.bytesRead  / uploadInstanceV.at(i)->fileSize;
+            QTableWidgetItem *postepWysylania = new QTableWidgetItem;
+            postepWysylania->setData(Qt::DisplayRole, percentDownloaded);
+            uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 3, postepWysylania);
 
             allSpeed += static_cast<double>( status.speed) / 1024.0f;
             const double speed( static_cast<double>( status.speed) / 1024.0f );
@@ -453,10 +456,10 @@ void QMoorie::refreshStatuses()
             }
             s << speed;
             QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(QString::fromStdString(s.str()) + " KB/s");
-            uploadTable->setItem(downloadInstanceV.at(i)->itemRow, 4, SzybkoscPobierania);
+            uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 4, SzybkoscPobierania);
             uploadInstanceV.at(i)->fromseg = status.downloadSegment;
             QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
-                                                                      "\n " + QString::number(status.downloadSegment));
+                                                                      "\n " + QString::number(status.downloadSegment) + "/" + QString::number(uploadInstanceV.at(i)->totalSegments));
             if(status.state == Status::Connecting || status.state == Status::Connected)
             {
                 statusPobierania->setForeground(QColor(204, 210, 55, 255));
@@ -628,6 +631,128 @@ void QMoorie::saveDownloads()
         ts << dokument_xml.toString();
     }
 }
+void QMoorie::loadUploads()
+{
+    QDomDocument dokument_xml;
+    QFile dokument(Zmienne().configPath+"uploads.xml");
+    dokument.open( QIODevice::ReadOnly );
+    dokument_xml.setContent( &dokument );
+    dokument.close();
+
+    QDomNode uploads;
+    uploads = dokument_xml.documentElement();
+
+    QDomNode upload, item;
+    upload = uploads.firstChild();
+
+    while(!upload.isNull())
+    {
+        QDomElement file,dpass,epass,msize,fromseg;
+
+        item = upload.namedItem("file");
+        file = item.toElement();
+
+        QDomNode mailboxes;
+        mailboxes = upload.namedItem("mailboxes");
+
+        QDomNode mailbox, item;
+        mailbox = mailboxes.firstChild();
+
+        QVector<mirrorMailbox*> mirrorMailboxes;
+        while(!mailbox.isNull())
+        {
+            QDomElement username,password;
+            mirrorMailboxes.append(new mirrorMailbox());
+
+            item = upload.namedItem("username");
+            username = item.toElement();
+
+            item = upload.namedItem("password");
+            password = item.toElement();
+
+            mirrorMailboxes.last()->username = username.text();
+            mirrorMailboxes.last()->password = password.text();
+
+            mailbox = mailbox.nextSibling();
+        }
+        item = upload.namedItem("dpass");
+        dpass = item.toElement();
+        item = upload.namedItem("epass");
+        epass = item.toElement();
+        item = upload.namedItem("msize");
+        msize = item.toElement();
+        item = upload.namedItem("fromseg");
+        fromseg = item.toElement();
+
+        addUploadInstance(file.text(), mirrorMailboxes, dpass.text(),epass.text(), msize.text().toInt(), fromseg.text().toInt());
+
+        upload = upload.nextSibling();
+    }
+}
+void QMoorie::saveUploads()
+{
+    QDomDocument dokument_xml;
+    QDomElement uploads, upload, mailboxes, mailbox, file, username, password, dpass, epass, msize, fromseg;
+    QDomText val;
+
+    uploads = dokument_xml.createElement( "uploads" );
+    dokument_xml.appendChild(uploads);
+
+    for(int i = 0; i < uploadInstanceV.size(); ++i) {
+        upload = dokument_xml.createElement( "upload" );
+        uploads.appendChild(upload);
+
+        file = dokument_xml.createElement( "file");
+        upload.appendChild(file);
+        val = dokument_xml.createTextNode(uploadInstanceV.at(i)->file);
+        file.appendChild(val);
+
+        mailboxes = dokument_xml.createElement( "mailboxes" );
+        upload.appendChild(mailboxes);
+
+        for(int j = 0; j < uploadInstanceV.at(i)->mirrorMailboxes.size(); ++j)
+        {
+            mailbox = dokument_xml.createElement( "mailbox" );
+            mailboxes.appendChild(mailbox);
+
+            username = dokument_xml.createElement( "username");
+            mailbox.appendChild(username);
+            val = dokument_xml.createTextNode(uploadInstanceV.at(i)->mirrorMailboxes.at(j)->username);
+            username.appendChild(val);
+
+            password = dokument_xml.createElement( "password");
+            mailbox.appendChild(password);
+            val = dokument_xml.createTextNode(uploadInstanceV.at(i)->mirrorMailboxes.at(j)->password);
+            password.appendChild(val);
+
+        }
+        dpass = dokument_xml.createElement( "dpass");
+        upload.appendChild(dpass);
+        val = dokument_xml.createTextNode(uploadInstanceV.at(i)->dpass);
+        dpass.appendChild(val);
+
+        epass = dokument_xml.createElement( "epass");
+        upload.appendChild(epass);
+        val = dokument_xml.createTextNode(uploadInstanceV.at(i)->epass);
+        epass.appendChild(val);
+
+        msize = dokument_xml.createElement( "msize");
+        upload.appendChild(msize);
+        val = dokument_xml.createTextNode(QString::number(uploadInstanceV.at(i)->msize));
+        msize.appendChild(val);
+
+        fromseg = dokument_xml.createElement( "fromseg");
+        upload.appendChild(fromseg);
+        val = dokument_xml.createTextNode(QString::number(uploadInstanceV.at(i)->fromseg));
+        fromseg.appendChild(val);
+    }
+    QFile dokument(Zmienne().configPath+"uploads.xml");
+    if(dokument.open(QFile::WriteOnly))
+    {
+        QTextStream ts(&dokument);
+        ts << dokument_xml.toString();
+    }
+}
 void QMoorie::showAboutDialog()
 {
     aboutDialog *get = new aboutDialog(this);
@@ -759,11 +884,14 @@ void QMoorie::closeEvent(QCloseEvent *event)
         event->ignore();
         hide();
     }
-    if(Zmienne().ASKBEFORECLOSE)
+    else
     {
-        if(showExitAppConfirmDialog()) qApp->quit();
+        if(Zmienne().ASKBEFORECLOSE)
+        {
+            if(showExitAppConfirmDialog()) qApp->quit();
+        }
+        else qApp->quit();
     }
-    else qApp->quit();
 }
 void QMoorie::exitApp()
 {

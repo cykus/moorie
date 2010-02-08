@@ -49,6 +49,7 @@ public:
     QString file; //!< Nazwa pliku wraz ze ścieżką do wysłania
     QString fileName; //!< Nazwa pliku do wysłania
     quint64 fileSize; //!< Rozmiar pliku do wysłania
+    QString fileCRC; //!< CRC pliku
     QString user; //!< Nazwa użytkownika do skrzynki
     QString pass; //!< Hasło do skrzynki
     QString dpass; //!< Hasło pobierania
@@ -56,6 +57,7 @@ public:
     QString to; //!< ciąg mirrorów
     QVector<mirrorMailbox*> mirrorMailboxes; //!< Wektor mirrorów
     QVector<mirrorMailbox*> uploadMailboxes; //!< Wektor skrzynek do uploadu
+    int totalSegments; //!< Liczba wszystkich segmentów
     int msize; //!< Rozmiar segmentu
     int fromseg; //!< Od którego segmentu
 };

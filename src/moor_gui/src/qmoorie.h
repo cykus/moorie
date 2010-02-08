@@ -108,6 +108,8 @@ class QMoorie:public QMainWindow
     void setTray(); //!< Ustawia ikonkę w tacce systemowej
     void loadDownloads(); //!< Wczytuje listę plików do pobrania z poprzedniej sesji
     void saveDownloads(); //!< Zapisuje listę plików aktualnie pobieranych
+    void loadUploads(); //!< Wczytuje listę plików do wysłania z poprzedniej sesji
+    void saveUploads(); //!< Zapisuje listę plików aktualnie wysyłanych
     void addDownloadInstance(QString, QString, QString = ""); //!< Tworzymy nową instację pobierania
     void addUploadInstance(QString, QVector<mirrorMailbox*>, QString, QString, int, int); //!< Tworzymy nową instację wysyłania
     bool showExitAppConfirmDialog();
