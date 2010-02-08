@@ -26,7 +26,8 @@ uploadInstance::uploadInstance(QString file, QVector<mirrorMailbox*> mirrorMailb
         epass(epass),
         msize(msize),
         fromseg(fromseg),
-        wyslano(false)
+        wyslano(false),
+        totalSegments(0)
 {
     loadMailboxesFromFile();
 }
@@ -35,14 +36,14 @@ void uploadInstance::run()
     user = uploadMailboxes.first()->username;
     pass = uploadMailboxes.first()->password;
     Instance = new CLibMoor();
-    qDebug() << "user: " << user;
-    qDebug() << "pass: " << pass;
-    qDebug() << "getToUsernames: " << getToUsernames();
-    qDebug() << "dpass: " << dpass;
-    qDebug() << "epass: " << epass;
-    qDebug() << "file: " << file;
-    qDebug() << "msize: " << msize;
-    qDebug() << "fromseg: " << fromseg;
+//    qDebug() << "user: " << user;
+//    qDebug() << "pass: " << pass;
+//    qDebug() << "getToUsernames: " << getToUsernames();
+//    qDebug() << "dpass: " << dpass;
+//    qDebug() << "epass: " << epass;
+//    qDebug() << "file: " << file;
+//    qDebug() << "msize: " << msize;
+//    qDebug() << "fromseg: " << fromseg;
     Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), getToUsernames().toStdString(), dpass.toStdString(), epass.toStdString());
     Instance -> splitFile(file.toStdString(), msize);
     Instance -> startUpload(fromseg);

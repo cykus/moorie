@@ -259,16 +259,23 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 
                                 ss << myUploadFilename << "." << mySeg;
 
-                                if (myMailBox->uploadRequest(ss.str(), address, mySeg) == 0)
+                                if (myMailBox->uploadRequest(ss.str(), address, mySeg) == 0){
                                         LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%mySeg);
-				else
-                                        LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%mySeg);
-			}
+                                        state = Status::Uploaded;
+                                }
+                                else {
+                                    LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%mySeg);
+                                    state = Status::SegmentError;
+                                }
+                        }
                         LOG(Log::Info, boost::format( "Upload zakonczony!" ));
-                        state = Status::Uploaded;
+                        downloadDone = true;
+                         state = Status::Finished;
+                        
  		} else
  			LOG(Log::Info, boost::format( "Logowanie nie powiodlo sie, przerywam." ));
-                        state = Status::ConnectionError;
+                        downloadDone = true;
+                        state = Status::FileError;
 	}
 
 	return 0;

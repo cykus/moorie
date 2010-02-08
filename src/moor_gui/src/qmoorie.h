@@ -93,6 +93,7 @@ class QMoorie:public QMainWindow
     QToolBar *fileToolBar;
 
     quint64 allBytesRead; //!< Całkowity rozmiar pobranych danych
+    quint64 allBytesSend; //!< Całkowity rozmiar wysłanych danych
     mySystemTrayIcon *tray; //!< Klasa dziedzicząca po QTableWidget
     myTableWidget *downloadTable; //!< Klasa dziedzicząca po QTableWidget
     myTableWidget *uploadTable; //!< Klasa dziedzicząca po QTableWidget
@@ -141,6 +142,8 @@ public Q_SLOTS:
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
     void removeDownload(); //!< Usuwa pobieranie wybranego pliku
     void pauseDownload(); //!< Wstrzymuje/Wznawia pobieranie wybranego pliku
+    void removeUpload(); //!< Usuwa wysyłanie wybranego pliku
+    void pauseUpload(); //!< Wstrzymuje/Wznawia wysyłanie wybranego pliku
     void refreshStatuses();
 };
 #endif

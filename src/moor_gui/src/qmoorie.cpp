@@ -34,7 +34,6 @@ QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new 
     createToolBars();
     readConfigFile();
     setTray();
-    statuses.start();
 
     unsigned int logLevel(Zmienne().LLEVEL);
     logLevel = static_cast<unsigned int>( Log::Error ) - logLevel + 1;
@@ -46,6 +45,7 @@ QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new 
     loadDownloads();
     loadUploads();
 
+    statuses.start();
 }
 
 void QMoorie::setTray()
@@ -134,6 +134,8 @@ void QMoorie::createActions()
 
     connect(downloadTable->tRemoveAct, SIGNAL(triggered()), this, SLOT(removeDownload()));
     connect(downloadTable->tPauseAct, SIGNAL(triggered()), this, SLOT(pauseDownload()));
+    connect(uploadTable->tRemoveAct, SIGNAL(triggered()), this, SLOT(removeUpload()));
+    connect(uploadTable->tPauseAct, SIGNAL(triggered()), this, SLOT(pauseUpload()));
     connect(&statuses, SIGNAL(refresh()), this, SLOT(refreshStatuses()));
 }
 
@@ -293,7 +295,9 @@ void QMoorie::addDownloadInstance(QString hash, QString pass, QString path)
 void QMoorie::refreshStatuses()
 {
     quint64 allBytesReadSession = 0;
-    double allSpeed = 0;
+    quint64 allBytesSendSession = 0;
+    double allSpeedRead = 0;
+    double allSpeedSend = 0;
     for (int i = 0; i < downloadInstanceV.size(); ++i)
     {
         if(downloadInstanceV.at(i)->Instance->downloadDone)
@@ -344,7 +348,7 @@ void QMoorie::refreshStatuses()
             postepPobierania->setData(Qt::DisplayRole, percentDownloaded);
             downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 3, postepPobierania);
 
-            allSpeed += static_cast<double>( status.speed) / 1024.0f;
+            allSpeedRead += static_cast<double>( status.speed) / 1024.0f;
             const double speed( static_cast<double>( status.speed) / 1024.0f );
             std::stringstream s;
             s.setf( std::ios::fixed);
@@ -394,47 +398,49 @@ void QMoorie::refreshStatuses()
             }
         }
     }
-    if(downloadInstanceV.size())
+    for (int i = 0; i < uploadInstanceV.size(); ++i)
     {
-
-        QSettings settings;
-        if(settings.isWritable())
+        if(uploadInstanceV.at(i)->Instance->downloadDone)
         {
-            settings.beginGroup("VARIABLES_QMOORIE");
-            settings.setValue("allBytesRead", allBytesRead+allBytesReadSession);
-            settings.endGroup();
-        }
-        std::stringstream allS;
-        allS.setf( std::ios::fixed);
-        if ( allSpeed - round( allSpeed ) < 0.1f )
-        {
-            allS << std::setprecision( 0 );
-        }
-        else
-        {
-            allS << std::setprecision( 2 );
-        }
-        allS << allSpeed;
+            Status status = uploadInstanceV.at(i)->Instance->getUploadStatus();
 
-        ui->allBytesReadSession->setText(fileSize(allBytesReadSession));
-        ui->maxDownloadSpeed->setText(QString::fromStdString(allS.str()) +" KB/s");
-
-        QString tip = "<table cellpadding='2' cellspacing='2' align='center'><tr><td><b>Szybkość:</b></td><td></td></tr><tr><td>Pobieranie: <font color='#1c9a1c'>"+ QString::fromStdString(allS.str()) +" KB/s</font></td><td>Wysyłanie: <font color='#990000'>0 KB/s</font></td></tr><tr><td><b>Transfer:</b></td><td></td></tr><tr><td>Pobrano: <font color='#1c9a1c'>"+ fileSize(allBytesReadSession) +"</font></td><td>Wysłano: <font color='#990000'>0 MB</font></td></tr></table>";
-        tray->setToolTip(tip);
+            if(status.state == Status::Finished)
+            {
+                for(int j = 0 ; j < 7; j++ )
+                {
+                    uploadTable->item(uploadInstanceV.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 100));
+                }
+                tray->showHints("Wysłano pomyślnie", "Wysyłanie pliku: <br/><b><i>"+uploadInstanceV.at(i)->fileName+"</b></i><br/>zakończono pomyślnie.");
+                uploadInstanceV.remove(i);
+                saveUploads();
+            }
+            if(status.state == Status::FileError && !uploadInstanceV.at(i)->wyslano)
+            {
+                QTableWidgetItem *PozostaloPliku = new QTableWidgetItem("0.00 MB");
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 2, PozostaloPliku);
+                QTableWidgetItem *postepPobierania = new QTableWidgetItem;
+                postepPobierania->setData(Qt::DisplayRole, 0);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 3, postepPobierania);
+                QTableWidgetItem *statusPobierania = new QTableWidgetItem("Nie udało się Wysłać pliku");
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 5, statusPobierania);
+                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 4, SzybkoscPobierania);
+                for(int j = 0 ; j < 7; j++ )
+                {
+                    uploadTable->item(uploadInstanceV.at(i)->itemRow, j)->setBackground(QColor(255, 0, 0, 200));
+                }
+                uploadInstanceV.at(i)->wyslano = true;
+                tray->showHints("Błąd wysyłania", "Niestety nie udało się wysłać pliku:<br/><b><i>"+uploadInstanceV.at(i)->fileName+"</i></b>");
+            }
+        }
     }
-    ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
-    if(Zmienne().logs != ""){
-        ui->log->append(Zmienne().logs);
-        Zmienne().logs = "";
-    }
-
-
-
     for (int i = 0; i < uploadInstanceV.size(); ++i)
     {
         Status status = uploadInstanceV.at(i)->Instance->getUploadStatus();
         if(!(uploadInstanceV.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
         {
+            allBytesSendSession += status.bytesRead;
+
             QTableWidgetItem *WyslanoPliku = new QTableWidgetItem(fileSize(status.bytesRead));
             uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 2, WyslanoPliku);
             int percentDownloaded = 100.0f * status.bytesRead  / uploadInstanceV.at(i)->fileSize;
@@ -442,7 +448,7 @@ void QMoorie::refreshStatuses()
             postepWysylania->setData(Qt::DisplayRole, percentDownloaded);
             uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 3, postepWysylania);
 
-            allSpeed += static_cast<double>( status.speed) / 1024.0f;
+            allSpeedSend += static_cast<double>( status.speed) / 1024.0f;
             const double speed( static_cast<double>( status.speed) / 1024.0f );
             std::stringstream s;
             s.setf( std::ios::fixed);
@@ -493,8 +499,53 @@ void QMoorie::refreshStatuses()
             }
         }
     }
+    if(downloadInstanceV.size() || uploadInstanceV.size())
+    {
 
+        QSettings settings;
+        if(settings.isWritable())
+        {
+            settings.beginGroup("VARIABLES_QMOORIE");
+            settings.setValue("allBytesRead", allBytesRead+allBytesReadSession);
+            settings.setValue("allBytesSend", allBytesSend+allBytesSendSession);
+            settings.endGroup();
+        }
+        std::stringstream allS;
+        allS.setf( std::ios::fixed);
+        if ( allSpeedRead - round( allSpeedRead ) < 0.1f )
+        {
+            allS << std::setprecision( 0 );
+        }
+        else
+        {
+            allS << std::setprecision( 2 );
+        }
+        allS << allSpeedSend;
+        std::stringstream allSs;
+        allSs.setf( std::ios::fixed);
+        if ( allSpeedSend - round( allSpeedSend ) < 0.1f )
+        {
+            allSs << std::setprecision( 0 );
+        }
+        else
+        {
+            allSs << std::setprecision( 2 );
+        }
+        allSs << allSpeedSend;
+        ui->allBytesReadSession->setText(fileSize(allBytesReadSession));
+        ui->allBytesWriteSession->setText(fileSize(allBytesSendSession));
+        ui->maxDownloadSpeed->setText(QString::fromStdString(allS.str()) +" KB/s");
+        ui->maxUploadSpeed->setText(QString::fromStdString(allSs.str()) +" KB/s");
 
+        QString tip = "<table cellpadding='2' cellspacing='2' align='center'><tr><td><b>Szybkość:</b></td><td></td></tr><tr><td>Pobieranie: <font color='#1c9a1c'>"+ QString::fromStdString(allS.str()) +" KB/s</font></td><td>Wysyłanie: <font color='#990000'>"+ QString::fromStdString(allSs.str()) +" KB/s</font></td></tr><tr><td><b>Transfer:</b></td><td></td></tr><tr><td>Pobrano: <font color='#1c9a1c'>"+ fileSize(allBytesReadSession) +"</font></td><td>Wysłano: <font color='#990000'>"+ fileSize(allBytesSendSession) +"</font></td></tr></table>";
+        tray->setToolTip(tip);
+    }
+    ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
+    ui->allBytesWrite->setText(fileSize(allBytesSend+allBytesSendSession));
+    if(Zmienne().logs != ""){
+        ui->log->append(Zmienne().logs);
+        Zmienne().logs = "";
+    }
 }
 void QMoorie::removeDownload()
 {
@@ -543,6 +594,57 @@ void QMoorie::pauseDownload()
             else
             {
                 downloadInstanceV.at(i)->Instance->pauseDownload();
+            }
+        }
+    }
+}
+void QMoorie::removeUpload()
+{
+    int row = uploadTable->currentRow();
+    for (int i = 0; i < uploadInstanceV.size(); ++i)
+    {
+        //qDebug() << 'tIns.size: ' << tInstance.size() << ' tabela.rowcount: ' << tabela->rowCount();
+        if(uploadInstanceV.at(i)->itemRow == row)
+        {
+            QString fileName = uploadInstanceV.at(i)->file;
+            uploadInstanceV.at(i)->terminate();
+            uploadInstanceV.remove(i);
+            uploadTable->removeRow(row);
+            if (QFile::exists(fileName)) QFile::remove(fileName);
+            //if (QFile::exists(fileName + ".seg")) QFile::remove(fileName + ".seg");
+            saveUploads();
+        }
+    }
+
+    for (int i = 0; i < uploadInstanceV.size(); ++i)
+    {
+        uploadInstanceV.at(i)->itemRow = i;
+        QTableWidgetItem *nazwaPliku = new QTableWidgetItem(uploadInstanceV.at(i)->fileName);
+        uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 0, nazwaPliku);
+        QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(uploadInstanceV.at(i)->fileSize));
+        uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 1, rozmiarPliku);
+
+
+    }
+}
+void QMoorie::pauseUpload()
+{
+    int row = uploadTable->currentRow();
+    for (int i = 0; i < uploadInstanceV.size(); ++i)
+    {
+        if(uploadInstanceV.at(i)->itemRow == row)
+        {
+            if(uploadInstanceV.at(i)->Instance->downloadPaused)
+            {
+                uploadInstanceV.at(i)->Instance->unpauseDownload();
+                QTableWidgetItem *nazwaPliku = new QTableWidgetItem(uploadInstanceV.at(i)->fileName);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 0, nazwaPliku);
+                QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(uploadInstanceV.at(i)->fileSize));
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 1, rozmiarPliku);
+            }
+            else
+            {
+                uploadInstanceV.at(i)->Instance->pauseDownload();
             }
         }
     }
@@ -776,6 +878,7 @@ void QMoorie::showConfigDialog()
 void QMoorie::readConfigFile()
 {
     QHeaderView *header = downloadTable->horizontalHeader();
+    QHeaderView *header2 = uploadTable->horizontalHeader();
     header->setDefaultAlignment(Qt::AlignLeft);
     QSettings settings;
     settings.beginGroup("CONFIG_PAGE");
@@ -805,9 +908,17 @@ void QMoorie::readConfigFile()
     header->resizeSection( 4, settings.value("tabela_column_4", 65).toInt() );
     header->resizeSection( 5, settings.value("tabela_column_5", 120).toInt() );
     header->resizeSection( 6, settings.value("tabela_column_6", 100).toInt() );
+    header2->resizeSection( 0, settings.value("tabela2_column_0", 260).toInt() );
+    header2->resizeSection( 1, settings.value("tabela2_column_1", 80).toInt() );
+    header2->resizeSection( 2, settings.value("tabela2_column_2", 70).toInt() );
+    header2->resizeSection( 3, settings.value("tabela2_column_3", 120).toInt() );
+    header2->resizeSection( 4, settings.value("tabela2_column_4", 65).toInt() );
+    header2->resizeSection( 5, settings.value("tabela2_column_5", 120).toInt() );
+    header2->resizeSection( 6, settings.value("tabela2_column_6", 100).toInt() );
     settings.endGroup();
     settings.beginGroup("VARIABLES_QMOORIE");
     allBytesRead = settings.value("allBytesRead", 0).toUInt() ;
+    allBytesSend = settings.value("allBytesSend", 0).toUInt() ;
     settings.endGroup();
 
     writeConfigFile();
@@ -820,6 +931,7 @@ void QMoorie::readConfigFile()
 void QMoorie::writeConfigFile()
 {
     QHeaderView *header = downloadTable->horizontalHeader();
+    QHeaderView *header2 = uploadTable->horizontalHeader();
     QSettings settings;
     if(settings.isWritable()){
         settings.beginGroup("CONFIG_PAGE");
@@ -847,6 +959,13 @@ void QMoorie::writeConfigFile()
         settings.setValue("tabela_column_4", header->sectionSize(4));
         settings.setValue("tabela_column_5", header->sectionSize(5));
         settings.setValue("tabela_column_6", header->sectionSize(6));
+        settings.setValue("tabela2_column_0", header2->sectionSize(0));
+        settings.setValue("tabela2_column_1", header2->sectionSize(1));
+        settings.setValue("tabela2_column_2", header2->sectionSize(2));
+        settings.setValue("tabela2_column_3", header2->sectionSize(3));
+        settings.setValue("tabela2_column_4", header2->sectionSize(4));
+        settings.setValue("tabela2_column_5", header2->sectionSize(5));
+        settings.setValue("tabela2_column_6", header2->sectionSize(6));
         settings.endGroup();
     }
     else
