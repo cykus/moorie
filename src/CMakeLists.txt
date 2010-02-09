@@ -6,7 +6,6 @@ find_package(OpenSSL REQUIRED)
 find_package(mcrypt REQUIRED)
 find_package(mhash REQUIRED)
 find_package(V8)
-
 SET(Libs
     ${MCRYPT_LIBRARIES}
     ${MHASH_LIBRARIES}
