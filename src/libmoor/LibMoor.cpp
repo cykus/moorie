@@ -313,6 +313,7 @@ std::string CLibMoor::addMirror(std::string editpass, std::string orighash, std:
 	encoder = new MoorhuntHashEncoder();
 	std::string newhash = encoder->addNewMirror(editpass, orighash, mboxaddr, mboxpass);
  	delete encoder;
+	LOG(Log::Info, "Nowy hashcode: \n" + newhash);
 	return newhash;
 }
 
