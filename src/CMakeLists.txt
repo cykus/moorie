@@ -16,14 +16,24 @@ SET(Libs
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
+SET(V8_INCLUDE_DIR)
 SET(V8Libs)
 
 IF(V8_FOUND)
-    SET(V8Libs ${V8_LIBRARY})
-ELSE()
-    SET(V8Libs ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/libv8.so)
-    INSTALL(FILES ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/libv8.so DESTINATION lib${LIB_SUFFIX})
+
+    find_package(scons REQUIRED)
+    find_package(Subversion REQUIRED)
+    IF(Subversion_SVN_EXECUTABLE)
+        MESSAGE(STATUS "Looking for subversion binary found")
+        EXECUTE_PROCESS(COMMAND ${Subversion_SVN_EXECUTABLE} checkout http://v8.googlecode.com/svn/trunk/ ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/v8)
+        FILE(COPY ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/SConstruct DESTINATION ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/v8)
+        EXECUTE_PROCESS(COMMAND ${SCONS_BIN_PATH}/scons library=shared snapshot=on mode=release verbose=on WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/v8)
+    ENDIF(Subversion_SVN_EXECUTABLE)
+    SET(V8_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/v8/include)
+    SET(V8Libs ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/v8/libv8.so)
+    INSTALL(FILES ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/v8/libv8.so DESTINATION lib${LIB_SUFFIX})
 ENDIF()
+
 
 add_subdirectory (libmoor)
 add_subdirectory (moor_bin)

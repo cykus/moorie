@@ -25,7 +25,9 @@ add_library (moor SHARED Decoder.cpp
                          StringUtils.cpp
                          BinaryStream.cpp)
 
-
+include_directories(
+    ${V8_INCLUDE_DIR}
+)
 
 if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
     target_link_libraries (moor ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/libmoorhunt64.a)

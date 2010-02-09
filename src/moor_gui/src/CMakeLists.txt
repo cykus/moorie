@@ -54,6 +54,7 @@ add_definitions( -O2 -w -D_REENTRANT -DQT_NO_KEYWORDS $(QT_DEFINITIONS) )
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QT_INCLUDE_DIR}
+    ${V8_INCLUDE_DIR}
     ${QMOORIE_BINARY_DIR}
     ${QMOORIE_SOURCE_DIR}
     ${MOOR_SOURCE_DIR}/src/libmoor
