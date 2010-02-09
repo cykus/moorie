@@ -129,6 +129,7 @@ newUploadDialog::newUploadDialog(QWidget * parent, Qt::WFlags f):QDialog(parent,
     connect(addButton,SIGNAL(clicked()),this,SLOT(addMailbox()));
     connect(saveButton,SIGNAL(clicked()),this,SLOT(saveMailbox()));
     connect(deleteButton,SIGNAL(clicked()),this,SLOT(deleteMailbox()));
+    connect(closeButton, SIGNAL(clicked()), this, SLOT(reject()));
     connect(mirrorTable,SIGNAL(currentItemChanged(QTableWidgetItem*, QTableWidgetItem*)),this,SLOT(editMailbox()));
     connect(segSizeSlider,SIGNAL(valueChanged(int)),this,SLOT(setSliderLabel(int)));
 

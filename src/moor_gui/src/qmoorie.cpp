@@ -304,8 +304,23 @@ void QMoorie::refreshStatuses()
         {
             Status status = downloadInstanceV.at(i)->Instance->getDownloadStatus();
 
+            if(status.state == Status::Downloaded || status.state == Status::Finished)
+            {
+                QTableWidgetItem *PozostaloPliku = new QTableWidgetItem("0.00 MB");
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 2, PozostaloPliku);
+                QTableWidgetItem *postepPobierania = new QTableWidgetItem;
+                postepPobierania->setData(Qt::DisplayRole, 100);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 3, postepPobierania);
+                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 4, SzybkoscPobierania);
+                QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
+                "\n " + QString::number(downloadInstanceV.at(i)->totalSegments) + "/" + QString::number(downloadInstanceV.at(i)->totalSegments));
+                statusPobierania->setForeground(QColor(0, 0, 200, 255));
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 5, statusPobierania);
+            }
             if(status.state == Status::Finished)
             {
+
                 for(int j = 0 ; j < 7; j++ )
                 {
                     downloadTable->item(downloadInstanceV.at(i)->itemRow, j)->setBackground(QColor(0, 50, 0, 100));
@@ -336,7 +351,7 @@ void QMoorie::refreshStatuses()
     }
     for (int i = 0; i < downloadInstanceV.size(); ++i)
     {
-        if(!downloadInstanceV.at(i)->pobrano)
+        if(!downloadInstanceV.at(i)->Instance->downloadDone)
         {
             Status status = downloadInstanceV.at(i)->Instance->getDownloadStatus();
             if(!(downloadInstanceV.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
@@ -371,13 +386,9 @@ void QMoorie::refreshStatuses()
                 {
                     statusPobierania->setForeground(QColor(204, 210, 55, 255));
                 }
-                else if(status.state == Status::Downloading || status.state == Status::Downloaded)
+                else if(status.state == Status::Downloading)
                 {
                     statusPobierania->setForeground(QColor(0, 100, 0, 255));
-                }
-                else if(status.state == Status::Finished)
-                {
-                    statusPobierania->setForeground(QColor(0, 0, 200, 255));
                 }
                 else if(status.state == Status::ConnectionError || status.state == Status::FileError || status.state == Status::SegmentError)
                 {
@@ -406,7 +417,20 @@ void QMoorie::refreshStatuses()
         if(uploadInstanceV.at(i)->Instance->downloadDone && !uploadInstanceV.at(i)->wyslano)
         {
             Status status = uploadInstanceV.at(i)->Instance->getUploadStatus();
-
+            if(status.state == Status::Uploaded || status.state == Status::Finished)
+            {
+                QTableWidgetItem *PozostaloPliku = new QTableWidgetItem("0.00 MB");
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 2, PozostaloPliku);
+                QTableWidgetItem *postepPobierania = new QTableWidgetItem;
+                postepPobierania->setData(Qt::DisplayRole, 100);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 3, postepPobierania);
+                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 4, SzybkoscPobierania);
+                QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
+                "\n " + QString::number(uploadInstanceV.at(i)->totalSegments) + "/" + QString::number(uploadInstanceV.at(i)->totalSegments));
+                statusPobierania->setForeground(QColor(0, 0, 200, 255));
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 5, statusPobierania);
+            }
             if(status.state == Status::Finished)
             {
                 for(int j = 0 ; j < 7; j++ )
@@ -439,7 +463,7 @@ void QMoorie::refreshStatuses()
     }
     for (int i = 0; i < uploadInstanceV.size(); ++i)
     {
-        if(!uploadInstanceV.at(i)->wyslano)
+        if(!uploadInstanceV.at(i)->Instance->downloadDone)
         {
             Status status = uploadInstanceV.at(i)->Instance->getUploadStatus();
             if(!(uploadInstanceV.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
@@ -475,13 +499,9 @@ void QMoorie::refreshStatuses()
                 {
                     statusPobierania->setForeground(QColor(204, 210, 55, 255));
                 }
-                else if(status.state == Status::Uploading || status.state == Status::Uploaded)
+                else if(status.state == Status::Uploading)
                 {
                     statusPobierania->setForeground(QColor(0, 100, 0, 255));
-                }
-                else if(status.state == Status::Finished)
-                {
-                    statusPobierania->setForeground(QColor(0, 0, 200, 255));
                 }
                 else if(status.state == Status::ConnectionError || status.state == Status::FileError || status.state == Status::SegmentError)
                 {
