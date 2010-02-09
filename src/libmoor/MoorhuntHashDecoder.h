@@ -29,18 +29,19 @@ class MoorhuntHashDecoder : public HashDecoder {
 
 class MoorhuntHashEncoder {
 	    std::string myFilename;
-	    std::string myCRC;
+	    int myCRC;
+		std::string myCleanCRC;
 	    int myFileSize;
 	    bool myRound;
 	    bool myRandName;
 	    int mySegmentCount;
 	    int myMinSize;
 	    int myMaxSize;
-	    const char *myDownloadPassword;
+	    std::string myDownloadPassword;
 	    int myMirrors;
 	    // tutaj lista mirrorow
 	    std::string myAvartLink;
-	    const char *myEditPassword;
+	    std::string myEditPassword;
 	    std::string myFor;
 	    std::string myFullDescriptionLink;
 	    std::string myFullTitle;
@@ -48,11 +49,12 @@ class MoorhuntHashEncoder {
 	    std::string myComment;
 		std::vector<std::string> mailboxes;
 
+
 	public:
 		MoorhuntHashEncoder();
 		~MoorhuntHashEncoder();
 		void setFilename(std::string data) { myFilename = data; };
-		void setCRC(std::string data) { myCRC = data; };
+		void setCRC(int data) { myCleanCRC = data; };
 		void setFileSize(int data) { myFileSize = data; };
 		void setRound(bool data) { myRound = data; };
 		void setRandName(bool data) { myRandName = data; };
@@ -65,7 +67,7 @@ class MoorhuntHashEncoder {
 
 		const bool decode(std::string hashcode);
 		const std::string encode();
-
+		const std::string encodeWithNewMirror();
 		const std::string addNewMirror(std::string editpassword, std::string hashcode, std::string mailbox, std::string password);
 
 		std::string getMD5(unsigned char *string);
