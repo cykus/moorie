@@ -71,17 +71,8 @@ link_directories(
   ${MOOR_BINARY_DIR}/src/libmoor
 )
 
-target_link_libraries(qmoorie
-  ${QT_LIBRARIES}
-  moor
-  ${MCRYPT_LIBRARIES}
-  ${MHASH_LIBRARIES}
-  ${CURL_LIBRARIES} 
-  ${OPENSSL_LIBRARIES} 
-  ${Boost_THREAD_LIBRARY} 
-  ${Boost_REGEX_LIBRARY} 
-  ${Boost_FILESYSTEM_LIBRARY} 
-)
+target_link_libraries (qmoorie ${QT_LIBRARIES} moor  ${Libs} ${V8Libs})
+
 install (TARGETS qmoorie DESTINATION bin)
 
 # install desktop file

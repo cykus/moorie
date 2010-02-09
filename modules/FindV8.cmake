@@ -1,0 +1,6 @@
+find_path( V8_INCLUDE_DIR v8.h )
+find_library( V8_LIBRARY NAMES v8 )
+
+INCLUDE(FindPackageHandleStandardArgs)
+
+FIND_PACKAGE_HANDLE_STANDARD_ARGS( V8  "d "  V8_LIBRARY V8_INCLUDE_DIR )

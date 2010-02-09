@@ -25,13 +25,15 @@ add_library (moor SHARED Decoder.cpp
                          StringUtils.cpp
                          BinaryStream.cpp)
 
-target_link_libraries (moor ${PROJECT_SOURCE_DIR}/src/libmoor/Libraries/libv8.so)
+
 
 if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
-    target_link_libraries (moor ${PROJECT_SOURCE_DIR}/src/libmoor/Libraries/libmoorhunt64.a)
+    target_link_libraries (moor ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/libmoorhunt64.a)
 elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "i686" OR ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86" OR ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i586")
-    target_link_libraries (moor ${PROJECT_SOURCE_DIR}/src/libmoor/Libraries/libmoorhunt.a)
+    target_link_libraries (moor ${CMAKE_SOURCE_DIR}/src/libmoor/Libraries/libmoorhunt.a)
 endif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
 # 
 set_property(TARGET moor PROPERTY LINK_INTERFACE_LIBRARIES "")
 install (TARGETS moor DESTINATION lib${LIB_SUFFIX})
+
+
