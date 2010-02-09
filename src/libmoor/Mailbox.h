@@ -22,6 +22,7 @@
 #include "EmailHeader.h"
 #include "Log.h"
 #include "Decoder.h"
+#include "v8.h"
 
 class CMailBox {
 
