@@ -54,7 +54,7 @@ class MoorhuntHashEncoder {
 		MoorhuntHashEncoder();
 		~MoorhuntHashEncoder();
 		void setFilename(std::string data) { myFilename = data; };
-		void setCRC(int data) { myCleanCRC = data; };
+		void setCRC(std::string data) { myCleanCRC = data; };
 		void setFileSize(int data) { myFileSize = data; };
 		void setRound(bool data) { myRound = data; };
 		void setRandName(bool data) { myRandName = data; };
@@ -66,7 +66,7 @@ class MoorhuntHashEncoder {
 		void setEditPassword(std::string data) { myEditPassword = data.c_str(); };
 
 		const bool decode(std::string hashcode);
-		const std::string encode();
+		const std::string encodeClean();
 		const std::string encodeWithNewMirror();
 		const std::string addNewMirror(std::string editpassword, std::string hashcode, std::string mailbox, std::string password);
 
