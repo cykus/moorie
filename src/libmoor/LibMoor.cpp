@@ -301,7 +301,7 @@ std::string CLibMoor::generateCleanHashcode() {
  	hashEncoder->setMirrors(0); // na razie 0 mirrorow
         hashEncoder->setEditPassword(editpass);
 
-	std::string hash = hashEncoder->encode();
+	std::string hash = hashEncoder->encodeClean();
 
 	delete hashEncoder;
 // 	std::cout << "HASH: " << hash << std::endl;
