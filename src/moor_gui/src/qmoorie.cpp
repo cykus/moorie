@@ -792,10 +792,10 @@ void QMoorie::loadUploads()
             QDomElement username,password;
             mirrorMailboxes.append(new mirrorMailbox());
 
-            item = upload.namedItem("username");
+            item = mailbox.namedItem("username");
             username = item.toElement();
 
-            item = upload.namedItem("password");
+            item = mailbox.namedItem("password");
             password = item.toElement();
 
             mirrorMailboxes.last()->username = username.text();

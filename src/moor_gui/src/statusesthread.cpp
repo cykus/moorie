@@ -25,7 +25,7 @@ statusesThread::statusesThread()
 }
 void statusesThread::run()
 {
-    while(1)
+    while(0)
     {
         sleep(2);
         Q_EMIT refresh();

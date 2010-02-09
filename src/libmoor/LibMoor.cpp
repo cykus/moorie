@@ -164,7 +164,46 @@ int CLibMoor::startDownload() {
 	return segValid;
 }
 
+int CLibMoor::splitFile(std::string filename, int size) {
+        myUploadFilename = filename;
+        myUploadFilesize = 0;
+        myUploadSegSize = size*1024*1024;
 
+        LOG(Log::Info, boost::format("Dzielenie pliku %1% na segmenty") % filename);
+        int mysegsize = size*1024*1024;
+        int bytes = 0; int read = 0;
+        segments = 1;
+        char buffer[128*1024];
+        std::stringstream ss;
+        ss << filename << "." << segments;
+        std::cout << ss.str() << std::endl;
+
+        std::ifstream in(filename.c_str(), std::ifstream::binary);
+        std::ofstream *out = new std::ofstream(ss.str().c_str(), std::ios::out | std::ofstream::binary);
+        LOG(Log::Debug, boost::format( "Seg: %1%" )	%segments);
+
+        while (!in.eof()) {
+                in.read(buffer, 128*1024);
+                read = in.gcount();
+                out->write(buffer, read);
+                bytes += read;
+                myUploadFilesize+=read;
+// 		std::cout << "Read: " << read << std::endl;
+
+                if (bytes == mysegsize) {
+                        bytes = 0;
+                        segments++;
+                        delete out;
+                        ss.str("");
+                        ss << filename << "." << segments;
+                        out = new std::ofstream(ss.str().c_str(), std::ios::out | std::ofstream::binary);
+                        LOG(Log::Debug, boost::format( "Seg: %1%" )	%segments);
+                }
+        }
+        myUploadNumOfSeg = segments;
+        return 0;
+
+}
 int CLibMoor::selectUploadMailBox(std::string login, std::string passwd, std::string adressee, std::string downPasswd, std::string editPasswd) {
 
 // 	myUploadMailbox = getMailboxName(id);
@@ -189,95 +228,57 @@ int CLibMoor::selectUploadMailBox(std::string login, std::string passwd, std::st
 			address.push_back(adressee.substr(i2,i+1));
 	}
         myUploadMailbox = result_sth[2]; // TODO - wybieranie skrzynki po id;
-	return 0;
+
+        std::string upload_mailbox = myLogin+"@"+myUploadMailbox;
+
+        myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd);
+        if (myMailBox){
+            LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %upload_mailbox);
+// 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
+            state = Status::Connecting;
+            if (myMailBox->loginRequest() == 0) {
+                    LOG(Log::Info, boost::format( "Zalogowano pomyslnie!" ));
+                    state = Status::Connected;
+
+                    myMailBox->calculateFileCRC(myUploadFilename);
+                    myUploadFileCRC = myMailBox->getFileCRC();
+                    LOG(Log::Debug, boost::format( "CRC Pliku: %1%" ) %myMailBox->getFileCRC());
+            }
+            else {
+                    LOG(Log::Info, boost::format( "Logowanie nie powiodlo sie, przerywam." ));
+                    downloadDone = true;
+                    state = Status::FileError;
+                    return 1;
+            }
+            return 0;
+        }
+        else {
+            LOG(Log::Info, "Wybrana skrzynka nie jest obsługiwana w tej wersji programu.");
+            return 1;
+        }
 }
-
-int CLibMoor::splitFile(std::string filename, int size) {
-	myUploadFilename = filename;
-	myUploadFilesize = 0;
-	myUploadSegSize = size*1024*1024;
-
-	LOG(Log::Info, boost::format("Dzielenie pliku %1% na segmenty") % filename);
-	int mysegsize = size*1024*1024;
-	int bytes = 0; int read = 0;
-	segments = 1;
-	char buffer[128*1024];
-	std::stringstream ss;
-	ss << filename << "." << segments;
-	std::cout << ss.str() << std::endl;
-
-	std::ifstream in(filename.c_str(), std::ifstream::binary);
-	std::ofstream *out = new std::ofstream(ss.str().c_str(), std::ios::out | std::ofstream::binary);
-	LOG(Log::Debug, boost::format( "Seg: %1%" )	%segments);
-
-	while (!in.eof()) {
-		in.read(buffer, 128*1024);
-		read = in.gcount();
-		out->write(buffer, read);
-		bytes += read;
-		myUploadFilesize+=read;
-// 		std::cout << "Read: " << read << std::endl;
-
-		if (bytes == mysegsize) {
-			bytes = 0;
-			segments++;
-			delete out;
- 			ss.str("");
-			ss << filename << "." << segments;
-			out = new std::ofstream(ss.str().c_str(), std::ios::out | std::ofstream::binary);
-			LOG(Log::Debug, boost::format( "Seg: %1%" )	%segments);
-		}
-	}
-	myUploadNumOfSeg = segments;
-	return 0;
-
-}
-
 int CLibMoor::startUpload(unsigned int fromseg) {
 	LOG(Log::Info, boost::format("Zaczynam upload od segmentu: %1%") %fromseg);
 
         std::stringstream ss;
-	std::string upload_mailbox = myLogin+"@"+myUploadMailbox;
-        myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd);
-	if (myMailBox) {
- 		LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %upload_mailbox);
-// 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
-                state = Status::Connecting;
- 		if (myMailBox->loginRequest() == 0) {
-			LOG(Log::Info, boost::format( "Zalogowano pomyslnie!" ));
-                        state = Status::Connected;
-			myMailBox->calculateFileCRC(myUploadFilename);
-			myUploadFileCRC = myMailBox->getFileCRC();
-			LOG(Log::Debug, boost::format( "CRC Pliku: %1%" ) %myMailBox->getFileCRC());
+        for (mySeg = fromseg; mySeg <= segments; mySeg++) {
+            state = Status::Uploading;
+            ss.str("");
 
-                        LOG(Log::Info, generateCleanHashcode());
+            ss << myUploadFilename << "." << mySeg;
 
-                        for (mySeg = fromseg; mySeg <= segments; mySeg++) {
-                                LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%mySeg);
-                                state = Status::Uploading;
-				ss.str("");
-
-                                ss << myUploadFilename << "." << mySeg;
-
-                                if (myMailBox->uploadRequest(ss.str(), address, mySeg) == 0){
-                                        LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%mySeg);
-                                        state = Status::Uploaded;
-                                }
-                                else {
-                                    LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%mySeg);
-                                    state = Status::SegmentError;
-                                }
-                        }
-                        LOG(Log::Info, boost::format( "Upload zakonczony!" ));
-                        downloadDone = true;
-                         state = Status::Finished;
-                        
- 		} else
- 			LOG(Log::Info, boost::format( "Logowanie nie powiodlo sie, przerywam." ));
-                        downloadDone = true;
-                        state = Status::FileError;
-	}
-
+            if (myMailBox->uploadRequest(ss.str(), address, mySeg) == 0){
+                LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%mySeg);
+                state = Status::Uploaded;
+            }
+            else {
+                LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%mySeg);
+                state = Status::SegmentError;
+            }
+        }
+        LOG(Log::Info, boost::format( "Upload zakonczony!" ));
+        downloadDone = true;
+        state = Status::Finished;
 	return 0;
 }
 
