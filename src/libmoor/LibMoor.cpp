@@ -13,7 +13,7 @@ CLibMoor::CLibMoor()
 	: mySeg(0),
 		selected(0),
 		downloadDone(false),
-                uploadDone(false),
+                started(false),
                 downloadPaused(false)
 {
 }
@@ -66,8 +66,9 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 
 //		validMailbox = true;
 
-		myMailBox = MailboxFactory::Instance().Create(mailbox, login, passwd);
+                myMailBox = MailboxFactory::Instance().Create(mailbox, login, passwd);
 		if (myMailBox) {
+                        started = true;
 			LOG(Log::Info, boost::format( "Logowanie do:  %1%" )
 			               %myHash->getInfo().accounts[selected].name);
                         state = Status::Connecting;
@@ -233,6 +234,7 @@ int CLibMoor::selectUploadMailBox(std::string login, std::string passwd, std::st
 
         myMailBox = MailboxFactory::Instance().Create(myUploadMailbox, myLogin, myPasswd);
         if (myMailBox){
+            started = true;
             LOG(Log::Info, boost::format( "Logowanie do:  %1%" ) %upload_mailbox);
 // 		LOG(Log::Info, boost::format( "Logowanie do: ...") );
             state = Status::Connecting;

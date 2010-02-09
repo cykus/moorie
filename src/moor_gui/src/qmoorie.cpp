@@ -92,16 +92,16 @@ void QMoorie::createActions()
     if(iconSize > 32) iconSize = 48;
 
 #if QT_VERSION >= 0x040600
-    addDownloadAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Nowe pobieranie"), this);
-    addUploadAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Nowe wysyłanie"), this);
+    addDownloadAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Pobierz"), this);
+    addUploadAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Wyślij"), this);
     settingsAct = new QAction(QIcon::fromTheme("configure", QIcon(":images/hi"+QString::number(iconSize)+"-configure.png")),tr("&Ustawienia"),this);
     pauseAct = new QAction(QIcon::fromTheme("media-playback-pause", QIcon(":images/hi"+QString::number(iconSize)+"-media-playback-pause.png")),tr("Wstrzymaj wszystko"),this);
     removeAct = new QAction(QIcon::fromTheme("list-remove", QIcon(":images/hi"+QString::number(iconSize)+"-list-remove.png")),tr("&Usuń"),this);
     aboutAct = new QAction(QIcon::fromTheme("help-about", QIcon(":images/hi"+QString::number(iconSize)+"-help-about.png")), tr("&O programie"), this);
     exitAct = new QAction(QIcon::fromTheme("application-exit", QIcon(":images/hi"+QString::number(iconSize)+"-application-exit.png")), tr("Zakończ"), this);
 #else
-    addDownloadAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png"), tr("&Nowy"), this);
-    addUploadAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png"), tr("&Nowy"), this);
+    addDownloadAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png"), tr("&Pobierz"), this);
+    addUploadAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png"), tr("&Wyślij"), this);
     settingsAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-configure.png"),tr("&Ustawienia"), this);
     pauseAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-media-playback-pause.png"),tr("Wstrzymaj wszystko"), this);
     removeAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-remove.png"),tr("&Usuń"),this);
@@ -300,7 +300,7 @@ void QMoorie::refreshStatuses()
     double allSpeedSend = 0;
     for (int i = 0; i < downloadInstanceV.size(); ++i)
     {
-        if(downloadInstanceV.at(i)->Instance->downloadDone && !downloadInstanceV.at(i)->pobrano)
+        if(downloadInstanceV.at(i)->Instance->downloadDone && !downloadInstanceV.at(i)->pobrano && downloadInstanceV.at(i)->Instance->started)
         {
             Status status = downloadInstanceV.at(i)->Instance->getDownloadStatus();
 
@@ -351,7 +351,7 @@ void QMoorie::refreshStatuses()
     }
     for (int i = 0; i < downloadInstanceV.size(); ++i)
     {
-        if(!downloadInstanceV.at(i)->Instance->downloadDone)
+        if(!downloadInstanceV.at(i)->Instance->downloadDone && downloadInstanceV.at(i)->Instance->started)
         {
             Status status = downloadInstanceV.at(i)->Instance->getDownloadStatus();
             if(!(downloadInstanceV.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
@@ -412,9 +412,10 @@ void QMoorie::refreshStatuses()
             }
         }
     }
+
     for (int i = 0; i < uploadInstanceV.size(); ++i)
     {
-        if(uploadInstanceV.at(i)->Instance->downloadDone && !uploadInstanceV.at(i)->wyslano)
+        if(uploadInstanceV.at(i)->Instance->downloadDone && !uploadInstanceV.at(i)->wyslano && uploadInstanceV.at(i)->Instance->started)
         {
             Status status = uploadInstanceV.at(i)->Instance->getUploadStatus();
             if(status.state == Status::Uploaded || status.state == Status::Finished)
@@ -463,7 +464,7 @@ void QMoorie::refreshStatuses()
     }
     for (int i = 0; i < uploadInstanceV.size(); ++i)
     {
-        if(!uploadInstanceV.at(i)->Instance->downloadDone)
+        if(!uploadInstanceV.at(i)->Instance->downloadDone && uploadInstanceV.at(i)->Instance->started)
         {
             Status status = uploadInstanceV.at(i)->Instance->getUploadStatus();
             if(!(uploadInstanceV.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
