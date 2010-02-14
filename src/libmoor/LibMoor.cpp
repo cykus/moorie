@@ -185,8 +185,8 @@ int CLibMoor::selectUploadMailBox(std::string login, std::string passwd, std::st
 			address.push_back(adressee.substr(i2, i));
 			i2=i+1;
 		}
-		else if(i == (adr_size))
-			address.push_back(adressee.substr(i2,i));
+		else if(i == (adr_size-1))
+			address.push_back(adressee.substr(i2,i+1));
 	}
         myUploadMailbox = result_sth[2]; // TODO - wybieranie skrzynki po id;
 	return 0;
@@ -252,22 +252,30 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 
                         LOG(Log::Info, generateCleanHashcode());
 
-			for (int i=fromseg; i <= segments; i++) {
-				LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%i);
-                state = Status::Uploading;
+                        for (mySeg = fromseg; mySeg <= segments; mySeg++) {
+                                LOG(Log::Info, boost::format( "Upload segmentu: %1%" )	%mySeg);
+                                state = Status::Uploading;
 				ss.str("");
 
-				ss << myUploadFilename << "." << i;
-				if (myMailBox->uploadRequest(ss.str(), address, i) == 0)
-					LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%i);
-				else
-					LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%i);
-			}
+                                ss << myUploadFilename << "." << mySeg;
+
+                                if (myMailBox->uploadRequest(ss.str(), address, mySeg) == 0){
+                                        LOG(Log::Info, boost::format( "Segment %1% wrzucony" )	%mySeg);
+                                        state = Status::Uploaded;
+                                }
+                                else {
+                                    LOG(Log::Error, boost::format( "Nie udalo sie wrzucic segmentu nr %1% " )	%mySeg);
+                                    state = Status::SegmentError;
+                                }
+                        }
                         LOG(Log::Info, boost::format( "Upload zakonczony!" ));
-                        state = Status::Uploaded;
+                        downloadDone = true;
+                         state = Status::Finished;
+                        
  		} else
  			LOG(Log::Info, boost::format( "Logowanie nie powiodlo sie, przerywam." ));
-                        state = Status::ConnectionError;
+                        downloadDone = true;
+                        state = Status::FileError;
 	}
 
 	return 0;
@@ -276,6 +284,7 @@ int CLibMoor::startUpload(unsigned int fromseg) {
 std::string CLibMoor::generateCleanHashcode() {
 	MoorhuntHashEncoder *hashEncoder;
 	hashEncoder = new MoorhuntHashEncoder();
+
 
         std::string downpass = myDownPasswd;
         std::string editpass = myEditPasswd;
@@ -305,10 +314,15 @@ std::string CLibMoor::addMirror(std::string editpass, std::string orighash, std:
 	return newhash;
 }
 
-Status CLibMoor::getStatus() {
-	Status s(mySeg, myMailBox->getSpeed(), myMailBox->getBytesRead(),
+Status CLibMoor::getDownloadStatus() {
+        Status s(mySeg, myMailBox->getDownloadSpeed(), myMailBox->getBytesRead(),
                  myHash->getInfo().accounts[selected].name, state);
 	return s;
+}
+Status CLibMoor::getUploadStatus() {
+        Status s(mySeg, myMailBox->getUploadSpeed(), myMailBox->getBytesSend(),
+                 myUploadMailbox, state);
+        return s;
 }
 void CLibMoor::pauseDownload() {
         if(myMailBox->pauseDownload()) downloadPaused = true;
@@ -334,4 +348,10 @@ unsigned int CLibMoor::getLastSegment(const std::string& filePath) {
 	}
 
 	return segment;
+}
+int CLibMoor::getMyUploadNumOfSeg(){
+    return myUploadNumOfSeg;
+}
+std::string CLibMoor::getMyUploadFileCRC(){
+    return myUploadFileCRC;
 }

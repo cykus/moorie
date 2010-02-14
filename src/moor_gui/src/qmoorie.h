@@ -31,12 +31,14 @@
 
 #include "aboutdialog.h"
 #include "newdownloaddialog.h"
+#include "newuploaddialog.h"
 #include "configdialog.h"
 #include "infodialog.h"
 #include "mysystemtrayicon.h"
 #include "mytablewidget.h"
 #include "tabledelegate.h"
 #include "downloadinstance.h"
+#include "uploadinstance.h"
 #include "statusesthread.h"
 #include "tools.h"
 // moorie
@@ -78,7 +80,8 @@ class QMoorie:public QMainWindow
     QMenu *contextMenu;
     QMenu *tableMenu;
 
-    QAction *addAct;
+    QAction *addDownloadAct;
+    QAction *addUploadAct;
     QAction *aboutAct;
     QAction *exitAct;
     QAction *aboutQtAct;
@@ -89,16 +92,16 @@ class QMoorie:public QMainWindow
 
     QToolBar *fileToolBar;
 
-    QStringList headerH;
-
     quint64 allBytesRead; //!< Całkowity rozmiar pobranych danych
+    quint64 allBytesSend; //!< Całkowity rozmiar wysłanych danych
     mySystemTrayIcon *tray; //!< Klasa dziedzicząca po QTableWidget
-    myTableWidget *tabela; //!< Klasa dziedzicząca po QTableWidget
+    myTableWidget *downloadTable; //!< Klasa dziedzicząca po QTableWidget
+    myTableWidget *uploadTable; //!< Klasa dziedzicząca po QTableWidget
     statusesThread statuses;
     QVector<downloadInstance*> downloadInstanceV; //!< Wektor instancji klasy downloadInstance
-//    QVector<uploadInstance*> uploadInstance; //!< Wektor instancji klasy uploadInstance
+    QVector<uploadInstance*> uploadInstanceV; //!< Wektor instancji klasy uploadInstance
 
-    void createTable(); //!< Tworzy myTableview dla karty pobieranie
+    void createTable(); //!< Tworzy myTableview dla kart pobieranie i wysyłanie
     void createToolBars(); //!< Tworzy pasek narzędziowy
     void createActions(); //!< Tworzy akcje dla przycisków
     void readConfigFile(); //!< Wczytuje konfigurację z pliku
@@ -106,8 +109,10 @@ class QMoorie:public QMainWindow
     void setTray(); //!< Ustawia ikonkę w tacce systemowej
     void loadDownloads(); //!< Wczytuje listę plików do pobrania z poprzedniej sesji
     void saveDownloads(); //!< Zapisuje listę plików aktualnie pobieranych
+    void loadUploads(); //!< Wczytuje listę plików do wysłania z poprzedniej sesji
+    void saveUploads(); //!< Zapisuje listę plików aktualnie wysyłanych
     void addDownloadInstance(QString, QString, QString = ""); //!< Tworzymy nową instację pobierania
-    void addUploadInstance(QString, QString, QString = ""); //!< Tworzymy nową instację wysyłania
+    void addUploadInstance(QString, QVector<mirrorMailbox*>, QString, QString, int, int); //!< Tworzymy nową instację wysyłania
     bool showExitAppConfirmDialog();
 
 
@@ -128,6 +133,7 @@ public:
     
 public Q_SLOTS:
     void showNewDownloadDialog(); //!< Wyświetla okno dodawania pliku do pobrania
+    void showNewUploadDialog(); //!< Wyświetla okno dodawania pliku do wysłania
     void showAboutDialog(); //!< Wyświetla okno O programie
     void showInfoDialog(); //!< Wyświetla okno z informacją o danym pliku
     void showConfigDialog(); //!< Wyświetla okno konfiguracyjne
@@ -136,6 +142,8 @@ public Q_SLOTS:
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
     void removeDownload(); //!< Usuwa pobieranie wybranego pliku
     void pauseDownload(); //!< Wstrzymuje/Wznawia pobieranie wybranego pliku
+    void removeUpload(); //!< Usuwa wysyłanie wybranego pliku
+    void pauseUpload(); //!< Wstrzymuje/Wznawia wysyłanie wybranego pliku
     void refreshStatuses();
 };
 #endif

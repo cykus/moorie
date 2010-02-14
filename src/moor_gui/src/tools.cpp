@@ -33,6 +33,8 @@ QString fileSize( quint64 bytes )
         return QString( "%1 MB" ).arg( qreal(bytes) / mb, 0, 'f', 2 );
     if( bytes >= kb )
         return QString( "%1 KB" ).arg( bytes / kb );
+    if( bytes < kb )
+        return QString( "0 KB" );
     return QString::number( bytes );
 }
 bool checkXDG()

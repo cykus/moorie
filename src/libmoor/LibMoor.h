@@ -21,15 +21,19 @@ class CLibMoor {
                 bool downloadPaused;
                 bool uploadDone;
 
-		Status getStatus();
+                Status getDownloadStatus();
+                Status getUploadStatus();
                 void pauseDownload();
                 void unpauseDownload();
+                int getMyUploadNumOfSeg();
+                std::string getMyUploadFileCRC();
 
 		// upload
                 int selectUploadMailBox(std::string login, std::string passwd, std::string adressee, std::string downPasswd, std::string editPasswd);
 		int splitFile(std::string filename, int size);
 		int startUpload(unsigned int fromseg);
 		std::string addMirror(std::string editpass, std::string orighash, std::string mboxaddr, std::string mboxpass); // adding mirror to hashcode
+                std::string generateCleanHashcode(); // clear hashcode generator
 
 	private:
 		/**
@@ -38,8 +42,6 @@ class CLibMoor {
 		 * @return Last downloaded segment.
 		 */
 		unsigned int getLastSegment(const std::string& filePath);
-
-		std::string generateCleanHashcode(); // clear hashcode generator
 
 		boost::shared_ptr<Hash> myHash;
 		CMailBox* myMailBox;

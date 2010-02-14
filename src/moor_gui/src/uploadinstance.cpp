@@ -19,23 +19,96 @@
  */
 #include "uploadinstance.h"
 
-
-uploadInstance::uploadInstance(QString file, QString user, QString addresses, QString pass, QString dpass, QString epass,
-                               int msize, int fromseg):
+uploadInstance::uploadInstance(QString file, QVector<mirrorMailbox*> mirrorMailboxes, QString dpass, QString epass, int msize, int fromseg):
         file(file),
-        user(user),
-        pass(pass),
-        addresses(addresses),
+        mirrorMailboxes(mirrorMailboxes),
         dpass(dpass),
         epass(epass),
         msize(msize),
         fromseg(fromseg),
-        wyslano(false)
+        wyslano(false),
+        totalSegments(0)
 {
+    loadMailboxesFromFile();
 }
 void uploadInstance::run()
 {
-    Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), addresses.toStdString(), dpass.toStdString(), epass.toStdString());
+    user = uploadMailboxes.first()->username;
+    pass = uploadMailboxes.first()->password;
+    Instance = new CLibMoor();
+//    qDebug() << "user: " << user;
+//    qDebug() << "pass: " << pass;
+//    qDebug() << "getToUsernames: " << getToUsernames();
+//    qDebug() << "dpass: " << dpass;
+//    qDebug() << "epass: " << epass;
+//    qDebug() << "file: " << file;
+//    qDebug() << "msize: " << msize;
+//    qDebug() << "fromseg: " << fromseg;
+    Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), getToUsernames().toStdString(), dpass.toStdString(), epass.toStdString());
     Instance -> splitFile(file.toStdString(), msize);
     Instance -> startUpload(fromseg);
+}
+void uploadInstance::loadMailboxesFromFile()
+{
+    QDomDocument dokument_xml;
+    QFile dokument(Zmienne().configPath+"mailboxes.xml");
+    dokument.open( QIODevice::ReadOnly );
+    dokument_xml.setContent( &dokument );
+    dokument.close();
+
+    QDomNode mailboxes;
+    mailboxes = dokument_xml.documentElement();
+
+    QDomNode mailbox, item;
+    mailbox = mailboxes.firstChild();
+
+    while(!mailbox.isNull())
+    {
+        QDomElement login,pass;
+
+        item = mailbox.namedItem("login");
+        login = item.toElement();
+        item = mailbox.namedItem("password");
+        pass = item.toElement();
+
+        uploadMailboxes.append(new mirrorMailbox());
+
+        uploadMailboxes.last()->username = login.text();
+        uploadMailboxes.last()->password = pass.text();
+
+        mailbox = mailbox.nextSibling();
+    }
+}
+QString uploadInstance::getToUsernames()
+{
+    QString usernames = "";
+    for(int i = 0; i < mirrorMailboxes.count(); ++i)
+    {
+        if(i>0) usernames += ",";
+        usernames += mirrorMailboxes.at(i)->username;
+    }
+    return usernames;
+}
+QString uploadInstance::generateInfo()
+{
+    QString info = "Plik: \n" + fileName +"\n\n";
+    info = info + "Hasło pobierania: " + dpass + "\n";
+    info = info + "Hasło edycji: " + epass + "\n\n";
+    info += "Mirrory:\n\n";
+    for(int i = 0; i < mirrorMailboxes.count(); ++i)
+    {
+        info = info + "Login: " + mirrorMailboxes.at(i)->username + "\n";
+        info = info + "Hasło: " + mirrorMailboxes.at(i)->password + "\n\n";
+    }
+    QString hashcode;
+    hashcode.fromStdString(Instance->generateCleanHashcode());
+    info = info + "Czysty hashcode:\n" + hashcode + "\n\n";
+
+    info = info + "Hashcode z mirrorami:\n";
+    for(int i = 0; i < mirrorMailboxes.count(); ++i)
+    {
+       hashcode.fromStdString(Instance->addMirror(epass.toStdString(),hashcode.toStdString(),mirrorMailboxes.at(i)->username.toStdString(),mirrorMailboxes.at(i)->password.toStdString()));
+    }
+    info = info + hashcode + "\n\n";
+    return info;
 }

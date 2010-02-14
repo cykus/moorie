@@ -14,8 +14,12 @@ CMailBox::CMailBox(const std::string &name, const std::string &usr, const std::s
 	, prefweight(0)
 	, scoreNeedsUpdate(true)
 	, validAccount(true)
-	, bytesRead( 0 )
+        , allBytesSend( 0 )
+        , bytesSend( 0 )
         , allBytesRead( 0 )
+        , bytesRead ( 0 )
+        , uploadSpeed( 0 )
+        , downloadSpeed( 0 )
 {
 	handle = curl_easy_init();
 	curl_easy_setopt(handle, CURLOPT_AUTOREFERER, 1);
@@ -25,7 +29,7 @@ CMailBox::CMailBox(const std::string &name, const std::string &usr, const std::s
 	curl_easy_setopt(handle, CURLOPT_HEADER, 0);
 	curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, CMailBox::_writeData);
 	curl_easy_setopt(handle, CURLOPT_WRITEDATA, this);
-	curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0); // don't verify peer certificates
+        curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0); // don't verify peer certificates
 	//curl_easy_setopt(handle, CURLOPT_FORBID_REUSE, 1);
 	//curl_easy_setopt(handle, CURLOPT_FRESH_CONNECT, 1);
 //  	curl_easy_setopt(handle, CURLOPT_VERBOSE, 1);
@@ -60,8 +64,6 @@ void CMailBox::setCookie( std::string cookie ) const
 std::string& CMailBox::doGet(std::string url, bool  header)
 {
 //	mutex::scoped_lock lock( speedMutex );
-	bytesRead = 0;
-	startTime = boost::posix_time::microsec_clock::universal_time();
 //	lock.unlock();
 	this->url = url;
 //	LOG(Log::Debug, "GET: " + url);
@@ -74,6 +76,15 @@ std::string& CMailBox::doGet(std::string url, bool  header)
         {
                 LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
         }
+        else
+        {
+            if (segDownload == true) {
+                CURLcode res;
+                res = curl_easy_getinfo(handle, CURLINFO_SIZE_DOWNLOAD, &bytesRead);
+                if (res == CURLE_OK)
+                    allBytesRead += bytesRead;
+            }
+        }
         //LOG(Log::Debug,"Before request");
 	requestComplete();
 	return this->result;
@@ -82,8 +93,6 @@ std::string& CMailBox::doGet(std::string url, bool  header)
 std::string& CMailBox::doPost(std::string url, std::string vars, bool header)
 {
 //	mutex::scoped_lock lock( speedMutex );
-	bytesRead = 0;
-	startTime = boost::posix_time::microsec_clock::universal_time();
 //	lock.unlock();
 	this->url = url;
 	this->vars = vars;
@@ -98,6 +107,7 @@ std::string& CMailBox::doPost(std::string url, std::string vars, bool header)
         {
 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
+
 	requestComplete();
 	return this->result;
 }
@@ -120,6 +130,7 @@ std::string& CMailBox::doSMTPUpload(std::string server, std::string login, std::
 }
 
 std::string& CMailBox::doHTTPUpload(std::string url, std::string filename, bool header) {
+
 	struct curl_httppost* post = NULL;
 	struct curl_httppost* last = NULL;
 	struct curl_slist *headerlist=NULL;
@@ -149,6 +160,11 @@ std::string& CMailBox::doHTTPUpload(std::string url, std::string filename, bool 
 	{
 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
+        else
+        {
+            curl_easy_getinfo(handle, CURLINFO_SIZE_UPLOAD, &bytesSend);
+            allBytesSend += bytesSend;
+        }
 
 // 	curl_formfree(post);
 // 	curl_slist_free_all (headerlist);
@@ -238,7 +254,6 @@ size_t CMailBox::writeData(void *buffer, size_t size, size_t nmem)
 //	LOG(Log::Trace, format("read %d bytes") % n);
 
 //	mutex::scoped_lock lock( speedMutex );
-	bytesRead += n;
 //	lock.unlock();
 
 //	if (getState() == Mailbox::DownloadIP)
@@ -248,7 +263,6 @@ size_t CMailBox::writeData(void *buffer, size_t size, size_t nmem)
 	if (segDownload == true) {
 		tmp_file -> write(static_cast<char *>(buffer), n);
 //		cout << "Bytes readed: " << bytesRead << " Writed: " << n << endl;
-                allBytesRead += n;
 	}
 	else
 	{
@@ -261,7 +275,7 @@ size_t CMailBox::writeData(void *buffer, size_t size, size_t nmem)
 			this->buffer = new char [CMailBox::BUFFER_SIZE];
 		memcpy(this->buffer + bufferPos, buffer, n);
 		bufferPos += n;
-		this->buffer[bufferPos] = 0;
+                this->buffer[bufferPos] = 0;
 	}
 	if ( stopFlag ) {
 		//TODO
@@ -424,21 +438,41 @@ CMailBox::countAvailableSegments(unsigned int segment) {
 }
 
 unsigned int CMailBox::getBytesRead() {
-        return allBytesRead;
+    CURLcode res;
+    res = curl_easy_getinfo(handle, CURLINFO_SIZE_DOWNLOAD, &bytesRead);
+    if (res == CURLE_OK)
+        return static_cast<int>(allBytesRead+bytesRead);
+    else
+        return static_cast<int>(allBytesRead);
 }
-unsigned int CMailBox::getSpeed() const
+unsigned int CMailBox::getBytesSend() {
+    CURLcode res;
+    res = curl_easy_getinfo(handle, CURLINFO_SIZE_UPLOAD, &bytesSend);
+    if (res == CURLE_OK)
+        return static_cast<int>(allBytesSend+bytesSend);
+    else
+        return static_cast<int>(allBytesSend);
+}
+unsigned int CMailBox::getDownloadSpeed() const
 {
-        const boost::posix_time::ptime currTime = boost::posix_time::microsec_clock::universal_time();
-        const boost::posix_time::time_duration d = currTime - startTime;
-        if ( bytesRead > 0 && d.total_seconds() > 0 ) {
-                const double b = ( static_cast<double>( bytesRead ) / d.total_seconds() );
-                return static_cast<int>( b );
-        }
+    CURLcode res;
+    res = curl_easy_getinfo(handle, CURLINFO_SPEED_DOWNLOAD, &downloadSpeed);
+    if (res == CURLE_OK)
+        return static_cast<int>(downloadSpeed);
+    else
+        return 0;
+}
+unsigned int CMailBox::getUploadSpeed() const
+{
+    CURLcode res;
+    res = curl_easy_getinfo(handle, CURLINFO_SPEED_UPLOAD, &uploadSpeed);
+    if (res == CURLE_OK)
+        return static_cast<int>(uploadSpeed);
+    else
         return 0;
 }
 int CMailBox::pauseDownload() {
         CURLcode ret;
-        pausedTime = boost::posix_time::microsec_clock::universal_time();
         ret = curl_easy_pause(handle, CURLPAUSE_ALL);
         if(ret == CURLE_OK)
         {
@@ -455,8 +489,6 @@ int CMailBox::pauseDownload() {
 int CMailBox::unpauseDownload() {
         CURLcode ret;
         ret = curl_easy_pause(handle, CURLPAUSE_CONT);
-        const boost::posix_time::ptime currTime = boost::posix_time::microsec_clock::universal_time();
-        startTime = startTime + (currTime - pausedTime);
         if(ret == CURLE_OK)
         {
             LOG( Log::Info, "Wznowienie pobierania");
