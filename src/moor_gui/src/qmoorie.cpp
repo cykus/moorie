@@ -185,27 +185,8 @@ void QMoorie::createTable()
 }
 void QMoorie::showNewUploadDialog()
 {
-    newUploadDialog *get = new newUploadDialog(this);
-    get->exec();
-    if(get->result())
-    {
-        QTableWidgetItem *mailboxLogin;
-        QTableWidgetItem *mailboxPass;
-        QVector<mirrorMailbox*> mirrorMailboxes;
-        for(int i = 0; i < get->mirrorTable->rowCount(); ++i)
-        {
-            mirrorMailboxes.append(new mirrorMailbox());
+    tray->showHints("Pobrano pomyślnie", "Pobieranie pliku: <br/><b><i>ss</b></i><br/>zakończono pomyślnie.");
 
-            mailboxLogin = get->mirrorTable->item(i, 0);
-            mailboxPass = get->mirrorTable->item(i, 1);
-
-            mirrorMailboxes.last()->username = mailboxLogin->text();
-            mirrorMailboxes.last()->password = mailboxPass->text();
-        }
-        addUploadInstance(get->fileEdit->text(), mirrorMailboxes, get->downPassEdit->text(), get->editPassEdit->text(), get->segSizeSlider->value(), 1);
-        saveUploads();
-    }
-    delete get;
 }
 void QMoorie::showNewDownloadDialog()
 {
@@ -583,11 +564,19 @@ void QMoorie::removeDownload()
         if(downloadInstanceV.at(i)->itemRow == row)
         {
             QString fileName = downloadInstanceV.at(i)->path + downloadInstanceV.at(i)->filename;
-            downloadInstanceV.at(i)->terminate();
-            downloadInstanceV.remove(i);
-            downloadTable->removeRow(row);
-            if (QFile::exists(fileName)) QFile::remove(fileName);
-            if (QFile::exists(fileName + ".seg")) QFile::remove(fileName + ".seg");
+            if(downloadInstanceV.at(i)->Instance->downloadDone)
+            {
+                downloadInstanceV.remove(i);
+                downloadTable->removeRow(row);
+            }
+            else
+            {
+                downloadInstanceV.at(i)->terminate();
+                downloadInstanceV.remove(i);
+                downloadTable->removeRow(row);
+                if (QFile::exists(fileName)) QFile::remove(fileName);
+                if (QFile::exists(fileName + ".seg")) QFile::remove(fileName + ".seg");
+            }
             saveDownloads();
         }
     }
@@ -634,11 +623,18 @@ void QMoorie::removeUpload()
         if(uploadInstanceV.at(i)->itemRow == row)
         {
             QString fileName = uploadInstanceV.at(i)->file;
-            uploadInstanceV.at(i)->terminate();
-            uploadInstanceV.remove(i);
-            uploadTable->removeRow(row);
-            if (QFile::exists(fileName)) QFile::remove(fileName);
-            //if (QFile::exists(fileName + ".seg")) QFile::remove(fileName + ".seg");
+            if(downloadInstanceV.at(i)->Instance->downloadDone)
+            {
+                uploadInstanceV.remove(i);
+                uploadTable->removeRow(row);
+            }
+            else
+            {
+                uploadInstanceV.at(i)->terminate();
+                uploadInstanceV.remove(i);
+                uploadTable->removeRow(row);
+                if (QFile::exists(fileName)) QFile::remove(fileName);
+            }
             saveUploads();
         }
     }

@@ -23,7 +23,24 @@ MACRO (APPEND_CMAKE_INSTALL_RPATH RPATH_DIRS)
   ENDFOREACH ( RPATH_DIR )
 ENDMACRO ( APPEND_CMAKE_INSTALL_RPATH )
 
-APPEND_CMAKE_INSTALL_RPATH("/opt/lib;/usr/local/lib")
+APPEND_CMAKE_INSTALL_RPATH("/opt/lib${LIB_SUFFIX};/usr/local/lib${LIB_SUFFIX}")
+
+if(DEFINED ENABLE_LIB64)
+    if(ENABLE_LIB64)
+      set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS TRUE)
+    else(ENABLE_LIB64)
+      set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS FALSE)
+    endif(ENABLE_LIB64)
+else(DEFINED ENABLE_LIB64)
+    execute_process(COMMAND test -d /lib64 -a ! -L /lib64
+    RESULT_VARIABLE result
+    )
+    if(NOT result)
+      set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS TRUE)
+    else(NOT result)
+      set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS FALSE)
+    endif(NOT result)
+endif(DEFINED ENABLE_LIB64)
 
 option(ENABLE_GUI "Kompilacja wraz z Qmoorie")
 

@@ -46,8 +46,8 @@ void uploadInstance::run()
 //    qDebug() << "fromseg: " << fromseg;
     Instance -> splitFile(file.toStdString(), msize);
     if(!Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), getToUsernames().toStdString(), dpass.toStdString(), epass.toStdString())){
-        //qDebug() << generateInfo();
-        Instance->generateCleanHashcode();
+        qDebug() << generateInfo();
+        //Instance->generateCleanHashcode();
         Instance->startUpload(fromseg);
     }
 }
@@ -112,7 +112,7 @@ QString uploadInstance::generateInfo()
     {
        user = mirrorMailboxes.at(i)->username;
        pass = mirrorMailboxes.at(i)->password;
-       hashcode = Instance->addMirror(epass.toStdString(), hashcode, user.toStdString(), pass.toStdString());
+       hashcode = Instance->addMirror("testowe_haslo", hashcode, "11111@gmail.com", "11111@gmail.com");
     }
     info = info + QString::fromStdString(hashcode) + "\n\n";
     return info;
