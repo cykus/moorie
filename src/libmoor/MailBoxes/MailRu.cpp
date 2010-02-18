@@ -134,8 +134,9 @@ int MailRuMailbox::downloadRequest(int seg)
  	setCookie(auth);
  	page = doGet("http://win.mail.ru/cgi-bin/readmsg"+mylink);
 //	regex re("http://a[a-z]*[0-9].mail.ru/cgi-bin/readmsg/.*?&mode=attachment&channel=");
- 	boost::regex re("<a href=\"(http://a[^\"]*/cgi-bin/readmsg/[^\"]*&mode=attachment&channel=)");
-
+// 	boost::regex re("<a href=\"(http://a[^\"]*/cgi-bin/readmsg/[^\"]*&mode=attachment&channel=)");
+ 	boost::regex re("<a href=\"(http://win.mail.ru/cgi-bin/getattach[^\"]*&mode=attachment&channel=&notype)");
+ 	http://win.mail.ru/cgi-bin/getattach?file=devcpp%2d4.9.9.2_setup.exe.5&id=12643664970000000633;0;1&mode=attachment&channel=&notype
 	boost::smatch match;
 	std::string link;
 	if (boost::regex_search(page,match,re))
