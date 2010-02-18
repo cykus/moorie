@@ -92,16 +92,16 @@ void QMoorie::createActions()
     if(iconSize > 32) iconSize = 48;
 
 #if QT_VERSION >= 0x040600
-    addDownloadAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Nowe pobieranie"), this);
-    addUploadAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Nowe wysyłanie"), this);
+    addDownloadAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Pobierz"), this);
+    addUploadAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Wyślij"), this);
     settingsAct = new QAction(QIcon::fromTheme("configure", QIcon(":images/hi"+QString::number(iconSize)+"-configure.png")),tr("&Ustawienia"),this);
     pauseAct = new QAction(QIcon::fromTheme("media-playback-pause", QIcon(":images/hi"+QString::number(iconSize)+"-media-playback-pause.png")),tr("Wstrzymaj wszystko"),this);
     removeAct = new QAction(QIcon::fromTheme("list-remove", QIcon(":images/hi"+QString::number(iconSize)+"-list-remove.png")),tr("&Usuń"),this);
     aboutAct = new QAction(QIcon::fromTheme("help-about", QIcon(":images/hi"+QString::number(iconSize)+"-help-about.png")), tr("&O programie"), this);
     exitAct = new QAction(QIcon::fromTheme("application-exit", QIcon(":images/hi"+QString::number(iconSize)+"-application-exit.png")), tr("Zakończ"), this);
 #else
-    addDownloadAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png"), tr("&Nowy"), this);
-    addUploadAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png"), tr("&Nowy"), this);
+    addDownloadAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png"), tr("&Pobierz"), this);
+    addUploadAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png"), tr("&Wyślij"), this);
     settingsAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-configure.png"),tr("&Ustawienia"), this);
     pauseAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-media-playback-pause.png"),tr("Wstrzymaj wszystko"), this);
     removeAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-remove.png"),tr("&Usuń"),this);
@@ -185,27 +185,8 @@ void QMoorie::createTable()
 }
 void QMoorie::showNewUploadDialog()
 {
-    newUploadDialog *get = new newUploadDialog(this);
-    get->exec();
-    if(get->result())
-    {
-        QTableWidgetItem *mailboxLogin;
-        QTableWidgetItem *mailboxPass;
-        QVector<mirrorMailbox*> mirrorMailboxes;
-        for(int i = 0; i < get->mirrorTable->rowCount(); ++i)
-        {
-            mirrorMailboxes.append(new mirrorMailbox());
+    tray->showHints("Pobrano pomyślnie", "Pobieranie pliku: <br/><b><i>ss</b></i><br/>zakończono pomyślnie.");
 
-            mailboxLogin = get->mirrorTable->item(i, 0);
-            mailboxPass = get->mirrorTable->item(i, 1);
-
-            mirrorMailboxes.last()->username = mailboxLogin->text();
-            mirrorMailboxes.last()->password = mailboxPass->text();
-        }
-        addUploadInstance(get->fileEdit->text(), mirrorMailboxes, get->downPassEdit->text(), get->editPassEdit->text(), get->segSizeSlider->value(), 1);
-        saveUploads();
-    }
-    delete get;
 }
 void QMoorie::showNewDownloadDialog()
 {
@@ -300,7 +281,7 @@ void QMoorie::refreshStatuses()
     double allSpeedSend = 0;
     for (int i = 0; i < downloadInstanceV.size(); ++i)
     {
-        if(downloadInstanceV.at(i)->Instance->downloadDone && !downloadInstanceV.at(i)->pobrano)
+        if(downloadInstanceV.at(i)->Instance->downloadDone && !downloadInstanceV.at(i)->pobrano && downloadInstanceV.at(i)->Instance->started)
         {
             Status status = downloadInstanceV.at(i)->Instance->getDownloadStatus();
 
@@ -351,7 +332,7 @@ void QMoorie::refreshStatuses()
     }
     for (int i = 0; i < downloadInstanceV.size(); ++i)
     {
-        if(!downloadInstanceV.at(i)->Instance->downloadDone)
+        if(!downloadInstanceV.at(i)->Instance->downloadDone && downloadInstanceV.at(i)->Instance->started)
         {
             Status status = downloadInstanceV.at(i)->Instance->getDownloadStatus();
             if(!(downloadInstanceV.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
@@ -412,9 +393,10 @@ void QMoorie::refreshStatuses()
             }
         }
     }
+
     for (int i = 0; i < uploadInstanceV.size(); ++i)
     {
-        if(uploadInstanceV.at(i)->Instance->downloadDone && !uploadInstanceV.at(i)->wyslano)
+        if(uploadInstanceV.at(i)->Instance->downloadDone && !uploadInstanceV.at(i)->wyslano && uploadInstanceV.at(i)->Instance->started)
         {
             Status status = uploadInstanceV.at(i)->Instance->getUploadStatus();
             if(status.state == Status::Uploaded || status.state == Status::Finished)
@@ -463,7 +445,7 @@ void QMoorie::refreshStatuses()
     }
     for (int i = 0; i < uploadInstanceV.size(); ++i)
     {
-        if(!uploadInstanceV.at(i)->Instance->downloadDone)
+        if(!uploadInstanceV.at(i)->Instance->downloadDone && uploadInstanceV.at(i)->Instance->started)
         {
             Status status = uploadInstanceV.at(i)->Instance->getUploadStatus();
             if(!(uploadInstanceV.at(i)->Instance->downloadPaused) && status.state != Status::FileError)
@@ -582,11 +564,19 @@ void QMoorie::removeDownload()
         if(downloadInstanceV.at(i)->itemRow == row)
         {
             QString fileName = downloadInstanceV.at(i)->path + downloadInstanceV.at(i)->filename;
-            downloadInstanceV.at(i)->terminate();
-            downloadInstanceV.remove(i);
-            downloadTable->removeRow(row);
-            if (QFile::exists(fileName)) QFile::remove(fileName);
-            if (QFile::exists(fileName + ".seg")) QFile::remove(fileName + ".seg");
+            if(downloadInstanceV.at(i)->Instance->downloadDone)
+            {
+                downloadInstanceV.remove(i);
+                downloadTable->removeRow(row);
+            }
+            else
+            {
+                downloadInstanceV.at(i)->terminate();
+                downloadInstanceV.remove(i);
+                downloadTable->removeRow(row);
+                if (QFile::exists(fileName)) QFile::remove(fileName);
+                if (QFile::exists(fileName + ".seg")) QFile::remove(fileName + ".seg");
+            }
             saveDownloads();
         }
     }
@@ -633,11 +623,18 @@ void QMoorie::removeUpload()
         if(uploadInstanceV.at(i)->itemRow == row)
         {
             QString fileName = uploadInstanceV.at(i)->file;
-            uploadInstanceV.at(i)->terminate();
-            uploadInstanceV.remove(i);
-            uploadTable->removeRow(row);
-            if (QFile::exists(fileName)) QFile::remove(fileName);
-            //if (QFile::exists(fileName + ".seg")) QFile::remove(fileName + ".seg");
+            if(downloadInstanceV.at(i)->Instance->downloadDone)
+            {
+                uploadInstanceV.remove(i);
+                uploadTable->removeRow(row);
+            }
+            else
+            {
+                uploadInstanceV.at(i)->terminate();
+                uploadInstanceV.remove(i);
+                uploadTable->removeRow(row);
+                if (QFile::exists(fileName)) QFile::remove(fileName);
+            }
             saveUploads();
         }
     }
@@ -792,10 +789,10 @@ void QMoorie::loadUploads()
             QDomElement username,password;
             mirrorMailboxes.append(new mirrorMailbox());
 
-            item = upload.namedItem("username");
+            item = mailbox.namedItem("username");
             username = item.toElement();
 
-            item = upload.namedItem("password");
+            item = mailbox.namedItem("password");
             password = item.toElement();
 
             mirrorMailboxes.last()->username = username.text();

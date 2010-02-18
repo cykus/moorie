@@ -237,10 +237,12 @@ int main(int argc, char **argv) {
              try
                 {
                         Instance = new CLibMoor();
-                        Instance -> selectUploadMailBox(ul, up, to, dp, ep);
                         Instance -> splitFile(upload_filename, ss);
-                        Instance -> startUpload(fromseg);
-						delete Instance;
+                        if(!Instance -> selectUploadMailBox(ul, up, to, dp, ep)){
+                            std::cerr << Instance->generateCleanHashcode() << "\n";
+                            Instance -> startUpload(fromseg);
+                        }
+                        delete Instance;
 
                 }
                 catch (std::exception& e)

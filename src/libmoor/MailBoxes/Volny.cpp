@@ -94,8 +94,7 @@ int VolnyMailbox::downloadRequest(int seg)
 }
 
 int VolnyMailbox::uploadRequest(std::string filename, std::vector<std::string> to, int seg) {
-	std::string segCRC = getSegCRC(filename);
-	std::cout<<"ok";
+        std::string segCRC = getSegCRC(filename);
 	boost::smatch match;
 	//boost::regex re("<a href=\"list\\.php\\?id\\=(.{,50})\">Doručené</a");
 	boost::regex re("<a href=\"(compose.php\\?.{0,50}\")>Napsat zprávu</a>");

@@ -443,7 +443,7 @@ unsigned int CMailBox::getBytesRead() {
     if (res == CURLE_OK)
         return static_cast<int>(allBytesRead+bytesRead);
     else
-        return static_cast<int>(allBytesRead);
+        return static_cast<int>(0);
 }
 unsigned int CMailBox::getBytesSend() {
     CURLcode res;
@@ -451,7 +451,7 @@ unsigned int CMailBox::getBytesSend() {
     if (res == CURLE_OK)
         return static_cast<int>(allBytesSend+bytesSend);
     else
-        return static_cast<int>(allBytesSend);
+        return static_cast<int>(0);
 }
 unsigned int CMailBox::getDownloadSpeed() const
 {

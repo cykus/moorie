@@ -44,9 +44,12 @@ void uploadInstance::run()
 //    qDebug() << "file: " << file;
 //    qDebug() << "msize: " << msize;
 //    qDebug() << "fromseg: " << fromseg;
-    Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), getToUsernames().toStdString(), dpass.toStdString(), epass.toStdString());
     Instance -> splitFile(file.toStdString(), msize);
-    Instance -> startUpload(fromseg);
+    if(!Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), getToUsernames().toStdString(), dpass.toStdString(), epass.toStdString())){
+        qDebug() << generateInfo();
+        //Instance->generateCleanHashcode();
+        Instance->startUpload(fromseg);
+    }
 }
 void uploadInstance::loadMailboxesFromFile()
 {
@@ -91,7 +94,7 @@ QString uploadInstance::getToUsernames()
 }
 QString uploadInstance::generateInfo()
 {
-    QString info = "Plik: \n" + fileName +"\n\n";
+    QString info = "Plik: " + fileName +"\n\n";
     info = info + "Hasło pobierania: " + dpass + "\n";
     info = info + "Hasło edycji: " + epass + "\n\n";
     info += "Mirrory:\n\n";
@@ -100,15 +103,17 @@ QString uploadInstance::generateInfo()
         info = info + "Login: " + mirrorMailboxes.at(i)->username + "\n";
         info = info + "Hasło: " + mirrorMailboxes.at(i)->password + "\n\n";
     }
-    QString hashcode;
-    hashcode.fromStdString(Instance->generateCleanHashcode());
-    info = info + "Czysty hashcode:\n" + hashcode + "\n\n";
+    std::string hashcode = Instance->generateCleanHashcode();
+
+    info = info + "Czysty hashcode:\n" + QString::fromStdString(hashcode) + "\n\n";
 
     info = info + "Hashcode z mirrorami:\n";
     for(int i = 0; i < mirrorMailboxes.count(); ++i)
     {
-       hashcode.fromStdString(Instance->addMirror(epass.toStdString(),hashcode.toStdString(),mirrorMailboxes.at(i)->username.toStdString(),mirrorMailboxes.at(i)->password.toStdString()));
+       user = mirrorMailboxes.at(i)->username;
+       pass = mirrorMailboxes.at(i)->password;
+       hashcode = Instance->addMirror("testowe_haslo", hashcode, "11111@gmail.com", "11111@gmail.com");
     }
-    info = info + hashcode + "\n\n";
+    info = info + QString::fromStdString(hashcode) + "\n\n";
     return info;
 }

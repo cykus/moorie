@@ -19,7 +19,7 @@ class CLibMoor {
 		int startDownload();
 		bool downloadDone;
                 bool downloadPaused;
-                bool uploadDone;
+                bool started;
 
                 Status getDownloadStatus();
                 Status getUploadStatus();
