@@ -26,7 +26,11 @@ add_library (moor SHARED Decoder.cpp
                          BinaryStream.cpp)
 
 if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lm") 
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lm") 
+    SET(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -lm")
     target_link_libraries (moor ${PROJECT_SOURCE_DIR}/src/libmoor/Libraries/libmoorhunt64.a)
+    
 elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "i686" OR ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86" OR ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i586")
     target_link_libraries (moor ${PROJECT_SOURCE_DIR}/src/libmoor/Libraries/libmoorhunt.a)
 endif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
