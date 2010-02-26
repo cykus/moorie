@@ -45,6 +45,8 @@ public Q_SLOTS:
 class mySystemTrayIcon: public QSystemTrayIcon
 {
     QDBusInterface *KNotify;
+    bool UseFreedesktopStandard;
+
 public:
     mySystemTrayIcon(QWidget *parent = 0);
     void showHints(QString, QString, int seconds = 10);

@@ -28,7 +28,7 @@ namespace {
   }
 
   const bool registered = MailboxFactory::Instance().
-                                          Register("mail.ru", Create);
+                                          Register("mail.ru", Create); //!< rejestracja danej skrzynki
 }
 
 MailRuMailbox::MailRuMailbox(const std::string &name, const std::string &usr, const std::string &passwd)
@@ -39,31 +39,24 @@ MailRuMailbox::MailRuMailbox(const std::string &name, const std::string &usr, co
 
 int MailRuMailbox::loginRequest()
 {
-
-//	LOG_ENTER("MailRuMailbox::loginRequest");
 	const std::string vars = std::string("Login=")
 		+ escape(getUser()) + "&Domain=" + escape("mail.ru") + "&Password="
-		+ escape(getPassword()) + "&level=1";
-//	setState(Mailbox::LoginIP);
-	page = doPost("http://win.mail.ru/cgi-bin/auth", vars,true);
-	boost::smatch match;
-//	page = doGet("http://win.mail.ru/cgi-bin/msglist?folder=0");
+                + escape(getPassword()) + "&level=1"; //!< parametry dla strony logowania
+
+        page = doPost("http://win.mail.ru/cgi-bin/auth", vars,true); //!< logowanie do skrzynki, zmienna page zawiera stronę główną skrzynki
+        boost::smatch match;
+
 
 	boost::regex re("Set-Cookie: (Mpop=.*?;)");
 	if (boost::regex_search(page, match, re))
 	{
-		auth = match[1];
-//		LOG(Log::Debug, "auth=" + auth);
-//		setState(Mailbox::LoginDone); // logged in
-		return 0;
+                auth = match[1];
+                return 0; //!< Jeśli logowanie zakończyło sie powodzeniem
 	}
 	else
-	{
-//		setState(Mailbox::LoginError); //login failure
-//		throw MoorieException("Login failed");
-		return 1;
-	}
-//	setState(Mailbox::Connected);
+        {
+                return 1; //!< Jeśli logowanie zakończyło sie niepowodzeniem
+        }
 }
 
 void MailRuMailbox::logoutRequest()
@@ -75,15 +68,14 @@ void MailRuMailbox::logoutRequest()
 
 void MailRuMailbox::getHeadersRequest()
 {
-//	LOG_ENTER("MailRuMailbox::getHeadersRequest");
-	std::string url("http://win.mail.ru/cgi-bin/msglist?folder=0");
+        std::string url("http://win.mail.ru/cgi-bin/msglist?folder=0"); //!< adres strony głównej skrzynki
 	//setState(Mailbox::ReadHeadersIP); // request headers
 // 	totalEmails = 0;
 //     setCookie(auth);
- 	page = doGet(url);
+        page = doGet(url); //!< Pobranie zawartości strony
 
-	int msgcnt = 0; // number of message headers for current page
-	int pgcnt = 0;
+        int msgcnt = 0; //!< number of message headers for current page
+        int pgcnt = 0;//!< numer strony jak przypuszczam
 	std::stringstream numstr;
 	boost::match_results<std::string::const_iterator> match;
 
@@ -94,30 +86,30 @@ void MailRuMailbox::getHeadersRequest()
 	boost::smatch match3;
 	boost::regex_search(page,match3,re3);
 	std::istringstream pg(match3[1]);
-	int pages;
+        int pages; //!< liczba stron z mailami
 	pg >> pages;
-	pages = pages / 25 + 1;
-//	cout << "match: " << match3[1] << " stron: " << pages;
+        pages = pages / 25 + 1;
+
 	LOG(Log::Debug,boost::format( "match: "+match3[1]+" stron: %d" ) % pages );
 	while (pgcnt < pages) {
-		pgcnt++;
+                pgcnt++; //!< zwiększenie numeru strony o jeden
 		numstr.str("");
-		numstr << pgcnt;
-		std::string url = "http://win.mail.ru/cgi-bin/msglist?folder=0&page="+numstr.str();
-		page = doGet(url);
+                numstr << pgcnt; //!< konwersja numeru strony do tekstu
+                std::string url = "http://win.mail.ru/cgi-bin/msglist?folder=0&page="+numstr.str(); //!< adres trony do pobrania
+                page = doGet(url); //!< pobranie kolejnej strony z mailami
 
 		boost::regex mheadre("<td class=letavtor title=.*?</a></td>.*?<td class=lettem><a href=\"readmsg([^\"]*)\"[^<>]*>([^<>]*)</a></td>");
 	//	const string page = getPage();
 		std::string::const_iterator pbegin = page.begin();
 		std::string::const_iterator pend = page.end();
-		while (boost::regex_search(pbegin, pend, match, mheadre, boost::match_default)) {
-			EmailHeader hdr(match[1], match[2]);
+                while (boost::regex_search(pbegin, pend, match, mheadre, boost::match_default)) { //!< wyszukawanie kolejnych nagłówków
+                        EmailHeader hdr(match[1], match[2]); //!< pierwszy parametr to unikalne ID wiadomości a drugi to temat wiadomości email
 //			cout << match[1] << " " << match[2] << endl;
 //			cout << "Add header: " << hdr.subject << endl;
 //			LOG(Log::Debug, "Add header: " + hdr.subject + " Link: " + match[1]);
-			addHeader(hdr);
+                        addHeader(hdr); //!< dodanie do kolejki danych o segmencie
 //			addHeaderSubject(hdr.subject);
-			addHeaderLink(match[1]);
+                        addHeaderLink(match[1]); //!< dodanie unikalnego ID segmentu do kolejki
 			pbegin = match[2].second;
 			++msgcnt;
 		}
@@ -129,24 +121,24 @@ void MailRuMailbox::getHeadersRequest()
 
 int MailRuMailbox::downloadRequest(int seg)
 {
-	std::string mylink = getLink(seg);
+        std::string mylink = getLink(seg); //!< pobranie adresu wiadomości zawierającej dany segment
 //	cout << mylink << endl;
- 	setCookie(auth);
- 	page = doGet("http://win.mail.ru/cgi-bin/readmsg"+mylink);
+        setCookie(auth); //!< wstawienie cookie do nagłówka
+        page = doGet("http://win.mail.ru/cgi-bin/readmsg"+mylink); //!< pobranie strony zawierającej segment
 //	regex re("http://a[a-z]*[0-9].mail.ru/cgi-bin/readmsg/.*?&mode=attachment&channel=");
 // 	boost::regex re("<a href=\"(http://a[^\"]*/cgi-bin/readmsg/[^\"]*&mode=attachment&channel=)");
- 	boost::regex re("<a href=\"(http://win.mail.ru/cgi-bin/getattach[^\"]*&mode=attachment&channel=&notype)");
+        boost::regex re("<a href=\"(http://win.mail.ru/cgi-bin/getattach[^\"]*&mode=attachment&channel=&notype)");
 // 	http://win.mail.ru/cgi-bin/getattach?file=devcpp%2d4.9.9.2_setup.exe.5&id=12643664970000000633;0;1&mode=attachment&channel=&notype
 	boost::smatch match;
 	std::string link;
-	if (boost::regex_search(page,match,re))
+        if (boost::regex_search(page,match,re)) //!< wyszukiwanie załącznika
 	{
 		link=match[1];
 //		cout << link << endl;
 		LOG(Log::Debug, link);
-		downloadSeg();
-		doGet(link);
-		if (downloadSegDone() == 0)
+                downloadSeg();  //!< utworzenie pliku tymczasowego na dysku ?
+                doGet(link); //!< pobieranie załącznika (segmentu)
+                if (downloadSegDone() == 0) //!< sprawdzenie czy segment został pobrany
 			return 0;
 		else
 			return 1;

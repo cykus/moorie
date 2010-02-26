@@ -41,6 +41,7 @@ void diall::setPosition()
 }
 mySystemTrayIcon::mySystemTrayIcon(QWidget *parent) : QSystemTrayIcon(parent)
 {
+    UseFreedesktopStandard = false;
 }
 void mySystemTrayIcon::showHints(QString  title, QString  message, int seconds )
 {
@@ -54,7 +55,7 @@ void mySystemTrayIcon::showHints(QString  title, QString  message, int seconds )
             delete (KNotify);
             KNotify = new QDBusInterface("org.freedesktop.Notifications",
                                          "/org/freedesktop/Notifications", "org.freedesktop.Notifications");
-
+            UseFreedesktopStandard = true;
         }
         if (KNotify->isValid())
         {
@@ -62,6 +63,9 @@ void mySystemTrayIcon::showHints(QString  title, QString  message, int seconds )
             args.append("Qmoorie");
             args.append(0U);
             args.append("");
+            /* the new spec doesn't have this */
+            if (!UseFreedesktopStandard)
+                args.append("");
             args.append("Qmoorie - " + title);
             args.append(message);
             args.append(QStringList());
