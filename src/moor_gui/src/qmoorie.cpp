@@ -221,18 +221,18 @@ void QMoorie::addUploadInstance(QString file, QVector<mirrorMailbox*> mirrorMail
     uploadTable->setRowCount(uploadTable->rowCount() + 1);
     
     QTableWidgetItem *nazwaPliku2 = new QTableWidgetItem(QString::number(uploadInstanceV.count() - 1));
-    uploadTable->setItem(uploadInstanceV.last()->itemRow, 0, nazwaPliku2);
+    uploadTable->setItem(uploadInstanceV.last()->itemRow, ID, nazwaPliku2);
     QTableWidgetItem *nazwaPliku = new QTableWidgetItem(uploadInstanceV.last()->fileName);
-    uploadTable->setItem(uploadInstanceV.last()->itemRow, 1, nazwaPliku);
+    uploadTable->setItem(uploadInstanceV.last()->itemRow, NAME, nazwaPliku);
     QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(uploadInstanceV.last()->fileSize));
-    uploadTable->setItem(uploadInstanceV.last()->itemRow, 2, rozmiarPliku);
+    uploadTable->setItem(uploadInstanceV.last()->itemRow, SIZE, rozmiarPliku);
     QTableWidgetItem *wyslanoPliku = new QTableWidgetItem("?");
-    uploadTable->setItem(uploadInstanceV.last()->itemRow, 3, wyslanoPliku);
+    uploadTable->setItem(uploadInstanceV.last()->itemRow, REMAINING, wyslanoPliku);
     QTableWidgetItem *postepPobierania = new QTableWidgetItem;
     postepPobierania->setData(Qt::DisplayRole, 0);
-    uploadTable->setItem(uploadInstanceV.last()->itemRow, 4, postepPobierania);
+    uploadTable->setItem(uploadInstanceV.last()->itemRow, PROGRESS, postepPobierania);
     QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("?");
-    uploadTable->setItem(uploadInstanceV.last()->itemRow, 5, SzybkoscPobierania);
+    uploadTable->setItem(uploadInstanceV.last()->itemRow, SPEED, SzybkoscPobierania);
 }
 
 /**
@@ -261,18 +261,18 @@ void QMoorie::addDownloadInstance(QString hash, QString pass, QString path)
     else downloadInstanceV.last()->pobranoLS = 0;
 
     QTableWidgetItem *nazwaPliku2 = new QTableWidgetItem(QString::number(downloadInstanceV.count() - 1));
-    downloadTable->setItem(downloadInstanceV.last()->itemRow, 0, nazwaPliku2);
+    downloadTable->setItem(downloadInstanceV.last()->itemRow, ID, nazwaPliku2);
     QTableWidgetItem *nazwaPliku = new QTableWidgetItem(downloadInstanceV.last()->filename);
-    downloadTable->setItem(downloadInstanceV.last()->itemRow, 1, nazwaPliku);
+    downloadTable->setItem(downloadInstanceV.last()->itemRow, NAME, nazwaPliku);
     QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(downloadInstanceV.last()->size));
-    downloadTable->setItem(downloadInstanceV.last()->itemRow, 2, rozmiarPliku);
+    downloadTable->setItem(downloadInstanceV.last()->itemRow, SIZE, rozmiarPliku);
     QTableWidgetItem *pozostaloPliku = new QTableWidgetItem("?");
-    downloadTable->setItem(downloadInstanceV.last()->itemRow, 3, pozostaloPliku);
+    downloadTable->setItem(downloadInstanceV.last()->itemRow, REMAINING, pozostaloPliku);
     QTableWidgetItem *postepPobierania = new QTableWidgetItem;
     postepPobierania->setData(Qt::DisplayRole, 0);
-    downloadTable->setItem(downloadInstanceV.last()->itemRow, 4, postepPobierania);
+    downloadTable->setItem(downloadInstanceV.last()->itemRow, PROGRESS, postepPobierania);
     QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("?");
-    downloadTable->setItem(downloadInstanceV.last()->itemRow, 5, SzybkoscPobierania);
+    downloadTable->setItem(downloadInstanceV.last()->itemRow, SPEED, SzybkoscPobierania);
 
 }
 
@@ -294,16 +294,16 @@ void QMoorie::refreshStatuses()
             if(status.state == Status::Downloaded || status.state == Status::Finished)
             {
                 QTableWidgetItem *PozostaloPliku = new QTableWidgetItem("0.00 MB");
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 3, PozostaloPliku);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, REMAINING, PozostaloPliku);
                 QTableWidgetItem *postepPobierania = new QTableWidgetItem;
                 postepPobierania->setData(Qt::DisplayRole, 100);
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 4, postepPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, PROGRESS, postepPobierania);
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 5, SzybkoscPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, SPEED, SzybkoscPobierania);
                 QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
                 "\n " + QString::number(downloadInstanceV.at(i)->totalSegments) + "/" + QString::number(downloadInstanceV.at(i)->totalSegments));
                 statusPobierania->setForeground(QColor(0, 0, 200, 255));
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 6, statusPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, STATUS, statusPobierania);
             }
             if(status.state == Status::Finished)
             {
@@ -319,14 +319,14 @@ void QMoorie::refreshStatuses()
             if(status.state == Status::FileError)
             {
                 QTableWidgetItem *PozostaloPliku = new QTableWidgetItem("0.00 MB");
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 3, PozostaloPliku);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, REMAINING, PozostaloPliku);
                 QTableWidgetItem *postepPobierania = new QTableWidgetItem;
                 postepPobierania->setData(Qt::DisplayRole, 0);
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 4, postepPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, PROGRESS, postepPobierania);
                 QTableWidgetItem *statusPobierania = new QTableWidgetItem("Nie udało się pobrać pliku z żadnej ze skrzynek");
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 6, statusPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, STATUS, statusPobierania);
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 5, SzybkoscPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, SPEED, SzybkoscPobierania);
                 for(int j = 0 ; j < 8; j++ )
                 {
                     downloadTable->item(downloadInstanceV.at(i)->itemRow, j)->setBackground(QColor(255, 0, 0, 200));
@@ -346,11 +346,11 @@ void QMoorie::refreshStatuses()
                 allBytesReadSession += status.bytesRead;
 
                 QTableWidgetItem *PozostaloPliku = new QTableWidgetItem(fileSize(downloadInstanceV.at(i)->size - downloadInstanceV.at(i)->pobranoLS - status.bytesRead));
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 3, PozostaloPliku);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, REMAINING, PozostaloPliku);
                 int percentDownloaded = 100.0f * (status.bytesRead + downloadInstanceV.at(i)->pobranoLS)  / downloadInstanceV.at(i)->size;
                 QTableWidgetItem *postepPobierania = new QTableWidgetItem;
                 postepPobierania->setData(Qt::DisplayRole, percentDownloaded);
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 4, postepPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, PROGRESS, postepPobierania);
 
                 allSpeedRead += static_cast<double>( status.speed) / 1024.0f;
                 const double speed( static_cast<double>( status.speed) / 1024.0f );
@@ -366,7 +366,7 @@ void QMoorie::refreshStatuses()
                 }
                 s << speed;
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(QString::fromStdString(s.str()) + " KB/s");
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 5, SzybkoscPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, SPEED, SzybkoscPobierania);
                 QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
                                                                           "\n " + QString::number(status.downloadSegment+1) + "/" + QString::number(downloadInstanceV.at(i)->totalSegments));
                 if(status.state == Status::Connecting || status.state == Status::Connected)
@@ -381,17 +381,17 @@ void QMoorie::refreshStatuses()
                 {
                     statusPobierania->setForeground(QColor(255, 0, 0, 200));
                 }
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 6, statusPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, STATUS, statusPobierania);
                 //qDebug() << status.downloadSegment;
                 QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 7, SkrzynkaPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, MAILBOX, SkrzynkaPobierania);
             }
             else if(downloadInstanceV.at(i)->Instance->downloadPaused)
             {
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 5, SzybkoscPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, SPEED, SzybkoscPobierania);
                 QTableWidgetItem *statusPobierania = new QTableWidgetItem("Wstrzymane");
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 6, statusPobierania);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, STATUS, statusPobierania);
                 for(int j = 0 ; j < 7; j++ )
                 {
                     downloadTable->item(downloadInstanceV.at(i)->itemRow, j)->setBackground(QColor(255, 255, 0, 100));
@@ -408,16 +408,16 @@ void QMoorie::refreshStatuses()
             if(status.state == Status::Uploaded || status.state == Status::Finished)
             {
                 QTableWidgetItem *PozostaloPliku = new QTableWidgetItem("0.00 MB");
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 3, PozostaloPliku);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, REMAINING, PozostaloPliku);
                 QTableWidgetItem *postepPobierania = new QTableWidgetItem;
                 postepPobierania->setData(Qt::DisplayRole, 100);
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 4, postepPobierania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, PROGRESS, postepPobierania);
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 5, SzybkoscPobierania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, SPEED, SzybkoscPobierania);
                 QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
                 "\n " + QString::number(uploadInstanceV.at(i)->totalSegments) + "/" + QString::number(uploadInstanceV.at(i)->totalSegments));
                 statusPobierania->setForeground(QColor(0, 0, 200, 255));
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 6, statusPobierania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, STATUS, statusPobierania);
             }
             if(status.state == Status::Finished)
             {
@@ -432,14 +432,14 @@ void QMoorie::refreshStatuses()
             if(status.state == Status::FileError && !uploadInstanceV.at(i)->wyslano)
             {
                 QTableWidgetItem *PozostaloPliku = new QTableWidgetItem("0.00 MB");
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 3, PozostaloPliku);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, REMAINING, PozostaloPliku);
                 QTableWidgetItem *postepPobierania = new QTableWidgetItem;
                 postepPobierania->setData(Qt::DisplayRole, 0);
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 4, postepPobierania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, PROGRESS, postepPobierania);
                 QTableWidgetItem *statusPobierania = new QTableWidgetItem("Nie udało się Wysłać pliku");
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 6, statusPobierania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, STATUS, statusPobierania);
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 5, SzybkoscPobierania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, SPEED, SzybkoscPobierania);
                 for(int j = 0 ; j < 8; j++ )
                 {
                     uploadTable->item(uploadInstanceV.at(i)->itemRow, j)->setBackground(QColor(255, 0, 0, 200));
@@ -459,11 +459,11 @@ void QMoorie::refreshStatuses()
                 allBytesSendSession += status.bytesRead;
 
                 QTableWidgetItem *WyslanoPliku = new QTableWidgetItem(fileSize(status.bytesRead));
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 3, WyslanoPliku);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, REMAINING, WyslanoPliku);
                 int percentDownloaded = 100.0f * status.bytesRead  / uploadInstanceV.at(i)->fileSize;
                 QTableWidgetItem *postepWysylania = new QTableWidgetItem;
                 postepWysylania->setData(Qt::DisplayRole, percentDownloaded);
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 4, postepWysylania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, PROGRESS, postepWysylania);
 
                 allSpeedSend += static_cast<double>( status.speed) / 1024.0f;
                 const double speed( static_cast<double>( status.speed) / 1024.0f );
@@ -479,7 +479,7 @@ void QMoorie::refreshStatuses()
                 }
                 s << speed;
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(QString::fromStdString(s.str()) + " KB/s");
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 5, SzybkoscPobierania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, SPEED, SzybkoscPobierania);
                 uploadInstanceV.at(i)->fromseg = status.downloadSegment;
                 QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
                                                                           "\n " + QString::number(status.downloadSegment) + "/" + QString::number(uploadInstanceV.at(i)->totalSegments));
@@ -495,17 +495,17 @@ void QMoorie::refreshStatuses()
                 {
                     statusPobierania->setForeground(QColor(255, 0, 0, 200));
                 }
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 6, statusPobierania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, STATUS, statusPobierania);
                 //qDebug() << status.downloadSegment;
                 QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 7, SkrzynkaPobierania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, MAILBOX, SkrzynkaPobierania);
             }
             else if(uploadInstanceV.at(i)->Instance->downloadPaused)
             {
                 QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 5, SzybkoscPobierania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, SPEED, SzybkoscPobierania);
                 QTableWidgetItem *statusPobierania = new QTableWidgetItem("Wstrzymane");
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 6, statusPobierania);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, STATUS, statusPobierania);
                 for(int j = 0 ; j < 8; j++ )
                 {
                     uploadTable->item(uploadInstanceV.at(i)->itemRow, j)->setBackground(QColor(255, 255, 0, 100));
@@ -591,9 +591,9 @@ void QMoorie::removeDownload()
     {
         downloadInstanceV.at(i)->itemRow = i;
         QTableWidgetItem *nazwaPliku = new QTableWidgetItem(downloadInstanceV.at(i)->filename);
-        downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 1, nazwaPliku);
+        downloadTable->setItem(downloadInstanceV.at(i)->itemRow, NAME, nazwaPliku);
         QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(downloadInstanceV.at(i)->size));
-        downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 2, rozmiarPliku);
+        downloadTable->setItem(downloadInstanceV.at(i)->itemRow, SIZE, rozmiarPliku);
 
 
     }
@@ -609,9 +609,9 @@ void QMoorie::pauseDownload()
             {
                 downloadInstanceV.at(i)->Instance->unpauseDownload();
                 QTableWidgetItem *nazwaPliku = new QTableWidgetItem(downloadInstanceV.at(i)->filename);
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 1, nazwaPliku);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, NAME, nazwaPliku);
                 QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(downloadInstanceV.at(i)->size));
-                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, 2, rozmiarPliku);
+                downloadTable->setItem(downloadInstanceV.at(i)->itemRow, SIZE, rozmiarPliku);
             }
             else
             {
@@ -649,9 +649,9 @@ void QMoorie::removeUpload()
     {
         uploadInstanceV.at(i)->itemRow = i;
         QTableWidgetItem *nazwaPliku = new QTableWidgetItem(uploadInstanceV.at(i)->fileName);
-        uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 1, nazwaPliku);
+        uploadTable->setItem(uploadInstanceV.at(i)->itemRow, NAME, nazwaPliku);
         QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(uploadInstanceV.at(i)->fileSize));
-        uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 2, rozmiarPliku);
+        uploadTable->setItem(uploadInstanceV.at(i)->itemRow, SIZE, rozmiarPliku);
 
 
     }
@@ -667,9 +667,9 @@ void QMoorie::pauseUpload()
             {
                 uploadInstanceV.at(i)->Instance->unpauseDownload();
                 QTableWidgetItem *nazwaPliku = new QTableWidgetItem(uploadInstanceV.at(i)->fileName);
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 1, nazwaPliku);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, NAME, nazwaPliku);
                 QTableWidgetItem *rozmiarPliku = new QTableWidgetItem(fileSize(uploadInstanceV.at(i)->fileSize));
-                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, 2, rozmiarPliku);
+                uploadTable->setItem(uploadInstanceV.at(i)->itemRow, SIZE, rozmiarPliku);
             }
             else
             {
