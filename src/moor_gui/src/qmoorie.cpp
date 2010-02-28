@@ -187,8 +187,27 @@ void QMoorie::createTable()
 }
 void QMoorie::showNewUploadDialog()
 {
-    tray->showHints("Pobrano pomyślnie", "Pobieranie pliku: <br/><b><i>ss</b></i><br/>zakończono pomyślnie.");
+    newUploadDialog *get = new newUploadDialog(this);
+    get->exec();
+    if(get->result())
+    {
+        QTableWidgetItem *mailboxLogin;
+        QTableWidgetItem *mailboxPass;
+        QVector<mirrorMailbox*> mirrorMailboxes;
+        for(int i = 0; i < get->mirrorTable->rowCount(); ++i)
+        {
+            mirrorMailboxes.append(new mirrorMailbox());
 
+            mailboxLogin = get->mirrorTable->item(i, 0);
+            mailboxPass = get->mirrorTable->item(i, 1);
+
+            mirrorMailboxes.last()->username = mailboxLogin->text();
+            mirrorMailboxes.last()->password = mailboxPass->text();
+        }
+        addUploadInstance(get->fileEdit->text(), mirrorMailboxes, get->downPassEdit->text(), get->editPassEdit->text(), get->segSizeSlider->value(), 1);
+        saveUploads();
+    }
+    delete get;
 }
 void QMoorie::showNewDownloadDialog()
 {

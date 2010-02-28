@@ -28,7 +28,7 @@
 #include <QTimer>
 #include "singleton.h"
 
-class diall : public QWidget
+class diall : public QFrame
 {
     Q_OBJECT
     void mousePressEvent(QMouseEvent * event);

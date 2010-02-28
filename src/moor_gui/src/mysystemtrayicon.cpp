@@ -20,7 +20,10 @@
 #include "mysystemtrayicon.h"
 diall::diall(QRect pos, QWidget *parent): pos(pos)
 {
+    
     setWindowFlags(Qt::ToolTip | Qt::Widget);
+    setFrameStyle(QFrame::WinPanel | QFrame::Raised);
+    setLineWidth ( 3 );
     setWindowModality(Qt::NonModal);
     //setStyleSheet( QString("QLabel {border: 2px solid  %1}" ).arg(QColor(QPalette::WindowText).name()));
     timer = new QTimer(this);
