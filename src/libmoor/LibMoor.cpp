@@ -80,8 +80,10 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 				LOG(Log::Info, "Sprawdzanie listy segmentow...");
 				myMailBox->getHeadersRequest();
 				unsigned int segments = myMailBox->countAvailableSegments(mySeg);
+				bool found;
 				if (segments == 0) {
-					LOG(Log::Info, "--== Nie znaleziono zadnego segmentu! ==--");
+					LOG(Log::Info, "--== Nie znaleziono zadnego segmentu! Zmieniam skrzynke ==--");
+					found = false;
 				} else {
 					int tmpseg;
 					bool missing;
@@ -99,12 +101,14 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 						LOG(Log::Info, "Na skrzynce brakuje segmentu(ow), pobieranie moze sie nie udac");
 						// TODO - pytanie o zmiane skrzynki?
 					}	
+					found = true;
 				}
-						
-				state = Status::Downloading;
-				if (startDownload() == 0) {
-					LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %(mySeg + 1) );
-					state = Status::SegmentError;
+				if (found == true) {
+					state = Status::Downloading;
+					if (startDownload() == 0) {
+						LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %(mySeg + 1) );
+						state = Status::SegmentError;
+					}
 				}
 				
 			}
