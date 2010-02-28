@@ -437,6 +437,22 @@ CMailBox::countAvailableSegments(unsigned int segment) {
 	return segments;
 }
 
+unsigned int CMailBox::checkAvailableSegment(unsigned int segment) {
+	std::stringstream ss;
+	ss << segment;
+	std::string id = ss.str();
+	
+	boost::regex hreg("\\[" + fileCRC + "\\].+?\\[" + id + "\\]"); // match "[crc][id]"
+	boost::smatch match;
+	for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++) {
+		if (boost::regex_search(it->subject, match, hreg)) {
+			return 1;
+			break;
+		}
+	}
+	return 0;
+}
+
 unsigned int CMailBox::getBytesRead() {
     CURLcode res;
     res = curl_easy_getinfo(handle, CURLINFO_SIZE_DOWNLOAD, &bytesRead);

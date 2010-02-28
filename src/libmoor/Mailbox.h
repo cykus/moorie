@@ -135,6 +135,7 @@ class CMailBox {
 		 * @see getHeadersRequest()
 		 */
 		unsigned int countAvailableSegments(unsigned int segment);
+		unsigned int checkAvailableSegment(unsigned int segment);
                 unsigned int getBytesRead();
                 unsigned int getBytesSend();
                 unsigned int getDownloadSpeed() const;
