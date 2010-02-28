@@ -81,16 +81,32 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 				myMailBox->getHeadersRequest();
 				unsigned int segments = myMailBox->countAvailableSegments(mySeg);
 				if (segments == 0) {
-					LOG(Log::Info, "Found none new segments.");
+					LOG(Log::Info, "--== Nie znaleziono zadnego segmentu! ==--");
+				} else {
+					int tmpseg;
+					bool missing;
+					for (int i = 1; i <= myHash->getInfo().numOfSegments; i++) {
+						tmpseg = myMailBox->checkAvailableSegment(i);
+						if (tmpseg != true) {
+							LOG(Log::Info,  boost::format("--== Uwaga, brakuje segmentu: %1% ==--") %(i));
+							missing = true;
+						}
+					}
+					if (missing != true) {
+						LOG(Log::Info, "Znaleziono wszystkie segmenty, rozpoczynam pobieranie...");
+					}
+					else {
+						LOG(Log::Info, "Na skrzynce brakuje segmentu(ow), pobieranie moze sie nie udac");
+						// TODO - pytanie o zmiane skrzynki?
+					}	
 				}
-				else {
-					LOG(Log::Info, "Found new segments. Downloading...");
-                                        state = Status::Downloading;
-                                        if (startDownload() == 0) {
-                                            LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %(mySeg + 1) );
-                                            state = Status::SegmentError;
-                                        }
+						
+				state = Status::Downloading;
+				if (startDownload() == 0) {
+					LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %(mySeg + 1) );
+					state = Status::SegmentError;
 				}
+				
 			}
 			else {
 				LOG(Log::Info, "Logowanie nie powiodlo sie..." );
