@@ -914,7 +914,7 @@ void QMoorie::readConfigFile()
     Zmienne().PATH = settings.value("PATH", "home").toString();
     Zmienne().LLEVEL = settings.value("LLEVEL", 6).toInt();
     Zmienne().DLEVEL = settings.value("DLEVEL", 2).toInt();
-    Zmienne().NLEVEL = settings.value("NLEVEL", 0).toInt();
+    Zmienne().NLEVEL = settings.value("NLEVEL", 1).toInt();
     Zmienne().RUNINTRAY = settings.value("RUNINTRAY", false).toBool();
     Zmienne().ASKBEFORECLOSE = settings.value("ASKBEFORECLOSE", false).toBool();
     Zmienne().KSEGMENTS = settings.value("KSEGMENTS", true).toBool();

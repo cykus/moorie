@@ -37,7 +37,20 @@ void diall::mousePressEvent(QMouseEvent * event)
 }
 void diall::setPosition()
 {
-    move(pos.x(), pos.y()-height()-5);
+    int x = 0,y = 0;
+    if(pos.x() > width())
+    {
+     x -= width();
+    }
+    if(pos.y() > height())
+    {
+     y -= height();
+    }
+    else
+    {
+     y += pos.height();
+    }
+    move(pos.x()+x, pos.y()+y);
 }
 mySystemTrayIcon::mySystemTrayIcon(QWidget *parent) : QSystemTrayIcon(parent)
 {
@@ -62,7 +75,7 @@ void mySystemTrayIcon::showHints(QString  title, QString  message, int seconds )
             QList<QVariant> args;
             args.append("Qmoorie");
             args.append(0U);
-            args.append("");
+            args.append("qmoorie");
             /* the new spec doesn't have this */
             if (!UseFreedesktopStandard)
                 args.append("");
