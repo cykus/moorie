@@ -66,6 +66,16 @@
     }
 #endif
 
+// Defines for list columns
+#define ID 0
+#define NAME 1
+#define SIZE 2
+#define REMAINING 3
+#define PROGRESS 4
+#define SPEED 5
+#define STATUS 6
+#define MAILBOX 7
+
 namespace Ui
 {
     class MainWindow;
@@ -123,6 +133,7 @@ class QMoorie:public QMainWindow
         virtual ~LogGuiHandle();
         virtual void log(const char *msg);
     };
+
 
 protected:
     void closeEvent(QCloseEvent *event);

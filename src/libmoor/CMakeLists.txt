@@ -1,5 +1,5 @@
 add_library (moor SHARED Decoder.cpp
-                         LibMoor.cpp 
+                         LibMoor.cpp
                          Log.cpp  
                          Mailbox.cpp
                          Mailboxes.cpp  
@@ -7,11 +7,11 @@ add_library (moor SHARED Decoder.cpp
                          Status.cpp 
                          EmailHeader.cpp
                          Tools.cpp
-                         MailBoxes/MailRu.cpp
                          MailBoxes/GMail.cpp
                          MailBoxes/RockCom.cpp
                          MailBoxes/Onet.cpp
                          MailBoxes/Volny.cpp
+                         MailBoxes/MailRu.cpp
                          MailBoxes/OiComBr.cpp
                          MailBoxes/MyNet.cpp
                          MailBoxes/GoogleApps.cpp
