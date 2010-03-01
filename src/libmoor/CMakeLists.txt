@@ -7,6 +7,7 @@ add_library (moor SHARED Decoder.cpp
                          Status.cpp 
                          EmailHeader.cpp
                          Tools.cpp
+##                         MailBoxes/HotmailCom.cpp
                          MailBoxes/GMail.cpp
                          MailBoxes/RockCom.cpp
                          MailBoxes/Onet.cpp

@@ -36,7 +36,7 @@ std::string getMailboxName(int id) {
 //      case GmxCom: return "Gmx.com";
 		case RockCom: return "rock.com";
                 case MaiboxHu : return "mailbox.hu";
-//                case HotmailCom: return "hotmail.com";
+                case HotmailCom: return "hotmail.com";
 //                case InterfreeIt: return "interfree.it";
 //                case TiscaliIt: return "tiscali.it";
                 case VivapolskaTv: return "vivapolska.tv";
