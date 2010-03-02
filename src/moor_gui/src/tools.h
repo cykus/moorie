@@ -21,7 +21,10 @@
 #define TOOLS_H
 
 #include <QString>
+
+#if defined(unix)
 #include <QtDBus/QDBusInterface>
+#endif
 
 QString fileSize(quint64);
 bool checkXDG();

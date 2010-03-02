@@ -64,6 +64,7 @@ void mySystemTrayIcon::showHints(QString  title, QString  message, int seconds )
     if(!Zmienne().NLEVEL) return;
     else if(Zmienne().NLEVEL == 2)
     {
+#if defined(unix)
         KNotify = new QDBusInterface("org.kde.VisualNotifications",
                                      "/VisualNotifications", "org.kde.VisualNotifications");
         if (!KNotify->isValid())
@@ -95,6 +96,7 @@ void mySystemTrayIcon::showHints(QString  title, QString  message, int seconds )
         else{
             Zmienne().NLEVEL = 1;
         }
+#endif
     }
     if(Zmienne().NLEVEL == 1 && seconds>0)
     {

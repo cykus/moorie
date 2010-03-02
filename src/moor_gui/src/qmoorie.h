@@ -52,19 +52,19 @@
 #include <map>
 #include <sstream>
 
-#ifdef Q_OS_WIN
-    #include <windows.h>
-    inline void sleepMs(int ms) {
-    {
-        ::Sleep(ms);
-    }
-#else
+#if defined(unix)
     #include <unistd.h>
     inline void sleepMs(int ms) {
         static const unsigned MilliToMicro = 1000;
         ::usleep(ms * MilliToMicro);
     }
+#else
+    #include <windows.h>
+    inline void sleepMs(int ms) {
+        ::Sleep(ms);
+    }
 #endif
+
 
 // Defines for list columns
 #define ID 0
@@ -76,10 +76,6 @@
 #define STATUS 6
 #define MAILBOX 7
 
-namespace Ui
-{
-    class MainWindow;
-}
 class QMoorie:public QMainWindow
 {
     Q_OBJECT

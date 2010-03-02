@@ -19,8 +19,11 @@
  */
 #ifndef MYSYSTEMTRAYICON_H
 #define MYSYSTEMTRAYICON_H
-#include <QtDBus/QDBusInterface>
+
+#if defined(unix)
+#include <QDBusInterface>
 #include <QDBusReply>
+#endif
 #include <QMouseEvent>
 #include <QSystemTrayIcon>
 #include <QLabel>
@@ -44,9 +47,10 @@ public Q_SLOTS:
 
 class mySystemTrayIcon: public QSystemTrayIcon
 {
+#if defined(unix)
     QDBusInterface *KNotify;
+#endif
     bool UseFreedesktopStandard;
-
 public:
     mySystemTrayIcon(QWidget *parent = 0);
     void showHints(QString, QString, int seconds = 10);

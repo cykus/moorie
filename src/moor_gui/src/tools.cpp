@@ -39,6 +39,7 @@ QString fileSize( quint64 bytes )
 }
 bool checkXDG()
 {   
+#if defined(unix)
     QDBusInterface *notify;
 
     notify = new QDBusInterface("org.kde.VisualNotifications",
@@ -60,4 +61,7 @@ bool checkXDG()
         delete(notify);
         return false;
     }
+#else
+    return false;
+#endif
 }
