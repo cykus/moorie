@@ -108,6 +108,8 @@ class QMoorie:public QMainWindow
     myTableWidget *downloadTable; //!< Klasa dziedzicząca po QTableWidget
     myTableWidget *uploadTable; //!< Klasa dziedzicząca po QTableWidget
     statusesThread statuses;
+    int downloadInstanceIndex;
+    QHash<int, downloadInstance*> downloadInstanceH; //!< Hash instancji klasy downloadInstance
     QVector<downloadInstance*> downloadInstanceV; //!< Wektor instancji klasy downloadInstance
     QVector<uploadInstance*> uploadInstanceV; //!< Wektor instancji klasy uploadInstance
 
