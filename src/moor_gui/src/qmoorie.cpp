@@ -170,8 +170,9 @@ void QMoorie::createTable()
     downloadTable->horizontalHeader()->setStretchLastSection(true);
     downloadHeaderH << "ID" << "Nazwa pliku" << "Rozmiar" << "Pozostało"<< "Postęp " << "Prędkość" << "Status" << "Skrzynka";
     downloadTable->setHorizontalHeaderLabels(downloadHeaderH);
-    downloadTable->hideColumn ( 0 );
-
+    downloadTable->hideColumn( 0 );
+    downloadTable->setSortingEnabled( 1 );
+    downloadTable->sortItems( 1 );
 
     QStringList uploadHeaderH;
     uploadTable = new myTableWidget();
@@ -185,6 +186,8 @@ void QMoorie::createTable()
     uploadHeaderH << "ID" << "Nazwa pliku" << "Rozmiar" << "Wysłano"<< "Postęp " << "Prędkość" << "Status" << "Skrzynka";
     uploadTable->setHorizontalHeaderLabels(uploadHeaderH);
     uploadTable->hideColumn ( 0 );
+    uploadTable->setSortingEnabled( 1 );
+    uploadTable->sortItems( 1 );
 }
 void QMoorie::showNewUploadDialog()
 {
