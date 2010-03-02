@@ -79,7 +79,8 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 	}*/
 
 	int tries = 0;
-	while (tries <= myHash->getInfo().accounts.size() && downloadDone == false) {
+	int baddownloads = 0;
+	while (tries <= myHash->getInfo().accounts.size() || baddownloads <= (myHash->getInfo().accounts.size()*2) && downloadDone == false ) {
 		std::string mailbox = myHash->getInfo().accounts[selected].name;
 		std::string login = myHash->getInfo().accounts[selected].login;
 		std::string passwd = myHash->getInfo().accounts[selected].password;
@@ -93,6 +94,7 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 			               %myHash->getInfo().accounts[selected].name);
                         state = Status::Connecting;
 			if (myMailBox->loginRequest() == 0) {
+				tries = 0;
 				myMailBox->setFileName(path + myHash->getInfo().fileName);
 				myMailBox->setFileCRC(myHash->getInfo().crc);
                                 state = Status::Connected;
@@ -128,6 +130,7 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 					if (startDownload() == 0) {
 						LOG(Log::Info, boost::format("Pobranie segmentu %1% nie powiodlo sie... Przelaczanie skrzynki...") %(mySeg + 1) );
 						state = Status::SegmentError;
+						baddownloads++;
 					}
 				}
 				
