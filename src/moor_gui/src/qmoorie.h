@@ -102,6 +102,7 @@ class QMoorie:public QMainWindow
 
     QToolBar *fileToolBar;
 
+    QBrush backgroundBrush;
     quint64 allBytesRead; //!< Całkowity rozmiar pobranych danych
     quint64 allBytesSend; //!< Całkowity rozmiar wysłanych danych
     mySystemTrayIcon *tray; //!< Klasa dziedzicząca po QTableWidget
@@ -109,9 +110,9 @@ class QMoorie:public QMainWindow
     myTableWidget *uploadTable; //!< Klasa dziedzicząca po QTableWidget
     statusesThread statuses;
     int downloadInstanceIndex;
+    int uploadInstanceIndex;
     QHash<int, downloadInstance*> downloadInstanceH; //!< Hash instancji klasy downloadInstance
-    QVector<downloadInstance*> downloadInstanceV; //!< Wektor instancji klasy downloadInstance
-    QVector<uploadInstance*> uploadInstanceV; //!< Wektor instancji klasy uploadInstance
+    QHash<int, uploadInstance*> uploadInstanceH; //!< Hash instancji klasy uploadInstance
 
     void createTable(); //!< Tworzy myTableview dla kart pobieranie i wysyłanie
     void createToolBars(); //!< Tworzy pasek narzędziowy
