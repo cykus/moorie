@@ -250,7 +250,6 @@ void QMoorie::addUploadInstance(QString file, QVector<mirrorMailbox*> mirrorMail
     uploadTable->setItem(itemRow, SIZE, new QTableWidgetItem(fileSize(uploadInstanceH[itemNumber]->fileSize)));
     uploadTable->setItem(itemRow, REMAINING, new QTableWidgetItem("?"));
     QTableWidgetItem *postepWysylania = new QTableWidgetItem;
-
     postepWysylania->setData(Qt::DisplayRole, 0);
     uploadTable->setItem(itemRow, PROGRESS, postepWysylania);
     uploadTable->setItem(itemRow, SPEED, new QTableWidgetItem("?"));
@@ -592,14 +591,15 @@ void QMoorie::removeDownload()
 }
 void QMoorie::pauseDownload()
 {
-    int itemNumber = downloadTable->item(downloadTable->currentRow(),ID)->text().toInt();
+    int row = downloadTable->currentRow();
+    int itemNumber = downloadTable->item( row, ID )->text().toInt();
 
     if(downloadInstanceH[itemNumber]->Instance->downloadPaused)
     {
         downloadInstanceH[itemNumber]->Instance->unpauseDownload();
         for(int j = 0 ; j < 8; j++ )
         {
-            downloadTable->item(itemNumber, j)->setBackground(backgroundBrush);
+            downloadTable->item(row, j)->setBackground(backgroundBrush);
         }
     }
     else
@@ -627,14 +627,15 @@ void QMoorie::removeUpload()
 }
 void QMoorie::pauseUpload()
 {
-    int itemNumber = uploadTable->item(uploadTable->currentRow(), ID)->text().toInt();
+    int row = uploadTable->currentRow();
+    int itemNumber = uploadTable->item( row, ID )->text().toInt();
 
     if(uploadInstanceH[itemNumber]->Instance->downloadPaused)
     {
         uploadInstanceH[itemNumber]->Instance->unpauseDownload();
         for(int j = 0 ; j < 8; j++ )
         {
-            uploadTable->item(itemNumber, j)->setBackground(backgroundBrush);
+            uploadTable->item(row, j)->setBackground(backgroundBrush);
         }
     }
     else
