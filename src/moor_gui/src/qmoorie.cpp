@@ -310,6 +310,7 @@ void QMoorie::refreshStatuses()
     for (int i = 0; i < downloadTable->rowCount(); ++i)
     {
         int itemNumber = downloadTable->item(i,ID)->text().toInt();
+        if(itemNumber < 0) continue;
         Status status = downloadInstanceH[itemNumber]->Instance->getDownloadStatus();
         if(downloadInstanceH[itemNumber]->Instance->downloadDone && !downloadInstanceH[itemNumber]->pobrano && downloadInstanceH[itemNumber]->Instance->started)
         {
@@ -406,6 +407,7 @@ void QMoorie::refreshStatuses()
     for (int i = 0; i < uploadTable->rowCount(); ++i)
     {
         int itemNumber = uploadTable->item(i,ID)->text().toInt();
+        if(itemNumber < 0) continue;
         if(uploadInstanceH[itemNumber]->Instance->downloadDone && !uploadInstanceH[itemNumber]->wyslano && uploadInstanceH[itemNumber]->Instance->started)
         {
             Status status = uploadInstanceH[itemNumber]->Instance->getUploadStatus();
@@ -431,6 +433,7 @@ void QMoorie::refreshStatuses()
                 }
                 tray->showHints("Wysłano pomyślnie", "Wysyłanie pliku: <br/><b><i>"+uploadInstanceH[itemNumber]->fileName+"</b></i><br/>zakończono pomyślnie.");
                 uploadInstanceH.remove(i);
+                downloadTable->item(i,ID)->setText("-1");
                 saveUploads();
             }
             if(status.state == Status::FileError && !uploadInstanceH[itemNumber]->wyslano)
@@ -566,18 +569,19 @@ void QMoorie::removeDownload()
 {
     int row = downloadTable->currentRow();
     int itemNumber = downloadTable->item(row, ID)->text().toInt();
-
+    qDebug() << "row: " << row << "  itemNumber: " << itemNumber;
     QString fileName = downloadInstanceH[itemNumber]->path + downloadInstanceH[itemNumber]->filename;
     if(downloadInstanceH[itemNumber]->Instance->downloadDone)
     {
-        downloadInstanceH.remove(itemNumber);
         downloadTable->removeRow(row);
+        downloadInstanceH.remove(itemNumber);
+
     }
     else
     {
+        downloadTable->removeRow(row);
         downloadInstanceH[itemNumber]->terminate();
         downloadInstanceH.remove(itemNumber);
-        downloadTable->removeRow(row);
         if (QFile::exists(fileName)) QFile::remove(fileName);
         if (QFile::exists(fileName + ".seg")) QFile::remove(fileName + ".seg");
     }
@@ -693,23 +697,25 @@ void QMoorie::saveDownloads()
     downloads = dokument_xml.createElement( "downloads" );
     dokument_xml.appendChild(downloads);
 
-    for(int i = 0; i < downloadInstanceH.size(); ++i) {
+    QHashIterator<int, downloadInstance*> it(downloadInstanceH);
+    while (it.hasNext()) {
+        it.next();
         download = dokument_xml.createElement( "download" );
         downloads.appendChild(download);
 
         hash = dokument_xml.createElement( "hash");
         download.appendChild(hash);
-        val = dokument_xml.createTextNode(downloadInstanceH[i]->hash);
+        val = dokument_xml.createTextNode(it.value()->hash);
         hash.appendChild(val);
 
         pass = dokument_xml.createElement( "pass");
         download.appendChild(pass);
-        val = dokument_xml.createTextNode(downloadInstanceH[i]->pass);
+        val = dokument_xml.createTextNode(it.value()->pass);
         pass.appendChild(val);
 
         path = dokument_xml.createElement( "path");
         download.appendChild(path);
-        val = dokument_xml.createTextNode(downloadInstanceH[i]->path);
+        val = dokument_xml.createTextNode(it.value()->path);
         path.appendChild(val);
     }
     QFile dokument(Zmienne().configPath+"hashcodes.xml");
@@ -786,52 +792,54 @@ void QMoorie::saveUploads()
     uploads = dokument_xml.createElement( "uploads" );
     dokument_xml.appendChild(uploads);
 
-    for(int i = 0; i < uploadInstanceH.size(); ++i) {
+    QHashIterator<int, uploadInstance*> it(uploadInstanceH);
+    while (it.hasNext()) {
+        it.next();
         upload = dokument_xml.createElement( "upload" );
         uploads.appendChild(upload);
 
         file = dokument_xml.createElement( "file");
         upload.appendChild(file);
-        val = dokument_xml.createTextNode(uploadInstanceH[i]->file);
+        val = dokument_xml.createTextNode(it.value()->file);
         file.appendChild(val);
 
         mailboxes = dokument_xml.createElement( "mailboxes" );
         upload.appendChild(mailboxes);
 
-        for(int j = 0; j < uploadInstanceH[i]->mirrorMailboxes.size(); ++j)
+        for(int j = 0; j < it.value()->mirrorMailboxes.size(); ++j)
         {
             mailbox = dokument_xml.createElement( "mailbox" );
             mailboxes.appendChild(mailbox);
 
             username = dokument_xml.createElement( "username");
             mailbox.appendChild(username);
-            val = dokument_xml.createTextNode(uploadInstanceH[i]->mirrorMailboxes.at(j)->username);
+            val = dokument_xml.createTextNode(it.value()->mirrorMailboxes.at(j)->username);
             username.appendChild(val);
 
             password = dokument_xml.createElement( "password");
             mailbox.appendChild(password);
-            val = dokument_xml.createTextNode(uploadInstanceH[i]->mirrorMailboxes.at(j)->password);
+            val = dokument_xml.createTextNode(it.value()->mirrorMailboxes.at(j)->password);
             password.appendChild(val);
 
         }
         dpass = dokument_xml.createElement( "dpass");
         upload.appendChild(dpass);
-        val = dokument_xml.createTextNode(uploadInstanceH[i]->dpass);
+        val = dokument_xml.createTextNode(it.value()->dpass);
         dpass.appendChild(val);
 
         epass = dokument_xml.createElement( "epass");
         upload.appendChild(epass);
-        val = dokument_xml.createTextNode(uploadInstanceH[i]->epass);
+        val = dokument_xml.createTextNode(it.value()->epass);
         epass.appendChild(val);
 
         msize = dokument_xml.createElement( "msize");
         upload.appendChild(msize);
-        val = dokument_xml.createTextNode(QString::number(uploadInstanceH[i]->msize));
+        val = dokument_xml.createTextNode(QString::number(it.value()->msize));
         msize.appendChild(val);
 
         fromseg = dokument_xml.createElement( "fromseg");
         upload.appendChild(fromseg);
-        val = dokument_xml.createTextNode(QString::number(uploadInstanceH[i]->fromseg));
+        val = dokument_xml.createTextNode(QString::number(it.value()->fromseg));
         fromseg.appendChild(val);
     }
     QFile dokument(Zmienne().configPath+"uploads.xml");
