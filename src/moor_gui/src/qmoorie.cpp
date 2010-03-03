@@ -231,6 +231,7 @@ void QMoorie::showNewDownloadDialog()
 */
 void QMoorie::addUploadInstance(QString file, QVector<mirrorMailbox*> mirrorMailboxes, QString downPass, QString editPass, int msize, int fromSeg)
 {
+    uploadTable->setSortingEnabled( 0 );
     int itemNumber = uploadInstanceIndex;
     int itemRow = uploadTable->rowCount();
     QFileInfo fileInfo;
@@ -256,6 +257,7 @@ void QMoorie::addUploadInstance(QString file, QVector<mirrorMailbox*> mirrorMail
     uploadTable->setItem(itemRow, STATUS, new QTableWidgetItem());
     uploadTable->setItem(itemRow, MAILBOX, new QTableWidgetItem());
     uploadInstanceIndex++;
+    uploadTable->setSortingEnabled( 1 );
 }
 
 /**
@@ -266,6 +268,7 @@ void QMoorie::addUploadInstance(QString file, QVector<mirrorMailbox*> mirrorMail
 */
 void QMoorie::addDownloadInstance(QString hash, QString pass, QString path)
 {
+    downloadTable->setSortingEnabled( 0 );
     int itemNumber = downloadInstanceIndex;
     int itemRow = downloadTable->rowCount();
     downloadInstanceH.insert(itemNumber, new downloadInstance(hash, pass, path));
@@ -296,6 +299,7 @@ void QMoorie::addDownloadInstance(QString hash, QString pass, QString path)
     downloadTable->setItem(itemRow, STATUS, new QTableWidgetItem());
     downloadTable->setItem(itemRow, MAILBOX, new QTableWidgetItem());
     downloadInstanceIndex++;
+    downloadTable->setSortingEnabled( 1 );
 }
 
 /**
@@ -569,7 +573,6 @@ void QMoorie::removeDownload()
 {
     int row = downloadTable->currentRow();
     int itemNumber = downloadTable->item(row, ID)->text().toInt();
-    qDebug() << "row: " << row << "  itemNumber: " << itemNumber;
     QString fileName = downloadInstanceH[itemNumber]->path + downloadInstanceH[itemNumber]->filename;
     if(downloadInstanceH[itemNumber]->Instance->downloadDone)
     {
@@ -589,7 +592,7 @@ void QMoorie::removeDownload()
 }
 void QMoorie::pauseDownload()
 {
-    int itemNumber = downloadTable->item(uploadTable->currentRow(),ID)->text().toInt();
+    int itemNumber = downloadTable->item(downloadTable->currentRow(),ID)->text().toInt();
 
     if(downloadInstanceH[itemNumber]->Instance->downloadPaused)
     {
