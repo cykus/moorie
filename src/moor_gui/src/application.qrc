@@ -32,5 +32,6 @@
         <file>images/preferences-other.png</file>
         <file>images/preferences-system-network.png</file>
         <file>images/preferences-system.png</file>
+        <file>images/splash.png</file>
     </qresource>
 </RCC>

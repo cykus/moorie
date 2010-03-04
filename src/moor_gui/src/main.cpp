@@ -18,18 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 #include <QApplication>
+#include <QTimer>
+#include <QSplashScreen>
 #include "qmoorie.h"
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    QSplashScreen *splash = new QSplashScreen;
+    splash->setPixmap(QPixmap(":/images/splash.png"));
+    splash->show();
     app.setApplicationName("Qmoorie");
     app.setOrganizationName("Moorie Team");
     app.setOrganizationDomain("moorie.pl");
-    app.setApplicationVersion ("GIT(20100205)");
+    app.setApplicationVersion ("GIT(20100305)");
     app.setQuitOnLastWindowClosed(true);
     Q_INIT_RESOURCE(application);
-    QMoorie * mw = new QMoorie();
-    if(!Zmienne().RUNINTRAY || (Zmienne().RUNINTRAY && !Zmienne().TRAY)) mw->show();
+    QMoorie mw;
+    splash->showMessage( "Uruchamianie aplikacji...", Qt::AlignBottom | Qt::AlignRight );
+    QTimer::singleShot(2500, splash, SLOT(close()));
+    if(!Zmienne().RUNINTRAY || (Zmienne().RUNINTRAY && !Zmienne().TRAY)) QTimer::singleShot(2500, &mw, SLOT(show()));
     return app.exec();
 }
 
