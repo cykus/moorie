@@ -198,11 +198,13 @@ void QMoorie::showNewUploadDialog()
     if(get->result())
     {
         bool found = false;
+        QFileInfo fileInfo;
+        fileInfo.setFile(get->fileEdit->text());;
         QHashIterator<int, uploadInstance*> it(uploadInstanceH);
         while (it.hasNext())
         {
             it.next();
-            if(get->fileName == it.value()->filename) found = true;
+            if(fileInfo.fileName() == it.value()->fileName) found = true;
         }
         if(!found)
         {
