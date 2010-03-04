@@ -560,6 +560,7 @@ void QMoorie::refreshStatuses()
 void QMoorie::removeDownload()
 {
     int row = downloadTable->currentRow();
+    if(row < 0) return;
     int itemNumber = downloadTable->item(row, ID)->text().toInt();
     QString fileName = downloadInstanceH[itemNumber]->path + downloadInstanceH[itemNumber]->filename;
     if(downloadInstanceH[itemNumber]->Instance->downloadDone)
@@ -581,6 +582,7 @@ void QMoorie::removeDownload()
 void QMoorie::pauseDownload()
 {
     int row = downloadTable->currentRow();
+    if(row < 0) return;
     int itemNumber = downloadTable->item( row, ID )->text().toInt();
 
     if(downloadInstanceH[itemNumber]->Instance->downloadPaused)
@@ -599,6 +601,7 @@ void QMoorie::pauseDownload()
 void QMoorie::removeUpload()
 {
     int row = uploadTable->currentRow();
+    if(row < 0) return;
     int itemNumber = uploadTable->item(row, ID)->text().toInt();
 
     if(uploadInstanceH[itemNumber]->Instance->downloadDone)
@@ -617,6 +620,7 @@ void QMoorie::removeUpload()
 void QMoorie::pauseUpload()
 {
     int row = uploadTable->currentRow();
+    if(row < 0) return;
     int itemNumber = uploadTable->item( row, ID )->text().toInt();
 
     if(uploadInstanceH[itemNumber]->Instance->downloadPaused)
@@ -855,14 +859,18 @@ void QMoorie::showAboutDialog()
 }
 void QMoorie::showDownloadInfoDialog()
 {
-    int itemNumber = downloadTable->item( downloadTable->currentRow(), ID )->text().toInt();
+    int row = downloadTable->currentRow();
+    if(row < 0) return;
+    int itemNumber = downloadTable->item( row, ID )->text().toInt();
     DownloadInfoDialog *get = new DownloadInfoDialog(downloadInstanceH[itemNumber]->hash);
     get->exec();
     delete get;
 }
 void QMoorie::showUploadInfoDialog()
 {
-    int itemNumber = uploadTable->item( uploadTable->currentRow(), ID )->text().toInt();
+    int row = uploadTable->currentRow();
+    if(row < 0) return;
+    int itemNumber = uploadTable->item( row, ID )->text().toInt();
     UploadInfoDialog *get = new UploadInfoDialog(uploadInstanceH[itemNumber]->infoString);
     get->exec();
     delete get;
