@@ -662,7 +662,12 @@ void QMoorie::loadDownloads()
             boost::shared_ptr<Hash> hhio(HashManager::fromString(hash.text().toStdString()));
             if (hhio->getInfo().valid)
             {
-                if(hhio->checkAccessPassword(pass.text().toStdString()))
+                std::string stdPass = pass.text().toStdString();
+                if (hhio->getInfo().accessPasswd.length() == 32)
+                {
+                        stdPass = getMD5((unsigned char*)stdPass.c_str());
+                }
+                if(stdPass.compare(hhio->getInfo().accessPasswd) == 0)
                 {
                     QString pathstr = path.text();
                     

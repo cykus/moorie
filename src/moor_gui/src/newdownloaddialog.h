@@ -33,6 +33,7 @@
 #include "singleton.h"
 #include <boost/shared_ptr.hpp>
 #include <HashManager.h>
+#include <Tools.h>
 #include <Hash.h>
 #include <iostream>
 

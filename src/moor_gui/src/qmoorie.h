@@ -45,6 +45,7 @@
 #include <HashManager.h>
 #include <Status.h>
 #include <Log.h>
+#include <Tools.h>
 //
 #include <cmath>
 #include <iomanip>

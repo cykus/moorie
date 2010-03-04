@@ -71,7 +71,12 @@ void newDownloadDialog::ok()
         boost::shared_ptr<Hash> hash(HashManager::fromString(text->toPlainText().toStdString()));
         if (hash->getInfo().valid)
         {
-            if(hash->checkAccessPassword( edit->text().toStdString()))
+            std::string stdPass = edit->text().toStdString();
+            if (hash->getInfo().accessPasswd.length() == 32)
+            {
+                    stdPass = getMD5((unsigned char*)stdPass.c_str());
+            }
+            if(stdPass.compare(hash->getInfo().accessPasswd) == 0)
             {
                 accept();
             }
