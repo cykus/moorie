@@ -5,7 +5,7 @@ set( QMOORIE_SRCS
     configdialog.cpp
     newdownloaddialog.cpp
     newuploaddialog.cpp
-    infodialog.cpp
+    downloadinfodialog.cpp
     tabledelegate.cpp
     mytablewidget.cpp
     mysystemtrayicon.cpp
@@ -14,6 +14,7 @@ set( QMOORIE_SRCS
     singleton.cpp
     downloadinstance.cpp
     uploadinstance.cpp
+    uploadinfodialog.cpp
     statusesthread.cpp
     tools.cpp
 )
@@ -23,7 +24,8 @@ set( QMOORIE_MOC_HDRS
     newuploaddialog.h
     aboutdialog.h
     configdialog.h
-    infodialog.h
+    downloadinfodialog.h
+    uploadinfodialog.h
     tabledelegate.h
     mytablewidget.h
     mysystemtrayicon.h

@@ -353,8 +353,7 @@ std::string CLibMoor::generateCleanHashcode() {
 
 std::string CLibMoor::addMirror(std::string editpass, std::string orighash, std::string mboxaddr, std::string mboxpass) {
  	MoorhuntHashEncoder *encoder;
-	encoder = new MoorhuntHashEncoder();
-	std::cout << "AAA" << editpass << std::endl;
+        encoder = new MoorhuntHashEncoder();
 
 	std::string newhash = encoder->addNewMirror(editpass, orighash, mboxaddr, mboxpass);
  	delete encoder;

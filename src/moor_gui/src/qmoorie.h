@@ -28,12 +28,12 @@
 #include <QTextStream>
 
 #include "ui_qmoorie.h"
-
 #include "aboutdialog.h"
 #include "newdownloaddialog.h"
 #include "newuploaddialog.h"
 #include "configdialog.h"
-#include "infodialog.h"
+#include "downloadinfodialog.h"
+#include "uploadinfodialog.h"
 #include "mysystemtrayicon.h"
 #include "mytablewidget.h"
 #include "tabledelegate.h"
@@ -145,7 +145,8 @@ public Q_SLOTS:
     void showNewDownloadDialog(); //!< Wyświetla okno dodawania pliku do pobrania
     void showNewUploadDialog(); //!< Wyświetla okno dodawania pliku do wysłania
     void showAboutDialog(); //!< Wyświetla okno O programie
-    void showInfoDialog(); //!< Wyświetla okno z informacją o danym pliku
+    void showDownloadInfoDialog(); //!< Wyświetla okno z informacją o pobieranym pliku
+    void showUploadInfoDialog(); //!< Wyświetla okno z informacją o wysyłanym pliku
     void showConfigDialog(); //!< Wyświetla okno konfiguracyjne
     void exitApp(); //!< Kończy program
     void toggleVisibility();

@@ -19,13 +19,14 @@
  */
 #include "uploadinstance.h"
 
-uploadInstance::uploadInstance(QString file, QVector<mirrorMailbox*> mirrorMailboxes, QString dpass, QString epass, int msize, int fromseg):
+uploadInstance::uploadInstance(QString file, QVector<mirrorMailbox*> mirrorMailboxes, QString dpass, QString epass, int msize, unsigned  int fromseg):
         file(file),
         mirrorMailboxes(mirrorMailboxes),
         dpass(dpass),
         epass(epass),
         msize(msize),
         fromseg(fromseg),
+        infoString('Brak informacji, spróbuj później.'),
         wyslano(false),
         totalSegments(0)
 {
@@ -36,18 +37,10 @@ void uploadInstance::run()
     user = uploadMailboxes.first()->username;
     pass = uploadMailboxes.first()->password;
     Instance = new CLibMoor();
-//    qDebug() << "user: " << user;
-//    qDebug() << "pass: " << pass;
-//    qDebug() << "getToUsernames: " << getToUsernames();
-//    qDebug() << "dpass: " << dpass;
-//    qDebug() << "epass: " << epass;
-//    qDebug() << "file: " << file;
-//    qDebug() << "msize: " << msize;
-//    qDebug() << "fromseg: " << fromseg;
     Instance -> splitFile(file.toStdString(), msize);
     if(!Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), getToUsernames().toStdString(), dpass.toStdString(), epass.toStdString())){
-        qDebug() << generateInfo();
-        //Instance->generateCleanHashcode();
+        infoString = generateInfo();
+        Instance->generateCleanHashcode();
         Instance->startUpload(fromseg);
     }
 }
@@ -112,8 +105,17 @@ QString uploadInstance::generateInfo()
     {
        user = mirrorMailboxes.at(i)->username;
        pass = mirrorMailboxes.at(i)->password;
-       hashcode = Instance->addMirror("testowe_haslo", hashcode, "11111@gmail.com", "11111@gmail.com");
+       hashcode = Instance->addMirror(epass.toStdString(), hashcode, user.toStdString(), pass.toStdString());
     }
     info = info + QString::fromStdString(hashcode) + "\n\n";
+
+    QTextCodec::setCodecForLocale ( QTextCodec::codecForName ("UTF-8"));
+    QFile file(Zmienne().configPath+fileName+".txt");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QTextStream out(&file);
+        out << info << "\n";
+        file.close();
+    }
     return info;
 }

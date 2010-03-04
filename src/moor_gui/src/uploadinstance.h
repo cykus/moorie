@@ -29,6 +29,8 @@
 #include <LibMoor.h>
 #include "singleton.h"
 #include <iostream>
+#include <QMessageBox>
+#include <QTextCodec>
 
 struct mirrorMailbox{
     QString username;
@@ -40,12 +42,12 @@ class uploadInstance : public QThread
     QString getToUsernames();
     QString generateInfo();
 public:
-    uploadInstance(QString, QVector<mirrorMailbox*>, QString, QString, int, int);
+    uploadInstance(QString, QVector<mirrorMailbox*>, QString, QString, int, unsigned int);
     CLibMoor * Instance; //!< Instancja klasy CLibMoor
 
     void run();
     bool wyslano;
-    unsigned int itemRow; //!< Nr. wiersza w tabeli
+    QString infoString; //!< Przechowuje informacje o pliku
     QString file; //!< Nazwa pliku wraz ze ścieżką do wysłania
     QString fileName; //!< Nazwa pliku do wysłania
     quint64 fileSize; //!< Rozmiar pliku do wysłania
@@ -59,7 +61,7 @@ public:
     QVector<mirrorMailbox*> uploadMailboxes; //!< Wektor skrzynek do uploadu
     int totalSegments; //!< Liczba wszystkich segmentów
     int msize; //!< Rozmiar segmentu
-    int fromseg; //!< Od którego segmentu
+    unsigned int fromseg; //!< Od którego segmentu
 };
 
 #endif // UPLOADINSTANCE_H

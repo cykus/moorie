@@ -135,8 +135,10 @@ void QMoorie::createActions()
 
     connect(downloadTable->tRemoveAct, SIGNAL(triggered()), this, SLOT(removeDownload()));
     connect(downloadTable->tPauseAct, SIGNAL(triggered()), this, SLOT(pauseDownload()));
+    connect(downloadTable->tInfoAct, SIGNAL(triggered()), this, SLOT(showDownloadInfoDialog()));
     connect(uploadTable->tRemoveAct, SIGNAL(triggered()), this, SLOT(removeUpload()));
     connect(uploadTable->tPauseAct, SIGNAL(triggered()), this, SLOT(pauseUpload()));
+    connect(uploadTable->tInfoAct, SIGNAL(triggered()), this, SLOT(showUploadInfoDialog()));
     connect(&statuses, SIGNAL(refresh()), this, SLOT(refreshStatuses()));
 }
 
@@ -416,17 +418,13 @@ void QMoorie::refreshStatuses()
             Status status = uploadInstanceH[itemNumber]->Instance->getUploadStatus();
             if(status.state == Status::Uploaded || status.state == Status::Finished)
             {
-                QTableWidgetItem *PozostaloPliku = new QTableWidgetItem("0.00 MB");
-                uploadTable->setItem(i, REMAINING, PozostaloPliku);
-                QTableWidgetItem *postepPobierania = new QTableWidgetItem;
-                postepPobierania->setData(Qt::DisplayRole, 100);
-                uploadTable->setItem(i, PROGRESS, postepPobierania);
-                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                uploadTable->setItem(i, SPEED, SzybkoscPobierania);
-                QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
-                "\n " + QString::number(uploadInstanceH[itemNumber]->totalSegments) + "/" + QString::number(uploadInstanceH[itemNumber]->totalSegments));
-                statusPobierania->setForeground(QColor(0, 0, 200, 255));
-                uploadTable->setItem(i, STATUS, statusPobierania);
+                uploadTable->item( i, REMAINING )->setText( "0.00 MB" );
+                uploadTable->item( i, PROGRESS )->setData(Qt::DisplayRole, 100);
+                uploadTable->item( i, SPEED )->setText("0 KB/s");
+                uploadTable->item( i, STATUS )->setText(QString::fromStdString(status.getStateText()) +
+                                                          "\n " + QString::number(uploadInstanceH[itemNumber]->totalSegments) +
+                                                          "/" + QString::number(uploadInstanceH[itemNumber]->totalSegments));
+                uploadTable->item( i, STATUS )->setForeground(QColor(0, 0, 200, 255));
             }
             if(status.state == Status::Finished)
             {
@@ -436,20 +434,15 @@ void QMoorie::refreshStatuses()
                 }
                 tray->showHints("Wysłano pomyślnie", "Wysyłanie pliku: <br/><b><i>"+uploadInstanceH[itemNumber]->fileName+"</b></i><br/>zakończono pomyślnie.");
                 uploadInstanceH.remove(i);
-                downloadTable->item(i,ID)->setText("-1");
+                uploadTable->item(i,ID)->setText("-1");
                 saveUploads();
             }
             if(status.state == Status::FileError && !uploadInstanceH[itemNumber]->wyslano)
             {
-                QTableWidgetItem *PozostaloPliku = new QTableWidgetItem("0.00 MB");
-                uploadTable->setItem(i, REMAINING, PozostaloPliku);
-                QTableWidgetItem *postepPobierania = new QTableWidgetItem;
-                postepPobierania->setData(Qt::DisplayRole, 0);
-                uploadTable->setItem(i, PROGRESS, postepPobierania);
-                QTableWidgetItem *statusPobierania = new QTableWidgetItem("Nie udało się Wysłać pliku");
-                uploadTable->setItem(i, STATUS, statusPobierania);
-                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                uploadTable->setItem(i, SPEED, SzybkoscPobierania);
+                uploadTable->item( i, REMAINING )->setText( "0.00 MB" );
+                uploadTable->item( i, PROGRESS )->setData(Qt::DisplayRole, 0);
+                uploadTable->item( i, SPEED )->setText("0 KB/s");
+                uploadTable->item( i, STATUS )->setText("Nie udało się wysłać pliku");
                 for(int j = 0 ; j < 8; j++ )
                 {
                     uploadTable->item(i, j)->setBackground(QColor(255, 0, 0, 200));
@@ -465,12 +458,9 @@ void QMoorie::refreshStatuses()
             {
                 allBytesSendSession += status.bytesRead;
 
-                QTableWidgetItem *WyslanoPliku = new QTableWidgetItem(fileSize(status.bytesRead));
-                uploadTable->setItem(i, REMAINING, WyslanoPliku);
+                uploadTable->item( i, REMAINING )->setText( fileSize(status.bytesRead) );
                 int percentDownloaded = 100.0f * status.bytesRead  / uploadInstanceH[itemNumber]->fileSize;
-                QTableWidgetItem *postepWysylania = new QTableWidgetItem;
-                postepWysylania->setData(Qt::DisplayRole, percentDownloaded);
-                uploadTable->setItem(i, PROGRESS, postepWysylania);
+                uploadTable->item( i, PROGRESS )->setData(Qt::DisplayRole, percentDownloaded);
 
                 allSpeedSend += static_cast<double>( status.speed) / 1024.0f;
                 const double speed( static_cast<double>( status.speed) / 1024.0f );
@@ -485,34 +475,33 @@ void QMoorie::refreshStatuses()
                     s << std::setprecision( 2 );
                 }
                 s << speed;
-                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem(QString::fromStdString(s.str()) + " KB/s");
-                uploadTable->setItem(i, SPEED, SzybkoscPobierania);
-                uploadInstanceH[itemNumber]->fromseg = status.downloadSegment;
-                QTableWidgetItem *statusPobierania = new QTableWidgetItem(QString::fromStdString(status.getStateText()) +
-                                                                          "\n " + QString::number(status.downloadSegment) + "/" + QString::number(uploadInstanceH[itemNumber]->totalSegments));
+                uploadTable->item( i, SPEED )->setText( QString::fromStdString(s.str()) + " KB/s" );
+                if(status.downloadSegment > uploadInstanceH[itemNumber]->fromseg)
+                {
+                    uploadInstanceH[itemNumber]->fromseg = status.downloadSegment;
+                    saveUploads();
+                }
+                uploadTable->item( i, STATUS )->setText( QString::fromStdString(status.getStateText()) +
+                                                         "\n " + QString::number(status.downloadSegment) +
+                                                         "/" + QString::number(uploadInstanceH[itemNumber]->totalSegments) );
                 if(status.state == Status::Connecting || status.state == Status::Connected)
                 {
-                    statusPobierania->setForeground(QColor(204, 210, 55, 255));
+                    uploadTable->item( i, STATUS )->setForeground(QColor(204, 210, 55, 255));
                 }
                 else if(status.state == Status::Uploading)
                 {
-                    statusPobierania->setForeground(QColor(0, 100, 0, 255));
+                    uploadTable->item( i, STATUS )->setForeground(QColor(0, 100, 0, 255));
                 }
                 else if(status.state == Status::ConnectionError || status.state == Status::FileError || status.state == Status::SegmentError)
                 {
-                    statusPobierania->setForeground(QColor(255, 0, 0, 200));
+                    uploadTable->item( i, STATUS )->setForeground(QColor(255, 0, 0, 200));
                 }
-                uploadTable->setItem(i, STATUS, statusPobierania);
-                //qDebug() << status.downloadSegment;
-                QTableWidgetItem *SkrzynkaPobierania = new QTableWidgetItem(QString::fromStdString(status.mailboxName));
-                uploadTable->setItem(i, MAILBOX, SkrzynkaPobierania);
+                uploadTable->item( i, MAILBOX )->setText( QString::fromStdString(status.mailboxName) );
             }
             else if(uploadInstanceH[itemNumber]->Instance->downloadPaused)
             {
-                QTableWidgetItem *SzybkoscPobierania = new QTableWidgetItem("0 KB/s");
-                uploadTable->setItem(i, SPEED, SzybkoscPobierania);
-                QTableWidgetItem *statusPobierania = new QTableWidgetItem("Wstrzymane");
-                uploadTable->setItem(i, STATUS, statusPobierania);
+                uploadTable->item( i, SPEED )->setText( "0 KB/s" );
+                uploadTable->item( i, STATUS )->setText( "Wstrzymane" );
                 for(int j = 0 ; j < 8; j++ )
                 {
                     uploadTable->item(i, j)->setBackground(QColor(255, 255, 0, 100));
@@ -859,9 +848,17 @@ void QMoorie::showAboutDialog()
     get->exec();
     delete get;
 }
-void QMoorie::showInfoDialog()
+void QMoorie::showDownloadInfoDialog()
 {
-    InfoDialog *get = new InfoDialog(this);
+    int itemNumber = downloadTable->item( downloadTable->currentRow(), ID )->text().toInt();
+    DownloadInfoDialog *get = new DownloadInfoDialog(downloadInstanceH[itemNumber]->hash);
+    get->exec();
+    delete get;
+}
+void QMoorie::showUploadInfoDialog()
+{
+    int itemNumber = uploadTable->item( uploadTable->currentRow(), ID )->text().toInt();
+    UploadInfoDialog *get = new UploadInfoDialog(uploadInstanceH[itemNumber]->infoString);
     get->exec();
     delete get;
 }
