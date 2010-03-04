@@ -25,6 +25,9 @@
 
 #include <string>
 #include <cstdlib>
+#include <openssl/md5.h>
+#include <cstring>
+#include <cstdio>
 
 /**
  * Implementation of ROT13 cipher.
@@ -42,7 +45,7 @@ std::string Rot13(std::string str);
  * @return Enciphered text.
  */
 std::string rot13(const std::string& str);
-
+std::string getMD5(unsigned char* string);
 /**
 */
 char hexToAscii(char first, char second);

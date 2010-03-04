@@ -100,3 +100,15 @@ char hexToAscii(char first, char second)
 	hex[4] = 0;
 	return strtol(hex, &stop, 16);
 }
+
+std::string getMD5(unsigned char* string) {
+        char buffer[16];                                        
+        std::string result;                                     
+        unsigned char *mychar = MD5(string, strlen((const char*)string), NULL);
+        for(int i=0; i <MD5_DIGEST_LENGTH; i++) {                              
+                sprintf(buffer, "%02x",mychar[i]);                             
+                result += buffer;                                              
+        }                                                                      
+        return result;                                                         
+
+}

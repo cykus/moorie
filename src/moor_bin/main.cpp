@@ -5,6 +5,8 @@
 #include "../libmoor/HashManager.h"
 #include <boost/program_options.hpp>
 
+#include "../libmoor/Tools.h"
+
 #define VERSION 0.2
 
 int main(int argc, char **argv) {
@@ -218,7 +220,13 @@ int main(int argc, char **argv) {
                     boost::shared_ptr<Hash> hhash(HashManager::fromString(hash));
                     if (hhash->getInfo().valid)
                     {
-                        if(pass.compare(hhash->getInfo().accessPasswd) == 0)
+					std::string myPass;
+					if (hhash->getInfo().accessPasswd.length() == 32) {
+						myPass = getMD5((unsigned char*)pass.c_str());
+					} else
+						myPass = pass;
+
+                        if(myPass.compare( hhash->getInfo().accessPasswd) == 0)
                         {
                             if((path.find_last_of("/") != path.length() - 1) && (path.length() > 1)) path += "/";
                             Instance = new CLibMoor();
