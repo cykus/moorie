@@ -218,14 +218,14 @@ int main(int argc, char **argv) {
                     boost::shared_ptr<Hash> hhash(HashManager::fromString(hash));
                     if (hhash->getInfo().valid)
                     {
-                        if(hhash->checkAccessPassword(pass))
+                        if(pass.compare(hhash->getInfo().accessPasswd) == 0)
                         {
                             if((path.find_last_of("/") != path.length() - 1) && (path.length() > 1)) path += "/";
                             Instance = new CLibMoor();
                             Instance -> Dehash(hash);
                             Instance -> selectDownloadMailBox(mailbox-1, path);
                         }
-                        else std::cerr << "Hasło nieprawidłowe" << std::endl;
+                        else std::cerr << std::endl << "Blad: Podane haslo pobierania jest nieprawidlowe!" << std::endl << std::endl;
                         }
                     else std::cerr << "Niepoprawny hashcode" << std::endl;
                 }
