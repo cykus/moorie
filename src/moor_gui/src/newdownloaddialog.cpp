@@ -78,6 +78,7 @@ void newDownloadDialog::ok()
             }
             if(stdPass.compare(hash->getInfo().accessPasswd) == 0)
             {
+                fileName = QString::fromStdString(hash->getInfo().fileName);
                 accept();
             }
             else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));

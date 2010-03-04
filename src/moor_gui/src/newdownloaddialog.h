@@ -48,6 +48,7 @@ public:
     QPushButton *button[2];
     QTextEdit *text;
     QHBoxLayout *lay[6];
+    QString fileName;
     newDownloadDialog(QWidget * parent = 0, Qt::WFlags f = 0 );
 private Q_SLOTS:
     void ok();

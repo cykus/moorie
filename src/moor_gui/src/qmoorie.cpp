@@ -197,21 +197,34 @@ void QMoorie::showNewUploadDialog()
     get->exec();
     if(get->result())
     {
-        QTableWidgetItem *mailboxLogin;
-        QTableWidgetItem *mailboxPass;
-        QVector<mirrorMailbox*> mirrorMailboxes;
-        for(int i = 0; i < get->mirrorTable->rowCount(); ++i)
+        bool found = false;
+        QHashIterator<int, uploadInstance*> it(uploadInstanceH);
+        while (it.hasNext())
         {
-            mirrorMailboxes.append(new mirrorMailbox());
-
-            mailboxLogin = get->mirrorTable->item(i, 0);
-            mailboxPass = get->mirrorTable->item(i, 1);
-
-            mirrorMailboxes.last()->username = mailboxLogin->text();
-            mirrorMailboxes.last()->password = mailboxPass->text();
+            it.next();
+            if(get->fileName == it.value()->filename) found = true;
         }
-        addUploadInstance(get->fileEdit->text(), mirrorMailboxes, get->downPassEdit->text(), get->editPassEdit->text(), get->segSizeSlider->value(), 1);
-        saveUploads();
+        if(!found)
+        {
+            QTableWidgetItem *mailboxLogin;
+            QTableWidgetItem *mailboxPass;
+            QVector<mirrorMailbox*> mirrorMailboxes;
+            for(int i = 0; i < get->mirrorTable->rowCount(); ++i)
+            {
+                mirrorMailboxes.append(new mirrorMailbox());
+
+                mailboxLogin = get->mirrorTable->item(i, 0);
+                mailboxPass = get->mirrorTable->item(i, 1);
+
+                mirrorMailboxes.last()->username = mailboxLogin->text();
+                mirrorMailboxes.last()->password = mailboxPass->text();
+            }
+            addUploadInstance(get->fileEdit->text(), mirrorMailboxes, get->downPassEdit->text(), get->editPassEdit->text(), get->segSizeSlider->value(), 1);
+            saveUploads();
+        }
+        else QMessageBox::about(this, tr("Błąd"),tr("Już wysyłasz ten plik."));
+        
+
     }
     delete get;
 }
@@ -221,10 +234,21 @@ void QMoorie::showNewDownloadDialog()
     get->exec();
     if(get->result())
     {
-        QString path = get->pathEdit->text();
-        if((path.lastIndexOf(QDir::separator()) != path.length() - 1) && (path.length() > 1)) path += QDir::separator();
-        addDownloadInstance(get->text->toPlainText(), get->edit->text(), path);
-        saveDownloads();
+        bool found = false;
+        QHashIterator<int, downloadInstance*> it(downloadInstanceH);
+        while (it.hasNext())
+        {
+            it.next();
+            if(get->fileName == it.value()->filename) found = true;
+        }
+        if(!found)
+        {
+            QString path = get->pathEdit->text();
+            if((path.lastIndexOf(QDir::separator()) != path.length() - 1) && (path.length() > 1)) path += QDir::separator();
+            addDownloadInstance(get->text->toPlainText(), get->edit->text(), path);
+            saveDownloads();
+        }
+        else QMessageBox::about(this, tr("Błąd"),tr("Już pobierasz ten plik."));
     }
     delete get;
 }
