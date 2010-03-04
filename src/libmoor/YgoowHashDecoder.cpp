@@ -120,7 +120,7 @@ Hash* YgoowHashDecoder::decode(const std::string& hashcode) {
 	decrypt(&data, data_size, key, iv);
 	// Take ownership of 'data' buffer!
 	BinaryStream stream(data, data_size, true);
-
+	
 	if (ch == 'c') {
 		result.crc = stream.readUInt32();
 		result.fileSize = stream.readInt64();

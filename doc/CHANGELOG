@@ -1,7 +1,9 @@
-0.2.0 
-- moorie przepisane od nowa
-- dodano kilka nowych skrzynek
-- dodano poczatek kodowania ygoowa
+0.2.5
+- Poprawione generowanie czystego hasha
+- Dodane dodawanie mirrorow do hasha (maslo maslane :))
+- Dodany prosty sprawdzacz segmentow przed sciaganiem
+- Przebudowa wysylania
+- Dodane wykrywanie naglowkow maili starego typu
 
 0.2.1
 - Dodany upload
@@ -9,3 +11,10 @@
 - Upload dzialajacy na gazeta.pl
 - Upload dzialajacy na gmail.com
 - Dodano skrzynke volny.cz
+
+0.2.0 
+- moorie przepisane od nowa
+- dodano kilka nowych skrzynek
+- dodano poczatek kodowania ygoowa
+
+
