@@ -64,10 +64,9 @@ include_directories(
 )
 
 SET(TRANS
-    ../translations/qmoorie.en.ts
+    ../translations/qmoorie_en.ts
 )
 QT4_ADD_TRANSLATION(QM ${TRANS})
-
 
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR} )
 
