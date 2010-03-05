@@ -86,12 +86,12 @@ void QMoorie::createActions()
 {
 
     fileToolBar = addToolBar(tr("Plik"));
-    int iconSize = fileToolBar->iconSize().width();
+    int iconSize = fileToolBar->iconSize().height();
     if(iconSize <= 16) iconSize = 16;
     if(iconSize > 16 && iconSize <= 22) iconSize = 22;
     if(iconSize > 22 && iconSize <= 32) iconSize = 32;
     if(iconSize > 32) iconSize = 48;
-
+    fileToolBar->setIconSize(QSize( iconSize, iconSize ));
 #if QT_VERSION >= 0x040600
     addDownloadAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Pobierz"), this);
     addUploadAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Wyślij"), this);
