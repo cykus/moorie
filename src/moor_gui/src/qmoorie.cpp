@@ -23,7 +23,7 @@ QMoorie::QMoorie(QWidget * parent, Qt::WFlags f):QMainWindow(parent, f), ui(new 
 downloadInstanceIndex(0), uploadInstanceIndex(0)
 {
     setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png"));
-    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Klient P2M");
+    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + tr(" - Klient P2M"));
 
     ui->setupUi(this);
     QTextCodec::setCodecForTr (QTextCodec::codecForName ("UTF-8"));
@@ -97,7 +97,7 @@ void QMoorie::createActions()
     addUploadAct = new QAction(QIcon::fromTheme("list-add", QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png")), tr("&Wyślij"), this);
     settingsAct = new QAction(QIcon::fromTheme("configure", QIcon(":images/hi"+QString::number(iconSize)+"-configure.png")),tr("&Ustawienia"),this);
     pauseAct = new QAction(QIcon::fromTheme("media-playback-pause", QIcon(":images/hi"+QString::number(iconSize)+"-media-playback-pause.png")),tr("Wstrzymaj wszystko"),this);
-    removeAct = new QAction(QIcon::fromTheme("list-remove", QIcon(":images/hi"+QString::number(iconSize)+"-list-remove.png")),tr("&Usuń"),this);
+//    removeAct = new QAction(QIcon::fromTheme("list-remove", QIcon(":images/hi"+QString::number(iconSize)+"-list-remove.png")),tr("&Usuń"),this);
     aboutAct = new QAction(QIcon::fromTheme("help-about", QIcon(":images/hi"+QString::number(iconSize)+"-help-about.png")), tr("&O programie"), this);
     exitAct = new QAction(QIcon::fromTheme("application-exit", QIcon(":images/hi"+QString::number(iconSize)+"-application-exit.png")), tr("Zakończ"), this);
 #else
@@ -105,7 +105,7 @@ void QMoorie::createActions()
     addUploadAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-add.png"), tr("&Wyślij"), this);
     settingsAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-configure.png"),tr("&Ustawienia"), this);
     pauseAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-media-playback-pause.png"),tr("Wstrzymaj wszystko"), this);
-    removeAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-remove.png"),tr("&Usuń"),this);
+//    removeAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-list-remove.png"),tr("&Usuń"),this);
     aboutAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-help-about.png"), tr("&O programie"), this);
     exitAct = new QAction(QIcon(":images/hi"+QString::number(iconSize)+"-application-exit.png"), tr("Zakończ"), this);
 #endif
@@ -124,7 +124,7 @@ void QMoorie::createActions()
     pauseAct->setDisabled(true);
     pauseAct -> setStatusTip(tr("Wstrzymanie/wznowienie pobierania wszystkich plików"));
 
-    removeAct -> setStatusTip(tr("Usunięcie pobierania"));
+ //   removeAct -> setStatusTip(tr("Usunięcie pobierania"));
 
     aboutAct->setStatusTip(tr("Informacje o aplikacji"));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
@@ -146,7 +146,7 @@ void QMoorie::createToolBars()
 {
     fileToolBar->addAction(addDownloadAct);
     fileToolBar->addAction(addUploadAct);
-    fileToolBar->addAction(removeAct);
+//    fileToolBar->addAction(removeAct);
     fileToolBar->addSeparator();
     //fileToolBar->addAction(pauseAct);
     fileToolBar->addAction(settingsAct);
@@ -170,7 +170,7 @@ void QMoorie::createTable()
     downloadTable->setItemDelegate(new TrackDelegate());
     downloadTable->setColumnCount(8);
     downloadTable->horizontalHeader()->setStretchLastSection(true);
-    downloadHeaderH << "ID" << "Nazwa pliku" << "Rozmiar" << "Pozostało"<< "Postęp " << "Prędkość" << "Status" << "Skrzynka";
+    downloadHeaderH << tr("ID") << tr("Nazwa pliku") << tr("Rozmiar") << tr("Pozostało") << tr("Postęp") << tr("Prędkość") << tr("Status") << tr("Skrzynka");
     downloadTable->setHorizontalHeaderLabels(downloadHeaderH);
     downloadTable->hideColumn( 0 );
     downloadTable->setSortingEnabled( 1 );
@@ -185,7 +185,7 @@ void QMoorie::createTable()
     uploadTable->setItemDelegate(new TrackDelegate());
     uploadTable->setColumnCount(8);
     uploadTable->horizontalHeader()->setStretchLastSection(true);
-    uploadHeaderH << "ID" << "Nazwa pliku" << "Rozmiar" << "Wysłano"<< "Postęp " << "Prędkość" << "Status" << "Skrzynka";
+    uploadHeaderH << tr("ID") << tr("Nazwa pliku") << tr("Rozmiar") << tr("Wysłano") << tr("Postęp") << tr("Prędkość") << tr("Status") << tr("Skrzynka");
     uploadTable->setHorizontalHeaderLabels(uploadHeaderH);
     uploadTable->hideColumn ( 0 );
     uploadTable->setSortingEnabled( 1 );
@@ -197,21 +197,36 @@ void QMoorie::showNewUploadDialog()
     get->exec();
     if(get->result())
     {
-        QTableWidgetItem *mailboxLogin;
-        QTableWidgetItem *mailboxPass;
-        QVector<mirrorMailbox*> mirrorMailboxes;
-        for(int i = 0; i < get->mirrorTable->rowCount(); ++i)
+        bool found = false;
+        QFileInfo fileInfo;
+        fileInfo.setFile(get->fileEdit->text());;
+        QHashIterator<int, uploadInstance*> it(uploadInstanceH);
+        while (it.hasNext())
         {
-            mirrorMailboxes.append(new mirrorMailbox());
-
-            mailboxLogin = get->mirrorTable->item(i, 0);
-            mailboxPass = get->mirrorTable->item(i, 1);
-
-            mirrorMailboxes.last()->username = mailboxLogin->text();
-            mirrorMailboxes.last()->password = mailboxPass->text();
+            it.next();
+            if(fileInfo.fileName() == it.value()->fileName) found = true;
         }
-        addUploadInstance(get->fileEdit->text(), mirrorMailboxes, get->downPassEdit->text(), get->editPassEdit->text(), get->segSizeSlider->value(), 1);
-        saveUploads();
+        if(!found)
+        {
+            QTableWidgetItem *mailboxLogin;
+            QTableWidgetItem *mailboxPass;
+            QVector<mirrorMailbox*> mirrorMailboxes;
+            for(int i = 0; i < get->mirrorTable->rowCount(); ++i)
+            {
+                mirrorMailboxes.append(new mirrorMailbox());
+
+                mailboxLogin = get->mirrorTable->item(i, 0);
+                mailboxPass = get->mirrorTable->item(i, 1);
+
+                mirrorMailboxes.last()->username = mailboxLogin->text();
+                mirrorMailboxes.last()->password = mailboxPass->text();
+            }
+            addUploadInstance(get->fileEdit->text(), mirrorMailboxes, get->downPassEdit->text(), get->editPassEdit->text(), get->segSizeSlider->value(), 1);
+            saveUploads();
+        }
+        else QMessageBox::about(this, tr("Błąd"),tr("Już wysyłasz ten plik."));
+        
+
     }
     delete get;
 }
@@ -221,10 +236,21 @@ void QMoorie::showNewDownloadDialog()
     get->exec();
     if(get->result())
     {
-        QString path = get->pathEdit->text();
-        if((path.lastIndexOf(QDir::separator()) != path.length() - 1) && (path.length() > 1)) path += QDir::separator();
-        addDownloadInstance(get->text->toPlainText(), get->edit->text(), path);
-        saveDownloads();
+        bool found = false;
+        QHashIterator<int, downloadInstance*> it(downloadInstanceH);
+        while (it.hasNext())
+        {
+            it.next();
+            if(get->fileName == it.value()->filename) found = true;
+        }
+        if(!found)
+        {
+            QString path = get->pathEdit->text();
+            if((path.lastIndexOf(QDir::separator()) != path.length() - 1) && (path.length() > 1)) path += QDir::separator();
+            addDownloadInstance(get->text->toPlainText(), get->edit->text(), path);
+            saveDownloads();
+        }
+        else QMessageBox::about(this, tr("Błąd"),tr("Już pobierasz ten plik."));
     }
     delete get;
 }
@@ -336,7 +362,7 @@ void QMoorie::refreshStatuses()
                 {
                     downloadTable->item(i, j)->setBackground(QColor(0, 50, 0, 100));
                 }
-                tray->showHints("Pobrano pomyślnie", "Pobieranie pliku: <br/><b><i>"+downloadInstanceH[itemNumber]->filename+"</b></i><br/>zakończono pomyślnie.");
+                tray->showHints(tr("Pobrano pomyślnie"), tr("Pobieranie pliku: <br/><b><i>")+downloadInstanceH[itemNumber]->filename+tr("</b></i><br/>zakończono pomyślnie."));
                 downloadInstanceH.remove(itemNumber);
                 downloadTable->item(i,ID)->setText("-1");
                 saveDownloads();
@@ -346,13 +372,13 @@ void QMoorie::refreshStatuses()
                 downloadTable->item( i, REMAINING )->setText( "0.00 MB" );
                 downloadTable->item( i, PROGRESS )->setData(Qt::DisplayRole, 0);
                 downloadTable->item( i, SPEED )->setText("0 KB/s");
-                downloadTable->item( i, STATUS )->setText("Nie udało się pobrać pliku z żadnej ze skrzynek");
+                downloadTable->item( i, STATUS )->setText(tr("Nie udało się pobrać pliku z żadnej ze skrzynek"));
                 for(int j = 0 ; j < 8; j++ )
                 {
                     downloadTable->item(i, j)->setBackground(QColor(255, 0, 0, 200));
                 }
                 downloadInstanceH[itemNumber]->pobrano = true;
-                tray->showHints("Błąd pobierania", "Niestety nie udało się pobrać pliku:<br/><b><i>"+downloadInstanceH[itemNumber]->filename+"</i></b>");
+                tray->showHints(tr("Błąd pobierania"), tr("Niestety nie udało się pobrać pliku:<br/><b><i>")+downloadInstanceH[itemNumber]->filename+"</i></b>");
             }
         }
         else if(!downloadInstanceH[itemNumber]->Instance->downloadDone && downloadInstanceH[itemNumber]->Instance->started)
@@ -401,7 +427,7 @@ void QMoorie::refreshStatuses()
             {
 
                 downloadTable->item( i, SPEED )->setText( "0 KB/s" );
-                downloadTable->item( i, STATUS )->setText("Wstrzymane");
+                downloadTable->item( i, STATUS )->setText(tr("Wstrzymane"));
                 for(int j = 0 ; j < 8; j++ )
                 {
                     downloadTable->item(i, j)->setBackground(QColor(255, 255, 0, 100));
@@ -432,7 +458,7 @@ void QMoorie::refreshStatuses()
                 {
                     uploadTable->item(i, j)->setBackground(QColor(0, 50, 0, 100));
                 }
-                tray->showHints("Wysłano pomyślnie", "Wysyłanie pliku: <br/><b><i>"+uploadInstanceH[itemNumber]->fileName+"</b></i><br/>zakończono pomyślnie.");
+                tray->showHints(tr("Wysłano pomyślnie"), tr("Wysyłanie pliku: <br/><b><i>")+uploadInstanceH[itemNumber]->fileName+tr("</b></i><br/>zakończono pomyślnie."));
                 uploadInstanceH.remove(i);
                 uploadTable->item(i,ID)->setText("-1");
                 saveUploads();
@@ -442,13 +468,13 @@ void QMoorie::refreshStatuses()
                 uploadTable->item( i, REMAINING )->setText( "0.00 MB" );
                 uploadTable->item( i, PROGRESS )->setData(Qt::DisplayRole, 0);
                 uploadTable->item( i, SPEED )->setText("0 KB/s");
-                uploadTable->item( i, STATUS )->setText("Nie udało się wysłać pliku");
+                uploadTable->item( i, STATUS )->setText(tr("Nie udało się wysłać pliku"));
                 for(int j = 0 ; j < 8; j++ )
                 {
                     uploadTable->item(i, j)->setBackground(QColor(255, 0, 0, 200));
                 }
                 uploadInstanceH[itemNumber]->wyslano = true;
-                tray->showHints("Błąd wysyłania", "Niestety nie udało się wysłać pliku:<br/><b><i>"+uploadInstanceH[itemNumber]->fileName+"</i></b>");
+                tray->showHints(tr("Błąd wysyłania"), tr("Niestety nie udało się wysłać pliku:<br/><b><i>")+uploadInstanceH[itemNumber]->fileName+"</i></b>");
             }
         }
         else if(!uploadInstanceH[itemNumber]->Instance->downloadDone && uploadInstanceH[itemNumber]->Instance->started)
@@ -501,7 +527,7 @@ void QMoorie::refreshStatuses()
             else if(uploadInstanceH[itemNumber]->Instance->downloadPaused)
             {
                 uploadTable->item( i, SPEED )->setText( "0 KB/s" );
-                uploadTable->item( i, STATUS )->setText( "Wstrzymane" );
+                uploadTable->item( i, STATUS )->setText( tr("Wstrzymane") );
                 for(int j = 0 ; j < 8; j++ )
                 {
                     uploadTable->item(i, j)->setBackground(QColor(255, 255, 0, 100));
@@ -547,7 +573,7 @@ void QMoorie::refreshStatuses()
         ui->maxDownloadSpeed->setText(QString::fromStdString(allS.str()) +" KB/s");
         ui->maxUploadSpeed->setText(QString::fromStdString(allSs.str()) +" KB/s");
 
-        QString tip = "<table cellpadding='2' cellspacing='2' align='center'><tr><td><b>Szybkość:</b></td><td></td></tr><tr><td>Pobieranie: <font color='#1c9a1c'>"+ QString::fromStdString(allS.str()) +" KB/s</font></td><td>Wysyłanie: <font color='#990000'>"+ QString::fromStdString(allSs.str()) +" KB/s</font></td></tr><tr><td><b>Transfer:</b></td><td></td></tr><tr><td>Pobrano: <font color='#1c9a1c'>"+ fileSize(allBytesReadSession) +"</font></td><td>Wysłano: <font color='#990000'>"+ fileSize(allBytesSendSession) +"</font></td></tr></table>";
+        QString tip = tr("<table cellpadding='2' cellspacing='2' align='center'><tr><td><b>Szybkość:</b></td><td></td></tr><tr><td>Pobieranie: <font color='#1c9a1c'>")+ QString::fromStdString(allS.str()) + tr(" KB/s</font></td><td>Wysyłanie: <font color='#990000'>") + QString::fromStdString(allSs.str()) + tr(" KB/s</font></td></tr><tr><td><b>Transfer:</b></td><td></td></tr><tr><td>Pobrano: <font color='#1c9a1c'>") + fileSize(allBytesReadSession) + tr("</font></td><td>Wysłano: <font color='#990000'>") + fileSize(allBytesSendSession) + tr("</font></td></tr></table>");
         tray->setToolTip(tip);
     }
     ui->allBytesRead->setText(fileSize(allBytesRead+allBytesReadSession));
@@ -979,7 +1005,7 @@ void QMoorie::writeConfigFile()
     }
     else
     {
-        QMessageBox::critical(NULL, "QMoorie", "Nie można zapisać pliku konfiguracyjnego do\n "+settings.fileName(), "OK");
+        QMessageBox::critical(NULL, "Qmoorie", tr("Nie można zapisać pliku konfiguracyjnego do\n ") + settings.fileName(), tr("OK"));
         this->close();
     }
 }
@@ -987,8 +1013,8 @@ bool QMoorie::showExitAppConfirmDialog()
 {
     QMessageBox msgBox;
 
-    msgBox.setText("Potwierdzenie zakończenia");
-    msgBox.setInformativeText("Czy na pewno chcesz zakończyć aplikację?");
+    msgBox.setText(tr("Potwierdzenie zakończenia"));
+    msgBox.setInformativeText(tr("Czy na pewno chcesz zakończyć aplikację?"));
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::Yes);
     int ret = msgBox.exec();

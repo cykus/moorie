@@ -22,14 +22,14 @@
 newUploadDialog::newUploadDialog(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 {
     setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png") );
-    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Dodaj plik");
+    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + tr(" - Dodaj plik"));
 
-    fileLabel = new QLabel("Plik:");
+    fileLabel = new QLabel(tr("Plik:"));
     fileEdit = new QLineEdit();
     fileButton = new QPushButton(tr("Przeglądaj"));
     fileEdit->setEnabled(false);
 
-    segSizeLabel = new QLabel("Rozmiar segmentu:");
+    segSizeLabel = new QLabel(tr("Rozmiar segmentu:"));
     segSizeSlider = new QSlider(Qt::Horizontal);
     segSizeSlider->setMinimum(1);
     segSizeSlider->setMaximum(10);
@@ -37,16 +37,16 @@ newUploadDialog::newUploadDialog(QWidget * parent, Qt::WFlags f):QDialog(parent,
     segSizeLabel2 = new QLabel();
     setSliderLabel(Zmienne().SEGSIZE);
 
-    downPassLabel = new QLabel("Hasło pobierania:");
+    downPassLabel = new QLabel(tr("Hasło pobierania:"));
     downPassEdit = new QLineEdit(Zmienne().DOWNPASS);
 
-    editPassLabel = new QLabel("Hasło edycji:");
+    editPassLabel = new QLabel(tr("Hasło edycji:"));
     editPassEdit = new QLineEdit(Zmienne().EDITPASS);
 
-    loginLabel = new QLabel("Użytkownik:");
+    loginLabel = new QLabel(tr("Użytkownik:"));
     loginEdit = new QLineEdit();
 
-    passLabel = new QLabel("Hasło:");
+    passLabel = new QLabel(tr("Hasło:"));
     passEdit = new QLineEdit();
 
     spacerItem = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -57,15 +57,15 @@ newUploadDialog::newUploadDialog(QWidget * parent, Qt::WFlags f):QDialog(parent,
     mirrorTable->setColumnCount(2);
     mirrorTable->hideColumn(1);
     mirrorTable->horizontalHeader()->setStretchLastSection(true);
-    header  << "Użytkownik" << "Hasło" ;
+    header  << tr("Użytkownik") << tr("Hasło") ;
     mirrorTable->setHorizontalHeaderLabels(header);
 
-    saveButton = new QPushButton("Zapisz");
-    addButton = new QPushButton("Dodaj");
-    deleteButton = new QPushButton("Usuń");
+    saveButton = new QPushButton(tr("Zapisz"));
+    addButton = new QPushButton(tr("Dodaj"));
+    deleteButton = new QPushButton(tr("Usuń"));
 
-    sendButton = new QPushButton("Wyślij");
-    closeButton = new QPushButton("Zamknij");
+    sendButton = new QPushButton(tr("Wyślij"));
+    closeButton = new QPushButton(tr("Zamknij"));
 
     QHBoxLayout *fileLayout = new QHBoxLayout;
     fileLayout -> addWidget(fileLabel);

@@ -22,10 +22,10 @@
 ConfigDialog::ConfigDialog()
 {
     setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png") );
-    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Ustawienia programu");
+    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + tr(" - Ustawienia programu"));
 
     warning = new QLabel;
-    warning->setText("<b>Niektóre zmiany wymagają uruchomienia aplikacji ponownie.<b>");
+    warning->setText(tr("<b>Niektóre zmiany wymagają uruchomienia aplikacji ponownie.<b>"));
     contentsWidget = new QListWidget;
     contentsWidget->setViewMode(QListView::IconMode);
     contentsWidget->setIconSize(QSize(64, 64));
@@ -150,7 +150,7 @@ void ConfigDialog::saveConfigFile()
     }
     else
     {
-        QMessageBox::critical(NULL, "QMoorie", "Nie można zapisać pliku konfiguracyjnego do\n "+settings.fileName(), "OK");
+        QMessageBox::critical(NULL, "Qmoorie", tr("Nie można zapisać pliku konfiguracyjnego do\n ")+settings.fileName(), tr("OK"));
         this->close();
     }
 }

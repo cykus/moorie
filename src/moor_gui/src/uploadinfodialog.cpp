@@ -23,13 +23,13 @@ UploadInfoDialog::UploadInfoDialog(QString infoString)
 {
 
     setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png") );
-    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Informacje");
+    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + tr(" - Informacje"));
 
     info = new QLabel(infoString);
     info->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
 
     Hashcode = new QTextEdit();
-    QPushButton *okButton = new QPushButton("OK");
+    QPushButton *okButton = new QPushButton(tr("OK"));
     QPushButton *cancelButton = new QPushButton(tr("Anuluj"));
     okButton->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
