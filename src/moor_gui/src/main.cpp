@@ -22,6 +22,7 @@
 #include <QSplashScreen>
 #include <QTranslator>
 #include "qmoorie.h"
+
 int main(int argc, char *argv[])
 {
     //QString lang = config_file.readEntry("General", "Language", QLocale::system().name().mid(0,2));
@@ -44,6 +45,7 @@ int main(int argc, char *argv[])
     app.setOrganizationName("Moorie Team");
     app.setOrganizationDomain("moorie.pl");
     app.setApplicationVersion ("GIT(20100305)");
+
     app.setQuitOnLastWindowClosed(true);
     Q_INIT_RESOURCE(application);
     QMoorie mw;

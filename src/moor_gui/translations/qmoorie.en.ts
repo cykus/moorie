@@ -7,12 +7,12 @@
     <message>
         <location filename="../src/aboutdialog.ui" line="27"/>
         <source>About QMoorie</source>
-        <translation type="unfinished"></translation>
+        <translation>About Qmoorie</translation>
     </message>
     <message>
         <location filename="../src/aboutdialog.ui" line="69"/>
         <source>O programie </source>
-        <translation type="unfinished"></translation>
+        <translation>About Qmoorie</translation>
     </message>
     <message>
         <location filename="../src/aboutdialog.ui" line="81"/>
@@ -25,12 +25,12 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;Repozytorium:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-style:italic;&quot;&gt; &lt;/span&gt;&lt;a href=&quot;http://github.com/cykus/moorie&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-style:italic; text-decoration: underline; color:#0057ae;&quot;&gt;http://github.com/cykus/moorie&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt;&quot;&gt;Home Page: &lt;/span&gt;&lt;a href=&quot;http://moorie.pl&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; text-decoration: underline; color:#0057ae;&quot;&gt;http://moorie.pl&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/aboutdialog.ui" line="103"/>
         <source>Lista zmian </source>
-        <translation type="unfinished"></translation>
+        <translation>Changelog</translation>
     </message>
     <message>
         <location filename="../src/aboutdialog.ui" line="115"/>
@@ -73,12 +73,12 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Bitstream Vera Sans&apos;;&quot;&gt;* 2008/07/04: 0.0.1  -- Pierwsza wesja działająca&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Bitstream Vera Sans&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Bitstream Vera Sans&apos;;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/aboutdialog.ui" line="161"/>
         <source>Licencja </source>
-        <translation type="unfinished"></translation>
+        <translation>License</translation>
     </message>
     <message>
         <location filename="../src/aboutdialog.ui" line="170"/>
@@ -102,12 +102,12 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Bitstream Vera Sans&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Bitstream Vera Sans&apos;;&quot;&gt;How to Apply These Terms to Your New Programs&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Bitstream Vera Sans&apos;;&quot;&gt;&lt;br /&gt;If you develop a new program, and you want it to be of the greatest&lt;br /&gt;possible use to the public, the best way to achieve this is to make it&lt;br /&gt;free software which everyone can redistribute and change under these terms.&lt;br /&gt;&lt;br /&gt;To do so, attach the following notices to the program. It is safest&lt;br /&gt;to attach them to the start of each source file to most effectively&lt;br /&gt;convey the exclusion of warranty; and each file should have at least&lt;br /&gt;the &apos;copyright&apos; line and a pointer to where the full notice is found.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;Copyright (C) &lt;br /&gt;&lt;br /&gt;This program is free software; you can redistribute it and/or modify&lt;br /&gt;it under the terms of the GNU General Public License as published by&lt;br /&gt;the Free Software Foundation; either version 2 of the License, or&lt;br /&gt;(at your option) any later version.&lt;br /&gt;&lt;br /&gt;This program is distributed in the hope that it will be useful,&lt;br /&gt;but WITHOUT ANY WARRANTY; without even the implied warranty of&lt;br /&gt;MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the&lt;br /&gt;GNU General Public License for more details.&lt;br /&gt;&lt;br /&gt;You should have received a copy of the GNU General Public License&lt;br /&gt;along with this program; if not, write to the Free Software&lt;br /&gt;Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;Also add information on how to contact you by electronic and paper mail.&lt;br /&gt;&lt;br /&gt;If the program is interactive, make it output a short notice like this&lt;br /&gt;when it starts in an interactive mode:&lt;br /&gt;&lt;br /&gt;Gnomovision version 69, Copyright (C) year name of author&lt;br /&gt;Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w&apos;.&lt;br /&gt;This is free software, and you are welcome to redistribute it&lt;br /&gt;under certain conditions; type `show c&apos; for details.&lt;br /&gt;&lt;br /&gt;The hypothetical commands `show w&apos; and `show c&apos; should show the appropriate&lt;br /&gt;parts of the General Public License. Of course, the commands you use may&lt;br /&gt;be called something other than `show w&apos; and `show c&apos;; they could even be&lt;br /&gt;mouse-clicks or menu items--whatever suits your program.&lt;br /&gt;&lt;br /&gt;You should also get your employer (if you work as a programmer) or your&lt;br /&gt;school, if any, to sign a &apos;copyright disclaimer&apos; for the program, if&lt;br /&gt;necessary. Here is a sample; alter the names:&lt;br /&gt;&lt;br /&gt;Yoyodyne, Inc., hereby disclaims all copyright interest in the program&lt;br /&gt;`Gnomovision&apos; (which makes passes at compilers) written by James Hacker.&lt;br /&gt;&lt;br /&gt;&apos;signature of Ty Coon&apos;, 1 April 1989&lt;br /&gt;Ty Coon, President of Vice&lt;br /&gt;&lt;br /&gt;This General Public License does not permit incorporating your program into&lt;br /&gt;proprietary programs. If your program is a subroutine library, you may&lt;br /&gt;consider it more useful to permit linking proprietary applications with the&lt;br /&gt;library. If this is what you want to do, use the GNU Library General&lt;br /&gt;Public License instead of this License.&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/aboutdialog.ui" line="215"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>ok</translation>
     </message>
 </context>
 <context>
@@ -115,44 +115,44 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/configdialog.cpp" line="25"/>
         <source> - Ustawienia programu</source>
-        <translation type="unfinished"></translation>
+        <translation>- settings</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="28"/>
         <source>&lt;b&gt;Niektóre zmiany wymagają uruchomienia aplikacji ponownie.&lt;b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>some changes needs restarting of the aplication</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="48"/>
         <location filename="../src/configdialog.cpp" line="153"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>ok</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="49"/>
         <source>Anuluj</source>
-        <translation type="unfinished"></translation>
+        <translation>cancel</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="92"/>
         <source>Konfiguracja</source>
-        <translation type="unfinished"></translation>
+        <translation>configuration</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="96"/>
         <source>Wysyłanie</source>
-        <translation type="unfinished"></translation>
+        <translation>uploading</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="100"/>
         <source>Inne</source>
-        <translation type="unfinished"></translation>
+        <translation>others</translation>
     </message>
     <message>
         <location filename="../src/configdialog.cpp" line="153"/>
         <source>Nie można zapisać pliku konfiguracyjnego do
  </source>
-        <translation type="unfinished"></translation>
+        <translation>settings file could not be written to</translation>
     </message>
 </context>
 <context>
@@ -160,77 +160,77 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/configurationpage.cpp" line="25"/>
         <source>Pobieranie</source>
-        <translation type="unfinished"></translation>
+        <translation>Downloading</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="29"/>
         <source>Przeglądaj</source>
-        <translation type="unfinished"></translation>
+        <translation>Browse</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="32"/>
         <source>Maksymalna liczba pobieranych plików:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum number of downloading files:</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="37"/>
         <source>Pozostaw segmenty po scalaniu:</source>
-        <translation type="unfinished"></translation>
+        <translation>Save segments after merging:</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="40"/>
         <source>Dziennik zdarzeń</source>
-        <translation type="unfinished"></translation>
+        <translation>Dashboard</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="42"/>
         <source>Szczegółowość:</source>
-        <translation type="unfinished"></translation>
+        <translation>Details:</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="47"/>
         <source>Inne</source>
-        <translation type="unfinished"></translation>
+        <translation>Others</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="51"/>
         <source>Pokazuj ikonę w tacce systemowej</source>
-        <translation type="unfinished"></translation>
+        <translation>Show tray icon</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="55"/>
         <source>Uruchomiaj zminimalizowane do tacki.</source>
-        <translation type="unfinished"></translation>
+        <translation>start minimized</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="60"/>
         <source>Pytaj o potwierdzenie przed zamnknięciem</source>
-        <translation type="unfinished"></translation>
+        <translation>ask before exit</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="68"/>
         <source>Powiadomienia</source>
-        <translation type="unfinished"></translation>
+        <translation>Notyfications</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="69"/>
         <source>Powiadomienia systemowe</source>
-        <translation type="unfinished"></translation>
+        <translation>system notyfications</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="70"/>
         <source>Powiadomienia w dymkach</source>
-        <translation type="unfinished"></translation>
+        <translation>hints-style notyfications</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="71"/>
         <source>Brak powiadomień</source>
-        <translation type="unfinished"></translation>
+        <translation>no notyfications</translation>
     </message>
     <message>
         <location filename="../src/configurationpage.cpp" line="132"/>
         <source>Wybierz folder</source>
-        <translation type="unfinished"></translation>
+        <translation>choose directory</translation>
     </message>
 </context>
 <context>
@@ -238,68 +238,68 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="29"/>
         <source>Tytuł: </source>
-        <translation type="unfinished"></translation>
+        <translation>Title:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="30"/>
         <source>Nazwa pliku: </source>
-        <translation type="unfinished"></translation>
+        <translation>Filename:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="31"/>
         <source>Rozmiar: </source>
-        <translation type="unfinished"></translation>
+        <translation>Size:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="32"/>
         <source>Liczba segmentów: </source>
-        <translation type="unfinished"></translation>
+        <translation>Number of segments:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="33"/>
         <source>Rozmiar segmentów: </source>
-        <translation type="unfinished"></translation>
+        <translation>Size of segements:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="34"/>
         <source>Liczba mirrorów: </source>
-        <translation type="unfinished"></translation>
+        <translation>Number of mirrors:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="35"/>
         <source>Mirrory: 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Mirrors:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="36"/>
         <source>Uploader: </source>
-        <translation type="unfinished"></translation>
+        <translation>Uploader:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="37"/>
         <source>Opis: </source>
-        <translation type="unfinished"></translation>
+        <translation>Description:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="38"/>
         <source>Link do okładki: </source>
-        <translation type="unfinished"></translation>
+        <translation>Link to the cover:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="39"/>
         <source>Komentarz: </source>
-        <translation type="unfinished"></translation>
+        <translation>Comment:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="40"/>
         <source>Hashcode: </source>
-        <translation type="unfinished"></translation>
+        <translation>Hashcode:</translation>
     </message>
     <message>
         <location filename="../src/downloadinfodialog.cpp" line="42"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>ok</translation>
     </message>
 </context>
 <context>
@@ -307,23 +307,23 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/qmoorie.ui" line="31"/>
         <source>Pobieranie </source>
-        <translation type="unfinished"></translation>
+        <translation>Downloading</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="36"/>
         <location filename="../src/qmoorie.ui" line="102"/>
         <source>Wysyłanie</source>
-        <translation type="unfinished"></translation>
+        <translation>Uploading</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="41"/>
         <source>Statystyki</source>
-        <translation type="unfinished"></translation>
+        <translation>Statystics</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="47"/>
         <source>Pobieranie</source>
-        <translation type="unfinished"></translation>
+        <translation>Downloading</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="55"/>
@@ -331,48 +331,48 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/qmoorie.ui" line="110"/>
         <location filename="../src/qmoorie.ui" line="117"/>
         <source>0.00 MB</source>
-        <translation type="unfinished"></translation>
+        <translation>0.00 MB</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="69"/>
         <source>Pobrano w aktualnej sesji: </source>
-        <translation type="unfinished"></translation>
+        <translation>Downloaded in present sesion:</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="76"/>
         <location filename="../src/qmoorie.ui" line="131"/>
         <source>0 KB/s</source>
-        <translation type="unfinished"></translation>
+        <translation>0 KB/s</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="83"/>
         <source>Maksymalna prędkość pobierania: </source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum speed of downloading:</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="90"/>
         <source>Pobrano razem:</source>
-        <translation type="unfinished"></translation>
+        <translation>Downloaded (total):</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="124"/>
         <source>Wysłano w aktualnej sesji: </source>
-        <translation type="unfinished"></translation>
+        <translation>Uploaded in present sesion:</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="138"/>
         <source>Maksymalna prędkość Wysyłania: </source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum speed of uploading:</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="145"/>
         <source>Wysłano razem:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sent (total):</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.ui" line="158"/>
         <source>Dziennik</source>
-        <translation type="unfinished"></translation>
+        <translation>Dashboard</translation>
     </message>
 </context>
 <context>
@@ -380,145 +380,145 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/qmoorie.cpp" line="26"/>
         <source> - Klient P2M</source>
-        <translation type="unfinished"> - Client P2M in Da inglisz</translation>
+        <translation>Client P2M</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="88"/>
         <source>Plik</source>
-        <translation type="unfinished"></translation>
+        <translation>File</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="96"/>
         <location filename="../src/qmoorie.cpp" line="104"/>
         <source>&amp;Pobierz</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Download</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="97"/>
         <location filename="../src/qmoorie.cpp" line="105"/>
         <source>&amp;Wyślij</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Send</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="98"/>
         <location filename="../src/qmoorie.cpp" line="106"/>
         <source>&amp;Ustawienia</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;settings</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="99"/>
         <location filename="../src/qmoorie.cpp" line="107"/>
         <source>Wstrzymaj wszystko</source>
-        <translation type="unfinished"></translation>
+        <translation>Pause all</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="101"/>
         <location filename="../src/qmoorie.cpp" line="109"/>
         <source>&amp;O programie</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;About</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="102"/>
         <location filename="../src/qmoorie.cpp" line="110"/>
         <source>Zakończ</source>
-        <translation type="unfinished"></translation>
+        <translation>Close</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="113"/>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="114"/>
         <source>Dodanie nowego pliku do pobrania</source>
-        <translation type="unfinished"></translation>
+        <translation>Adding new file to download</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="117"/>
         <source>Dodanie nowego pliku do wysłania</source>
-        <translation type="unfinished"></translation>
+        <translation>Adding new file to upload</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="120"/>
         <source>Ctrl+Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+S</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="121"/>
         <source>Konfiguracja aplikacji</source>
-        <translation type="unfinished"></translation>
+        <translation>Configure Qmoorie</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="125"/>
         <source>Wstrzymanie/wznowienie pobierania wszystkich plików</source>
-        <translation type="unfinished"></translation>
+        <translation>Pause/Resume all files</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="129"/>
         <source>Informacje o aplikacji</source>
-        <translation type="unfinished"></translation>
+        <translation>Information obout aplication</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="132"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="133"/>
         <source>Wyjście z aplikacji</source>
-        <translation type="unfinished"></translation>
+        <translation>Exit</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="173"/>
         <location filename="../src/qmoorie.cpp" line="188"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="173"/>
         <location filename="../src/qmoorie.cpp" line="188"/>
         <source>Nazwa pliku</source>
-        <translation type="unfinished"></translation>
+        <translation>Filename</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="173"/>
         <location filename="../src/qmoorie.cpp" line="188"/>
         <source>Rozmiar</source>
-        <translation type="unfinished"></translation>
+        <translation>Size</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="173"/>
         <source>Pozostało</source>
-        <translation type="unfinished"></translation>
+        <translation>ETA</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="173"/>
         <location filename="../src/qmoorie.cpp" line="188"/>
         <source>Postęp</source>
-        <translation type="unfinished"></translation>
+        <translation>Progress</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="173"/>
         <location filename="../src/qmoorie.cpp" line="188"/>
         <source>Prędkość</source>
-        <translation type="unfinished"></translation>
+        <translation>Speed</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="173"/>
         <location filename="../src/qmoorie.cpp" line="188"/>
         <source>Status</source>
-        <translation type="unfinished"></translation>
+        <translation>Status</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="173"/>
         <location filename="../src/qmoorie.cpp" line="188"/>
         <source>Skrzynka</source>
-        <translation type="unfinished"></translation>
+        <translation>Mailbox</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="188"/>
         <source>Wysłano</source>
-        <translation type="unfinished"></translation>
+        <translation>Sent</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="227"/>
@@ -527,140 +527,140 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/qmoorie.cpp" line="710"/>
         <location filename="../src/qmoorie.cpp" line="714"/>
         <source>Błąd</source>
-        <translation type="unfinished"></translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="227"/>
         <source>Już wysyłasz ten plik.</source>
-        <translation type="unfinished"></translation>
+        <translation>You are already uploading this file</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="253"/>
         <source>Już pobierasz ten plik.</source>
-        <translation type="unfinished"></translation>
+        <translation>You are already downloading this file</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="365"/>
         <source>Pobrano pomyślnie</source>
-        <translation type="unfinished"></translation>
+        <translation>File downloaded susccessfully</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="365"/>
         <source>Pobieranie pliku: &lt;br/&gt;&lt;b&gt;&lt;i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>file downloading: &lt;br/&gt;&lt;b&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="365"/>
         <location filename="../src/qmoorie.cpp" line="461"/>
         <source>&lt;/b&gt;&lt;/i&gt;&lt;br/&gt;zakończono pomyślnie.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;/b&gt;&lt;/i&gt;&lt;br/&gt; finishing susccessfull</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="375"/>
         <source>Nie udało się pobrać pliku z żadnej ze skrzynek</source>
-        <translation type="unfinished"></translation>
+        <translation>File could not be downloaded from all of the boxes</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="381"/>
         <source>Błąd pobierania</source>
-        <translation type="unfinished"></translation>
+        <translation>Downloading error</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="381"/>
         <source>Niestety nie udało się pobrać pliku:&lt;br/&gt;&lt;b&gt;&lt;i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorry, file: &lt;br/&gt;&lt;b&gt;&lt;i&gt; could not be downloaded</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="430"/>
         <location filename="../src/qmoorie.cpp" line="530"/>
         <source>Wstrzymane</source>
-        <translation type="unfinished"></translation>
+        <translation>Paused</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="461"/>
         <source>Wysłano pomyślnie</source>
-        <translation type="unfinished"></translation>
+        <translation>File uploaded susccessfully</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="461"/>
         <source>Wysyłanie pliku: &lt;br/&gt;&lt;b&gt;&lt;i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>file uploading: &lt;br/&gt;&lt;b&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="471"/>
         <source>Nie udało się wysłać pliku</source>
-        <translation type="unfinished"></translation>
+        <translation>File could not be sent</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="477"/>
         <source>Błąd wysyłania</source>
-        <translation type="unfinished"></translation>
+        <translation>Uploading error</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="477"/>
         <source>Niestety nie udało się wysłać pliku:&lt;br/&gt;&lt;b&gt;&lt;i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>File: &lt;br/&gt;&lt;b&gt;&lt;i&gt; could not be uploaded</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="576"/>
         <source>&lt;table cellpadding=&apos;2&apos; cellspacing=&apos;2&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Szybkość:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Pobieranie: &lt;font color=&apos;#1c9a1c&apos;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;table cellpadding=&apos;2&apos; cellspacing=&apos;2&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Speed:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Downloading: &lt;font color=&apos;#1c9a1c&apos;&gt;</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="576"/>
         <source> KB/s&lt;/font&gt;&lt;/td&gt;&lt;td&gt;Wysyłanie: &lt;font color=&apos;#990000&apos;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation> KB/s&lt;/font&gt;&lt;/td&gt;&lt;td&gt;Sending: &lt;font color=&apos;#990000&apos;&gt;</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="576"/>
         <source> KB/s&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Transfer:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Pobrano: &lt;font color=&apos;#1c9a1c&apos;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation> KB/s&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Transfer:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Pobrano: &lt;font color=&apos;#1c9a1c&apos;&gt;</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="576"/>
         <source>&lt;/font&gt;&lt;/td&gt;&lt;td&gt;Wysłano: &lt;font color=&apos;#990000&apos;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;/font&gt;&lt;/td&gt;&lt;td&gt;Sent: &lt;font color=&apos;#990000&apos;&gt;</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="576"/>
         <source>&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="708"/>
         <source>Hasło nieprawidłowe! </source>
-        <translation type="unfinished"></translation>
+        <translation>Incorrect pasword!!</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="710"/>
         <source>Źle skopiowany lub niepoprawny hashcode!</source>
-        <translation type="unfinished"></translation>
+        <translation>Incorrect or wrong copied hashcode!</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="714"/>
         <source>Nieobsługiwany hashcode!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hashcode is not served!</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="1008"/>
         <source>Nie można zapisać pliku konfiguracyjnego do
  </source>
-        <translation type="unfinished"></translation>
+        <translation>settings file could not be written</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="1008"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>ok</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="1016"/>
         <source>Potwierdzenie zakończenia</source>
-        <translation type="unfinished"></translation>
+        <translation>confirmation of exit</translation>
     </message>
     <message>
         <location filename="../src/qmoorie.cpp" line="1017"/>
         <source>Czy na pewno chcesz zakończyć aplikację?</source>
-        <translation type="unfinished"></translation>
+        <translation>Do you really want to close Qmoorie?</translation>
     </message>
 </context>
 <context>
@@ -668,17 +668,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/uploadinfodialog.cpp" line="26"/>
         <source> - Informacje</source>
-        <translation type="unfinished"></translation>
+        <translation>- informations</translation>
     </message>
     <message>
         <location filename="../src/uploadinfodialog.cpp" line="32"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>ok</translation>
     </message>
     <message>
         <location filename="../src/uploadinfodialog.cpp" line="33"/>
         <source>Anuluj</source>
-        <translation type="unfinished"></translation>
+        <translation>cancel</translation>
     </message>
 </context>
 <context>
@@ -686,62 +686,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/uploadpage.cpp" line="25"/>
         <source>Skrzynki do wysyłania</source>
-        <translation type="unfinished"></translation>
+        <translation>Uploadi mailboxes</translation>
     </message>
     <message>
         <location filename="../src/uploadpage.cpp" line="32"/>
         <source>Użytkownik</source>
-        <translation type="unfinished"></translation>
+        <translation>User</translation>
     </message>
     <message>
         <location filename="../src/uploadpage.cpp" line="32"/>
         <source>Hasło</source>
-        <translation type="unfinished"></translation>
+        <translation>Password</translation>
     </message>
     <message>
         <location filename="../src/uploadpage.cpp" line="35"/>
         <source>Użytkownik:</source>
-        <translation type="unfinished"></translation>
+        <translation>User:</translation>
     </message>
     <message>
         <location filename="../src/uploadpage.cpp" line="38"/>
         <source>Hasło:</source>
-        <translation type="unfinished"></translation>
+        <translation>Password:</translation>
     </message>
     <message>
         <location filename="../src/uploadpage.cpp" line="41"/>
         <source>Zapisz</source>
-        <translation type="unfinished"></translation>
+        <translation>Save</translation>
     </message>
     <message>
         <location filename="../src/uploadpage.cpp" line="42"/>
         <source>Dodaj</source>
-        <translation type="unfinished"></translation>
+        <translation>Add</translation>
     </message>
     <message>
         <location filename="../src/uploadpage.cpp" line="43"/>
         <source>Usuń</source>
-        <translation type="unfinished"></translation>
+        <translation>Delate</translation>
     </message>
     <message>
         <location filename="../src/uploadpage.cpp" line="47"/>
         <source>Dane do wysyłania</source>
-        <translation type="unfinished"></translation>
+        <translation>Data to uploading</translation>
     </message>
     <message>
         <location filename="../src/uploadpage.cpp" line="49"/>
         <source>Rozmiar segmentu:</source>
-        <translation type="unfinished"></translation>
+        <translation>Size of segemnt:</translation>
     </message>
     <message>
         <location filename="../src/uploadpage.cpp" line="57"/>
         <source>Hasło pobierania:</source>
-        <translation type="unfinished"></translation>
+        <translation>Download password:</translation>
     </message>
     <message>
         <location filename="../src/uploadpage.cpp" line="60"/>
         <source>Hasło edycji:</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit password:</translation>
     </message>
 </context>
 <context>
@@ -749,7 +749,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/aboutdialog.cpp" line="25"/>
         <source> - O programie</source>
-        <translation type="unfinished"></translation>
+        <translation>- About Qmoorie</translation>
     </message>
 </context>
 <context>
@@ -757,17 +757,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/mytablewidget.cpp" line="48"/>
         <source>Wyświetla informacje o uploadzie</source>
-        <translation type="unfinished"></translation>
+        <translation>Display information about upload</translation>
     </message>
     <message>
         <location filename="../src/mytablewidget.cpp" line="49"/>
         <source>Wstrzymuje/Wznawia pobieranie uploadu</source>
-        <translation type="unfinished"></translation>
+        <translation>pausing/resuming downloading of upload</translation>
     </message>
     <message>
         <location filename="../src/mytablewidget.cpp" line="50"/>
         <source>Usuwa zadanie</source>
-        <translation type="unfinished"></translation>
+        <translation>Deleting the task</translation>
     </message>
 </context>
 <context>
@@ -775,64 +775,64 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="25"/>
         <source> - Dodaj plik</source>
-        <translation type="unfinished"></translation>
+        <translation>- Add file</translation>
     </message>
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="28"/>
         <source>Hashcode: </source>
-        <translation type="unfinished"></translation>
+        <translation>Hashcode:</translation>
     </message>
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="30"/>
         <source>Hasło: </source>
-        <translation type="unfinished"></translation>
+        <translation>Password:</translation>
     </message>
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="32"/>
         <source>Folder Pobierania:</source>
-        <translation type="unfinished"></translation>
+        <translation>Download directory:</translation>
     </message>
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="35"/>
         <source>Przeglądaj</source>
-        <translation type="unfinished"></translation>
+        <translation>Browse</translation>
     </message>
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="38"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>ok</translation>
     </message>
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="39"/>
         <source>Anuluj</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancel</translation>
     </message>
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="84"/>
         <location filename="../src/newdownloaddialog.cpp" line="86"/>
         <location filename="../src/newdownloaddialog.cpp" line="90"/>
         <source>Błąd</source>
-        <translation type="unfinished"></translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="84"/>
         <source>Hasło nieprawidłowe! </source>
-        <translation type="unfinished"></translation>
+        <translation>Incorrect password!</translation>
     </message>
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="86"/>
         <source>Źle skopiowany lub niepoprawny hashcode!</source>
-        <translation type="unfinished"></translation>
+        <translation>Incorrect or wrong copied hashcode!</translation>
     </message>
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="90"/>
         <source>Nieobsługiwany hashcode!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hashcode is not served!</translation>
     </message>
     <message>
         <location filename="../src/newdownloaddialog.cpp" line="97"/>
         <source>Wybierz folder</source>
-        <translation type="unfinished"></translation>
+        <translation>choose directory</translation>
     </message>
 </context>
 <context>
@@ -840,103 +840,103 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/newuploaddialog.cpp" line="25"/>
         <source> - Dodaj plik</source>
-        <translation type="unfinished"></translation>
+        <translation>- Add file</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="27"/>
         <source>Plik:</source>
-        <translation type="unfinished"></translation>
+        <translation>File:</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="29"/>
         <source>Przeglądaj</source>
-        <translation type="unfinished"></translation>
+        <translation>Browse</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="32"/>
         <source>Rozmiar segmentu:</source>
-        <translation type="unfinished"></translation>
+        <translation>Size of segment:</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="40"/>
         <source>Hasło pobierania:</source>
-        <translation type="unfinished"></translation>
+        <translation>Download password:</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="43"/>
         <source>Hasło edycji:</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit password:</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="46"/>
         <source>Użytkownik:</source>
-        <translation type="unfinished"></translation>
+        <translation>User:</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="49"/>
         <source>Hasło:</source>
-        <translation type="unfinished"></translation>
+        <translation>Password:</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="54"/>
         <source>Mirrory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mirrors:</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="60"/>
         <source>Użytkownik</source>
-        <translation type="unfinished"></translation>
+        <translation>User</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="60"/>
         <source>Hasło</source>
-        <translation type="unfinished"></translation>
+        <translation>Password</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="63"/>
         <source>Zapisz</source>
-        <translation type="unfinished"></translation>
+        <translation>Save</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="64"/>
         <source>Dodaj</source>
-        <translation type="unfinished"></translation>
+        <translation>Add</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="65"/>
         <source>Usuń</source>
-        <translation type="unfinished"></translation>
+        <translation>Delate</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="67"/>
         <source>Wyślij</source>
-        <translation type="unfinished"></translation>
+        <translation>Send</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="68"/>
         <source>Zamknij</source>
-        <translation type="unfinished"></translation>
+        <translation>Close</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="145"/>
         <location filename="../src/newuploaddialog.cpp" line="148"/>
         <source>Błąd</source>
-        <translation type="unfinished"></translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="145"/>
         <source>Musisz podać hasło edycji</source>
-        <translation type="unfinished"></translation>
+        <translation>You need to enter edit password</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="148"/>
         <source>Musisz wybrać plik do wysłania</source>
-        <translation type="unfinished"></translation>
+        <translation>You need to choose file to uploading</translation>
     </message>
     <message>
         <location filename="../src/newuploaddialog.cpp" line="156"/>
         <source>Wybierz plik</source>
-        <translation type="unfinished"></translation>
+        <translation>choose file</translation>
     </message>
 </context>
 <context>
@@ -944,46 +944,46 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/uploadinstance.cpp" line="90"/>
         <source>Plik: </source>
-        <translation type="unfinished"></translation>
+        <translation>File:</translation>
     </message>
     <message>
         <location filename="../src/uploadinstance.cpp" line="91"/>
         <source>Hasło pobierania: </source>
-        <translation type="unfinished"></translation>
+        <translation>Download password:</translation>
     </message>
     <message>
         <location filename="../src/uploadinstance.cpp" line="92"/>
         <source>Hasło edycji: </source>
-        <translation type="unfinished"></translation>
+        <translation>Edit password:</translation>
     </message>
     <message>
         <location filename="../src/uploadinstance.cpp" line="93"/>
         <source>Mirrory:
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Mirrors:</translation>
     </message>
     <message>
         <location filename="../src/uploadinstance.cpp" line="96"/>
         <source>Login: </source>
-        <translation type="unfinished"></translation>
+        <translation>Login:</translation>
     </message>
     <message>
         <location filename="../src/uploadinstance.cpp" line="97"/>
         <source>Hasło: </source>
-        <translation type="unfinished"></translation>
+        <translation>Password:</translation>
     </message>
     <message>
         <location filename="../src/uploadinstance.cpp" line="101"/>
         <source>Czysty hashcode:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Clean Hashcode:</translation>
     </message>
     <message>
         <location filename="../src/uploadinstance.cpp" line="103"/>
         <source>Hashcode z mirrorami:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Hashcodes with mirrors:</translation>
     </message>
 </context>
 </TS>
