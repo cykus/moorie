@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("Qmoorie");
     app.setOrganizationName("Moorie Team");
     app.setOrganizationDomain("moorie.pl");
-    app.setApplicationVersion ("GIT(20100305)");
+    app.setApplicationVersion ("0.3.0");
     app.setQuitOnLastWindowClosed(true);
     Q_INIT_RESOURCE(application);
     QMoorie mw;
