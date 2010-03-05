@@ -18,18 +18,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 #include <QApplication>
+#include <QTimer>
+#include <QSplashScreen>
+#include <QTranslator>
 #include "qmoorie.h"
 int main(int argc, char *argv[])
 {
+    //QString lang = config_file.readEntry("General", "Language", QLocale::system().name().mid(0,2));
+
+    QString lang = "en";
+
     QApplication app(argc, argv);
+
+    QString appPath = qApp->applicationDirPath();
+    QString data_path = appPath + "/../share/";
+
+    QTranslator translator;
+         translator.load(QString(data_path + "moorie/translations/qmoorie." + lang));
+         app.installTranslator(&translator);
+
+    QSplashScreen *splash = new QSplashScreen;
+    splash->setPixmap(QPixmap(":/images/splash.png"));
+    splash->show();
     app.setApplicationName("Qmoorie");
     app.setOrganizationName("Moorie Team");
     app.setOrganizationDomain("moorie.pl");
-    app.setApplicationVersion ("GIT(20100205)");
+    app.setApplicationVersion ("GIT(20100305)");
     app.setQuitOnLastWindowClosed(true);
     Q_INIT_RESOURCE(application);
-    QMoorie * mw = new QMoorie();
-    if(!Zmienne().RUNINTRAY || (Zmienne().RUNINTRAY && !Zmienne().TRAY)) mw->show();
+    QMoorie mw;
+    splash->showMessage( "Uruchamianie aplikacji...", Qt::AlignBottom | Qt::AlignRight );
+    QTimer::singleShot(2500, splash, SLOT(close()));
+    if(!Zmienne().RUNINTRAY || (Zmienne().RUNINTRAY && !Zmienne().TRAY)) QTimer::singleShot(2500, &mw, SLOT(show()));
     return app.exec();
 }
 

@@ -22,7 +22,7 @@
 aboutDialog::aboutDialog(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 {
     ui.setupUi(this);
-    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - O programie");
+    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + tr(" - O programie"));
     ui.lb_name->setText(qApp->applicationName() + " " + qApp->applicationVersion());
 }
 

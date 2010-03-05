@@ -22,7 +22,7 @@
 newDownloadDialog::newDownloadDialog(QWidget * parent, Qt::WFlags f):QDialog(parent, f)
 {
     setWindowIcon( QIcon(":/images/hi64-app-qmoorie.png") );
-    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + " - Dodaj plik");
+    setWindowTitle(qApp->applicationName()  + " " + qApp->applicationVersion() + tr(" - Dodaj plik"));
     QSize size(500,250);
     resize(size);
     label[0]=new QLabel(tr("Hashcode: "));
@@ -78,6 +78,7 @@ void newDownloadDialog::ok()
             }
             if(stdPass.compare(hash->getInfo().accessPasswd) == 0)
             {
+                fileName = QString::fromStdString(hash->getInfo().fileName);
                 accept();
             }
             else QMessageBox::about(this, tr("Błąd"),tr("Hasło nieprawidłowe! "));

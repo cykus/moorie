@@ -34,7 +34,7 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     dBox ->setRange(1,10);
     dBox -> setValue(Zmienne().DLEVEL);
     kBox = new QCheckBox();
-    kBox->setText("Pozostaw segmenty po scalaniu:");
+    kBox->setText(tr("Pozostaw segmenty po scalaniu:"));
     kBox -> setChecked(Zmienne().KSEGMENTS);
 
     QGroupBox *logGroup = new QGroupBox(tr("Dziennik zdarzeń"));
@@ -48,16 +48,16 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
 
     tBox = new QCheckBox();
     tBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    tBox->setText("Pokazuj ikonę w tacce systemowej");
+    tBox->setText(tr("Pokazuj ikonę w tacce systemowej"));
     tBox->setChecked(Zmienne().TRAY);
     thBox = new QCheckBox();
     thBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    thBox->setText("Uruchomiaj zminimalizowane do tacki.");
+    thBox->setText(tr("Uruchomiaj zminimalizowane do tacki."));
     thBox->setChecked(Zmienne().RUNINTRAY);
     if(!Zmienne().TRAY) thBox->setEnabled(false);
     abcBox = new QCheckBox();
     abcBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    abcBox->setText("Pytaj o potwierdzenie przed zamnknięciem");
+    abcBox->setText(tr("Pytaj o potwierdzenie przed zamnknięciem"));
     abcBox->setChecked(Zmienne().ASKBEFORECLOSE);
 
     notifyGroup = new QGroupBox(parent);

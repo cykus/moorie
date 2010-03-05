@@ -39,7 +39,7 @@ DownloadInfoDialog::DownloadInfoDialog(QString hash):
     info[9] = new QLabel(tr("Komentarz: "));
     info[10] = new QLabel(tr("Hashcode: "));
     Hashcode = new QTextEdit();
-    QPushButton *okButton = new QPushButton("OK");
+    QPushButton *okButton = new QPushButton(tr("OK"));
     okButton->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;

@@ -63,6 +63,12 @@ include_directories(
     ${MOOR_SOURCE_DIR}/src/libmoor
 )
 
+SET(TRANS
+    ../translations/qmoorie.en.ts
+)
+QT4_ADD_TRANSLATION(QM ${TRANS})
+
+
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR} )
 
 add_executable( qmoorie
@@ -70,6 +76,7 @@ add_executable( qmoorie
     ${QMOORIE_MOC_SRCS}
     ${QMOORIE_UI_HDRS}
     ${QMOORIE_RC_SRCS}
+    ${QM}
 )
 link_directories(
   ${MOOR_BINARY_DIR}/src/libmoor
@@ -101,3 +108,6 @@ install (FILES images/hi48-app-qmoorie.png DESTINATION "share/icons/hicolor/48x4
 install (FILES images/hi64-app-qmoorie.png DESTINATION "share/icons/hicolor/64x64/apps" RENAME qmoorie.png)
 install (FILES images/hisvg-app-qmoorie.svgz DESTINATION "share/icons/hicolor/scalable/apps" RENAME qmoorie.svgz)
 install (FILES images/hixpm-app-qmoorie.xpm DESTINATION "share/pixmaps" RENAME qmoorie.xpm)
+
+# install translations
+install (FILES ${QM} DESTINATION "share/moorie/translations")

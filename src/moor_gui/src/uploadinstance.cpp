@@ -87,20 +87,20 @@ QString uploadInstance::getToUsernames()
 }
 QString uploadInstance::generateInfo()
 {
-    QString info = "Plik: " + fileName +"\n\n";
-    info = info + "Hasło pobierania: " + dpass + "\n";
-    info = info + "Hasło edycji: " + epass + "\n\n";
-    info += "Mirrory:\n\n";
+    QString info = tr("Plik: ") + fileName +"\n\n";
+    info = info + tr("Hasło pobierania: ") + dpass + "\n";
+    info = info + tr("Hasło edycji: ") + epass + "\n\n";
+    info += tr("Mirrory:\n\n");
     for(int i = 0; i < mirrorMailboxes.count(); ++i)
     {
-        info = info + "Login: " + mirrorMailboxes.at(i)->username + "\n";
-        info = info + "Hasło: " + mirrorMailboxes.at(i)->password + "\n\n";
+        info = info + tr("Login: ") + mirrorMailboxes.at(i)->username + "\n";
+        info = info + tr("Hasło: ") + mirrorMailboxes.at(i)->password + "\n\n";
     }
     std::string hashcode = Instance->generateCleanHashcode();
 
-    info = info + "Czysty hashcode:\n" + QString::fromStdString(hashcode) + "\n\n";
+    info = info + tr("Czysty hashcode:\n") + QString::fromStdString(hashcode) + "\n\n";
 
-    info = info + "Hashcode z mirrorami:\n";
+    info = info + tr("Hashcode z mirrorami:\n");
     for(int i = 0; i < mirrorMailboxes.count(); ++i)
     {
        user = mirrorMailboxes.at(i)->username;

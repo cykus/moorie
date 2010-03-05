@@ -29,24 +29,24 @@ UploadPage::UploadPage(QWidget *parent)
     mailboxTable->setColumnCount(2);
     mailboxTable->hideColumn(1);
     mailboxTable->horizontalHeader()->setStretchLastSection(true);
-    header  << "Użytkownik" << "Hasło" ;
+    header  << tr("Użytkownik") << tr("Hasło") ;
     mailboxTable->setHorizontalHeaderLabels(header);
 
-    loginLabel = new QLabel("Użytkownik:");
+    loginLabel = new QLabel(tr("Użytkownik:"));
     loginEdit = new QLineEdit();
 
-    passLabel = new QLabel("Hasło:");
+    passLabel = new QLabel(tr("Hasło:"));
     passEdit = new QLineEdit();
 
-    saveButton = new QPushButton("Zapisz");
-    addButton = new QPushButton("Dodaj");
-    deleteButton = new QPushButton("Usuń");
+    saveButton = new QPushButton(tr("Zapisz"));
+    addButton = new QPushButton(tr("Dodaj"));
+    deleteButton = new QPushButton(tr("Usuń"));
 
     spacerItem = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     dataGroup = new QGroupBox(tr("Dane do wysyłania"));
 
-    segSizeLabel = new QLabel("Rozmiar segmentu:");
+    segSizeLabel = new QLabel(tr("Rozmiar segmentu:"));
     segSizeSlider = new QSlider(Qt::Horizontal);
     segSizeSlider->setMinimum(1);
     segSizeSlider->setMaximum(10);
@@ -54,10 +54,10 @@ UploadPage::UploadPage(QWidget *parent)
     segSizeLabel2 = new QLabel();
     setSliderLabel(Zmienne().SEGSIZE);
 
-    downPassLabel = new QLabel("Hasło pobierania:");
+    downPassLabel = new QLabel(tr("Hasło pobierania:"));
     downPassEdit = new QLineEdit(Zmienne().DOWNPASS);
 
-    editPassLabel = new QLabel("Hasło edycji:");
+    editPassLabel = new QLabel(tr("Hasło edycji:"));
     editPassEdit = new QLineEdit(Zmienne().EDITPASS);
 
     QHBoxLayout *loginLayout = new QHBoxLayout;
