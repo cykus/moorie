@@ -21,6 +21,7 @@
 #define TOOLS_H
 
 #include <QString>
+#include <QSettings>
 
 #if defined(unix)
 #include <QtDBus/QDBusInterface>
@@ -28,5 +29,6 @@
 
 QString fileSize(quint64);
 bool checkXDG();
-
+QString checkLanguage();
+void saveLanguage(QString);
 #endif

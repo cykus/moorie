@@ -22,28 +22,33 @@
 #include <QSplashScreen>
 #include <QTranslator>
 #include "qmoorie.h"
+#include "tools.h"
+
 int main(int argc, char *argv[])
 {
     //QString lang = config_file.readEntry("General", "Language", QLocale::system().name().mid(0,2));
 
-    QString lang = "en";
+
 
     QApplication app(argc, argv);
-
+    app.setApplicationName("Qmoorie");
+    app.setOrganizationName("Moorie Team");
+    app.setOrganizationDomain("moorie.pl");
+    app.setApplicationVersion ("GIT(20100306)");
+    QString lang = checkLanguage();
     QString appPath = qApp->applicationDirPath();
     QString data_path = appPath + "/../share/";
-
-    QTranslator translator;
-         translator.load(QString(data_path + "moorie/translations/qmoorie." + lang));
-         app.installTranslator(&translator);
 
     QSplashScreen *splash = new QSplashScreen;
     splash->setPixmap(QPixmap(":/images/splash.png"));
     splash->show();
-    app.setApplicationName("Qmoorie");
-    app.setOrganizationName("Moorie Team");
-    app.setOrganizationDomain("moorie.pl");
-    app.setApplicationVersion ("GIT(20100305)");
+
+    if(lang != "pl")
+    {
+        QTranslator translator;
+        translator.load(QString(data_path + "moorie/translations/qmoorie_" + lang));
+        app.installTranslator(&translator);
+    }
     app.setQuitOnLastWindowClosed(true);
     Q_INIT_RESOURCE(application);
     QMoorie mw;

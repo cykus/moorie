@@ -80,7 +80,7 @@
              <item row="3" column="0">
               <widget class="QLabel" name="label_2">
                <property name="text">
-                <string>Maksymalna prędkość pobierania: </string>
+                <string>Aktualna prędkość pobierania: </string>
                </property>
               </widget>
              </item>
@@ -135,7 +135,7 @@
              <item row="3" column="0">
               <widget class="QLabel" name="label_3">
                <property name="text">
-                <string>Maksymalna prędkość Wysyłania: </string>
+                <string>Aktualna prędkość wysyłania: </string>
                </property>
               </widget>
              </item>

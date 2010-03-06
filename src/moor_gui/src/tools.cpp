@@ -65,3 +65,21 @@ bool checkXDG()
     return false;
 #endif
 }
+QString checkLanguage()
+{
+        QSettings settings;
+        settings.beginGroup("CONFIG_PAGE");
+        QString lang = settings.value("LANG", "pl").toString();
+        settings.endGroup();
+        saveLanguage(lang);
+        return lang;
+}
+void saveLanguage(QString lang)
+{
+    QSettings settings;
+    if(settings.isWritable()){
+        settings.beginGroup("CONFIG_PAGE");
+        settings.setValue("LANG", lang);
+        settings.endGroup();
+    }
+}
