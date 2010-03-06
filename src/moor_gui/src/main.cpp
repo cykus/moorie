@@ -39,16 +39,15 @@ int main(int argc, char *argv[])
     QString appPath = qApp->applicationDirPath();
     QString data_path = appPath + "/../share/";
 
+    QTranslator translator;
+    QString path = data_path + "moorie/translations/qmoorie_" + lang;
+    translator.load(path);
+    app.installTranslator(&translator);
+
     QSplashScreen *splash = new QSplashScreen;
     splash->setPixmap(QPixmap(":/images/splash.png"));
     splash->show();
 
-    if(lang != "pl")
-    {
-        QTranslator translator;
-        translator.load(QString(data_path + "moorie/translations/qmoorie_" + lang));
-        app.installTranslator(&translator);
-    }
     app.setQuitOnLastWindowClosed(true);
     Q_INIT_RESOURCE(application);
     QMoorie mw;
