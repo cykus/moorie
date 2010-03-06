@@ -11,7 +11,9 @@
 
 int main(int argc, char **argv) {
 
-        CLibMoor * Instance;
+		std::string version = "0.3.0"; /// version of moorie
+		
+        CLibMoor * Instance; /// libmoor instance
 
         unsigned int logLevel(6);
 		/** zmienne dla downloadu */
@@ -69,7 +71,7 @@ int main(int argc, char **argv) {
 						("mboxaddr", boost::program_options::value<std::string>(), "Mirror address (example@example.com)")
 						("mboxpass", boost::program_options::value<std::string>(), "Password for mirror");
 
-        boost::program_options::options_description all("Moorie 0.2.1 (C)by Moorie Team (http://moorie.pl)");
+        boost::program_options::options_description all("Moorie "+version+" (C)by Moorie Team (http://moorie.pl)");
         all.add(general_option).add(download_option).add(upload_option).add(hashcode_option);
         boost::program_options::variables_map vars;
         try
@@ -212,8 +214,23 @@ int main(int argc, char **argv) {
                 std::cout << all << std::endl;
         }
 
-        curl_global_init(CURL_GLOBAL_ALL);
-
+		curl_global_init(CURL_GLOBAL_ALL);
+		
+		/// checking for new version of moorie
+		std::cout << "--== Starting moorie updater... --==" << std::endl;
+		Instance = new CLibMoor();
+		std::string newversion = Instance->checkVersion(version);
+		if (newversion.length() > 0)
+			std::cout << "-> Moorie: New version available: " << newversion << std::endl;
+		else
+			std::cout << "-> Moorie: No new version avalilable..." << std::endl;
+		delete Instance;
+	   
+		std::cout << std::endl;
+		
+		/// end of version checker 
+		
+		/// download instance
         if (download) {
                 try
                 {

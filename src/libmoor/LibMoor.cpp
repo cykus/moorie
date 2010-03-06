@@ -402,3 +402,45 @@ int CLibMoor::getMyUploadNumOfSeg(){
 std::string CLibMoor::getMyUploadFileCRC(){
     return myUploadFileCRC;
 }
+
+/// writer function for checkVersion()
+size_t CLibMoor::writer(char *data, size_t size, size_t nmemb, std::string *buffer)
+{
+  int result = 0;
+  if (buffer != NULL)
+  {
+      buffer->append(data, size * nmemb);
+      result = size * nmemb;
+  }
+  return result;
+}
+
+std::string CLibMoor::checkVersion(std::string myver) {
+	std::string buffer;
+
+	CURL *curl;
+	CURLcode result;
+
+	curl = curl_easy_init();
+
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, "http://update.moorie.pl/ver"  );
+		curl_easy_setopt(curl, CURLOPT_HEADER, 0);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CLibMoor::writer);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
+		result = curl_easy_perform(curl);//http get performed
+		curl_easy_cleanup(curl);//must cleanup
+		
+		myServerVersion = buffer;
+		
+ 		if (result == CURLE_OK) {
+			if (myver.compare(buffer) != 0) {
+				return buffer; // new version avalilable :)
+			} else
+				return ""; // no new version :(
+		}
+		else
+			return "";
+	}
+	return "";
+}

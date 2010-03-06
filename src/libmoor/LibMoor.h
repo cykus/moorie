@@ -38,23 +38,27 @@ class CLibMoor {
 		int selectDownloadMailBox(int MailBox, std::string path = "");
 		int startDownload();
 		bool downloadDone;
-                bool downloadPaused;
-                bool started;
+		bool downloadPaused;
+		bool started;
 
-                Status getDownloadStatus();
-                Status getUploadStatus();
-                void pauseDownload();
-                void unpauseDownload();
-                int getMyUploadNumOfSeg();
-                std::string getMyUploadFileCRC();
+		Status getDownloadStatus();
+		Status getUploadStatus();
+		void pauseDownload();
+		void unpauseDownload();
+		int getMyUploadNumOfSeg();
+		std::string getMyUploadFileCRC();
 
-		// upload
-                int selectUploadMailBox(std::string login, std::string passwd, std::string adressee, std::string downPasswd, std::string editPasswd);
+		/// upload
+		int selectUploadMailBox(std::string login, std::string passwd, std::string adressee, std::string downPasswd, std::string editPasswd);
 		int splitFile(std::string filename, int size);
 		int startUpload(unsigned int fromseg);
 		std::string addMirror(std::string editpass, std::string orighash, std::string mboxaddr, std::string mboxpass); // adding mirror to hashcode
-                std::string generateCleanHashcode(); // clear hashcode generator
+		std::string generateCleanHashcode(); // clear hashcode generator
 
+		/// version checker
+		std::string checkVersion(std::string myver);
+		
+		
 	private:
 		/**
 		 * Gets number of last downloaded segment.
@@ -82,10 +86,16 @@ class CLibMoor {
 		int segments;
 		std::string myUploadMailbox;
 		std::string myLogin;
-                std::string myPasswd;
-                std::string myDownPasswd;
-                std::string myEditPasswd ;
-                std::vector<std::string> address;
+		std::string myPasswd;
+		std::string myDownPasswd;
+		std::string myEditPasswd ;
+		std::vector<std::string> address;
+		
+		
+		/// moorie updater
+		std::string myServerVersion;
+		static size_t writer(char *data, size_t size, size_t nmemb, std::string *buffer); /// writer function for checkVersion()
+		
 
 };
 
