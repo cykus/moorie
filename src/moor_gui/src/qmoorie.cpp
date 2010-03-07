@@ -268,8 +268,6 @@ void QMoorie::addUploadInstance(QString file, QVector<mirrorMailbox*> mirrorMail
     uploadInstanceH.insert(itemNumber, new uploadInstance(file, mirrorMailboxes, downPass, editPass, msize, fromSeg));
     uploadInstanceH[itemNumber]->fileName = fileInfo.fileName();
     uploadInstanceH[itemNumber]->fileSize = fileInfo.size();
-//  uploadInstanceH[itemNumber]->totalSegments = uploadInstanceH[itemNumber]->Instance->getMyUploadNumOfSeg();
-//  uploadInstanceH[itemNumber]->fileCRC = QString::fromStdString(uploadInstanceH[itemNumber]->Instance->getMyUploadFileCRC());
     uploadInstanceH[itemNumber]->start();
     uploadTable->setRowCount(uploadTable->rowCount() + 1);
     
@@ -923,7 +921,6 @@ void QMoorie::readConfigFile()
     Zmienne().NLEVEL = settings.value("NLEVEL", 1).toInt();
     Zmienne().RUNINTRAY = settings.value("RUNINTRAY", false).toBool();
     Zmienne().ASKBEFORECLOSE = settings.value("ASKBEFORECLOSE", false).toBool();
-    Zmienne().KSEGMENTS = settings.value("KSEGMENTS", true).toBool();
     Zmienne().TRAY = settings.value("TRAY", true).toBool();
     settings.endGroup();
 
@@ -974,7 +971,6 @@ void QMoorie::writeConfigFile()
         settings.setValue("LLEVEL", Zmienne().LLEVEL);
         settings.setValue("DLEVEL", Zmienne().DLEVEL);
         settings.setValue("NLEVEL", Zmienne().NLEVEL);
-        settings.setValue("KSEGMENTS", Zmienne().KSEGMENTS);
         settings.setValue("TRAY", Zmienne().TRAY);
         settings.endGroup();
 

@@ -29,14 +29,6 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     QPushButton *pathButton = new QPushButton(tr("Przeglądaj"));
     pathEdit->setEnabled(false);
 
-    QLabel *dLabel = new QLabel(tr("Maksymalna liczba pobieranych plików:"));
-    dBox = new QSpinBox();
-    dBox ->setRange(1,10);
-    dBox -> setValue(Zmienne().DLEVEL);
-    kBox = new QCheckBox();
-    kBox->setText("Pozostaw segmenty po scalaniu:");
-    kBox -> setChecked(Zmienne().KSEGMENTS);
-
     QGroupBox *logGroup = new QGroupBox(tr("Dziennik zdarzeń"));
 
     QLabel *lLabel = new QLabel(tr("Szczegółowość:"));
@@ -57,7 +49,7 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     if(!Zmienne().TRAY) thBox->setEnabled(false);
     abcBox = new QCheckBox();
     abcBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    abcBox->setText("Pytaj o potwierdzenie przed zamnknięciem");
+    abcBox->setText("Pytaj o potwierdzenie przed zamknięciem");
     abcBox->setChecked(Zmienne().ASKBEFORECLOSE);
 
     notifyGroup = new QGroupBox(parent);
@@ -85,13 +77,8 @@ ConfigurationPage::ConfigurationPage(QWidget *parent)
     pathLayout -> addWidget(pathEdit);
     pathLayout -> addWidget(pathButton);
 
-    QHBoxLayout *dLayout = new QHBoxLayout;
-    dLayout -> addWidget(dLabel);
-    dLayout -> addWidget(dBox);
-
     QVBoxLayout *configLayout = new QVBoxLayout;
     configLayout->addLayout(pathLayout);
-    configLayout->addLayout(dLayout);
     downloadGroup->setLayout(configLayout);
 
     QHBoxLayout *lLayout = new QHBoxLayout;

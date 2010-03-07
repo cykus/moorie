@@ -39,6 +39,8 @@ void uploadInstance::run()
     Instance = new CLibMoor();
     Instance -> splitFile(file.toStdString(), msize);
     if(!Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), getToUsernames().toStdString(), dpass.toStdString(), epass.toStdString())){
+        totalSegments = Instance->getMyUploadNumOfSeg();
+        fileCRC = QString::fromStdString(Instance->getMyUploadFileCRC());
         infoString = generateInfo();
         Instance->generateCleanHashcode();
         Instance->startUpload(fromseg);
