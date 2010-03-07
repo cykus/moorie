@@ -169,7 +169,7 @@ std::string& CMailBox::doHTTPUpload(std::string url, std::string filename, bool 
 	}
 	myvar.value.clear();
 	myvar.field.clear();
-	
+
 	headerlist = curl_slist_append(headerlist, buf);
 
 	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headerlist);
@@ -349,7 +349,10 @@ std::string CMailBox::getLink(int seg) {
 			++counter;
 	}
 	//LOG( Log::Debug, boost::format( "%1% %2%" ) %counter %segments_links.at(counter));
-	return segments_links.at(counter);
+	if (counter >= segments_links.size())
+		return "";
+	else
+		return segments_links.at(counter);
 }
 
 int CMailBox::downloadSeg() {
@@ -461,7 +464,7 @@ unsigned int CMailBox::checkAvailableSegment(unsigned int segment) {
 	std::stringstream ss;
 	ss << segment;
 	std::string id = ss.str();
-	
+
 	boost::regex hreg("\\[" + fileCRC + "\\].+?\\[" + id + "\\]"); // match "[crc][id]"
 	boost::smatch match;
 	for (std::list<EmailHeader>::const_iterator it = headers.begin(); it!=headers.end(); it++) {
