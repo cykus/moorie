@@ -424,7 +424,7 @@ std::string CLibMoor::checkVersion(std::string myver) {
 	curl = curl_easy_init();
 
 	if (curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, "http://update.moorie.pl/ver"  );
+		curl_easy_setopt(curl, CURLOPT_URL, "http://up.moorie.pl/ver"  );
 		curl_easy_setopt(curl, CURLOPT_HEADER, 0);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CLibMoor::writer);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
