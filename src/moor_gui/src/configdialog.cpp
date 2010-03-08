@@ -51,7 +51,7 @@ ConfigDialog::ConfigDialog()
     createIcons();
     contentsWidget->setCurrentRow(0);
 
-    //QObject::connect(pathButton,SIGNAL(clicked()),this,SLOT(setDir()));
+    okButton->setDefault(true);
     connect(cancelButton,SIGNAL(clicked()),this,SLOT(close()));
     connect(okButton, SIGNAL(clicked()),this,SLOT(saveConfigFile()));
 
