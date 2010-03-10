@@ -1,20 +1,30 @@
+0.3.0
+- Ukonczony upload;
+- Generowanie hashcode Moorhunt;
+- Poprawione dodawanie mirrorow w hashu;
+- Dodanie splasha przy starcie qmoorie;
+- poprawki stabilnosci i bledow;
+- paprawki wygladu ikon;
+- dodano skrzynke Yandex.ru;
+- dodano opcje sprawdzania wysylanych plikow;
+
+
 0.2.5
-- Poprawione generowanie czystego hasha
-- Dodane dodawanie mirrorow do hasha (maslo maslane :))
-- Dodany prosty sprawdzacz segmentow przed sciaganiem
-- Przebudowa wysylania
-- Dodane wykrywanie naglowkow maili starego typu
+- Poprawione generowanie czystego hasha;
+- Dodane dodawanie mirrorow do hasha (maslo maslane :));
+- Dodany prosty sprawdzacz segmentow przed sciaganiem;
+- Przebudowa wysylania;
+- Dodane wykrywanie naglowkow maili starego typu;
 
 0.2.1
-- Dodany upload
-- Dodano generowanie hasha
-- Upload dzialajacy na gazeta.pl
-- Upload dzialajacy na gmail.com
-- Dodano skrzynke volny.cz
+- Dodany upload;
+- Dodano generowanie czystego hasha;
+- Upload dzialajacy na gazeta.pl;
+- Upload dzialajacy na gmail.com;
+- Dodano skrzynke volny.cz oraz upload na nia;
 
-0.2.0 
-- moorie przepisane od nowa
-- dodano kilka nowych skrzynek
-- dodano poczatek kodowania ygoowa
-
+0.2.0
+- moorie przepisane od nowa;
+- dodano kilka nowych skrzynek;
+- dodano poczatek kodowania ygoowa;
 
