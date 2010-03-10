@@ -1,0 +1,52 @@
+..::  INSTALACJA MOORIE  ::..
+
+Zrodla:  http://moorie.pl/pobierz.php
+GIT:     http://github.com/cykus/moorie
+
+
+1) Instalcja przy użyciu paczek binarnych dla poszczególnych dystrybucji:
+   - Pobieramy paczke dla naszej dystrybucji i instalujemy (instalacja jest zalezna od dystrybucji, pomocy nalezy szukac na forach dystrybucji i/lub plikach pomocy dystrybucji)
+
+
+2) kompilacja ze zrodel:
+    - Biblioteki potrzebne do skompilowania moorie:
+	- boost_regex, boost_filesystem boost_program_options boost_thread
+	- openssl
+	- libcurl
+	- libmcrypt
+	- libmhash
+	- qt4 ( dla qmoorie)
+
+	UWAGA: dla dystrybucji Debian oraz Debianopochodnych biblioteki maja dopisek -dev, najszybszym rozwiazaniem jest wklejenie ponizszej linijki w konsoli:
+	sudo apt-get install libcurl4-openssl-dev libmcrypt-dev libmhash-dev libssl-dev libqt4-dev libboost-filesystem1.38-dev libboost-program-options1.38-dev libboost-regex1.38-dev libboost-thread1.38-dev
+
+    - Kompilacja moorie (bez qmoorie):
+	cmake -DCMAKE_INSTALL_PREFIX=/usr/local .
+	make
+	make install (jako root)
+
+    - Kompilacja z nakladka graficzna qmoorie:
+	cmake -DENABLE_GUI=ON -DCMAKE_INSTALL_PREFIX=/usr/local .
+	make
+	make install (jako root)
+      Uwaga: dla niektorych dystrybucji (np. Ubuntu):
+	sudo make install
+
+    - Deinstalacja:
+	make uninstall (jako root w katalogu ze zrodlami)
+      Uwaga: dla niektorych dystrybucji (np. Ubuntu):
+	sudo make uninstall (jako root w katalogu ze zrodlami
+
+
+3) Kompilacja wersji rozwojowej z GITa:
+    Do wykonania:
+	git clone git://github.com/cykus/moorie.git
+	cd moorie
+	cmake -DENABLE_GUI=ON -DCMAKE_INSTALL_PREFIX=/usr/local .
+	make
+	make install (jako root)
+
+
+
+--== W razie problemow z instalacja zapraszamy na nasze forum dyskusyjne. >>>> http://moorie.pl/forum/index.php?board=10.0 <<<<  ==--
+
