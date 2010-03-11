@@ -323,7 +323,7 @@ int CLibMoor::startUpload(unsigned int fromseg) {
         }
         LOG(Log::Info, boost::format( "Upload zakonczony!" ));
         downloadDone = true;
-        state = Status::Finished;
+        state = Status::FinishedUpload;
 	return 0;
 }
 

@@ -69,7 +69,9 @@ std::string Status::getStateText() const
 		case Status::GivingUp:
                         return "Poddaję się i płaczę";
 		case Status::Finished:
-                        return std::string("Pobieranie Zakończone");
+                        return "Pobieranie Zakończone";
+                case Status::FinishedUpload:
+                        return "Wysyłanie Zakończone";
 		default:
 			return "";
 	}
