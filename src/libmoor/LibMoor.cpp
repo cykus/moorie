@@ -162,6 +162,7 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
                             LOG(Log::Info, "-- CRC OK! --");
                             state = Status::Finished;
                         }
+                        break;
 		}
 
 		if (tries >= myHash->getInfo().accounts.size()) {
@@ -199,7 +200,7 @@ int CLibMoor::startDownload() {
 		}
 	}
 
-	if (segValid) {
+        if (segValid && curSeg >= myHash->getInfo().numOfSegments)  {
 		LOG(Log::Info, "Wszystkie segmenty sciagnieto pomyslnie... Koncze pobieranie.");
 		downloadDone = true;
                 state = Status::Downloaded;
