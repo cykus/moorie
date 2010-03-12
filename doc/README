@@ -1,1 +1,87 @@
-Moorie 0.2.5 
+SPIS TRESCI:
+  1. Informacje ogólne
+  2. Licencja
+  3. Instalcja
+  4. Używanie Moorie
+  5. Kontakt
+
+
+
+..::  1. Informacje Ogolne  ::..
+Moorie to klient p2m pozwalajacy pobierac oraz umieszczac pliki na skrznkach pocztowych. Obsluguje tzw. hashcody programu Moorhunt (klient p2m dla Windows), potrafi takze generowac hashcode kompatybilne z programem Moorhunt.
+W planach istnieje dodanie takze obslugi hashcodow takich programow jak np: Ygoow, MailShare itp.
+
+Na chwile obecna Moorie umozliwia pobieranie plikow z nastepujacych skrzynek:
+- gmail.com;
+- oparte o google (gala.net, gazeta.pl, mailbox.hu, vivapolska.tv, gde.ru, klikni.cz, livedoor.com, oneindia.in, bigmir.net, sify.com)
+- mail.ru;
+- myNet.com;
+- oi.com.br;
+- poczta.onet.pl/onet.eu;
+- rock.com;
+- yandex.ru;
+
+Wysylanie plikow mozliwe jest na nastepujace skrzynki:
+- gmail;
+- oparte o google (gala.net, gazeta.pl, mailbox.hu, vivapolska.tv, gde.ru, klikni.cz, livedoor.com, oneindia.in, bigmir.net);
+- volny.cz;
+
+
+
+..::  2. Licencja  ::..
+Moorie jest udostepniany na licencji LGPL (Lesser Gnu Public License - http://pl.wikipedia.org/wiki/GNU_Lesser_General_Public_License).
+
+
+
+..::  3. Instalacja  ::..
+Instalacja jest mozliwa przy pomocy tzw. binarek (prekompilowane pliki zrodlowe) dla poszczególnych dystrybucji.
+Mozliwa jest takze instalacja ze zrodel� -> patrz plik INSTALL.
+
+
+
+..::  4. Uzywanie Moorie  ::..
+Natywnym srodowiskiem pracy Moorie jest konsola, lecz mozna takze korzystac z niego w srodowisku graficznym dzieki GUI napisanym w QT (qmoorie).
+
+1 Pobieranie plikow:
+    a) Hashcode w pliku tekstowym:
+	$ moorie -f nazwa_pliku_z_hashcodem -p haslo
+    b) Hashcode wklejany bezposrednio w konsoli (UWAGA - wymagane cudzyslowie):
+	$ moorie -s "hashcode sciaganego pliku" -p haslo
+
+2 Wysylanie plikow:
+    a) Wysylanie z parametrami
+	$moorie -u nazwa_pliku --ul login --up haslo --to przykladowy@adres.pl --dp haslo_pobierania --ep haslo_edycji --ss X (--fromseg Y)
+    
+      gdzie:
+	nazwa_pliku - nazwa pliku do wyslania na skrzynke
+	login - login do skrzynki zrodlowej
+	haslo - haslo do skrzynki zrodlowej
+	to - adres skrzynki (lub skrzynek) na ktora maja byc wyslane segmenty
+	dp - haslo pobierania dla programow p2m
+	ep - haslo do edycji hashcode'a (np w moorhuncie, w przyszlosci dla moorie)
+	X - wielkosc segmentu (wartosc od 1 do 10)
+	fromseg - parametr nie wymagany, wysyla segmenty od podanego numeru
+
+  b) Wysylanie przy pomocy kreatora:
+	moorie -u nazwa_pliku
+     Przy czym kreator zapyta o takie parametry jak:
+	- login i haslo do skrzynki zrodlowej
+	- adres(y) skrzynek docelowych (adresatow)
+	- haslo pobierania oraz haslo edycji
+
+
+
+ ..::  5. KONTAKT  ::..
+Moorie poczatkowo bylo rozwijane przez programiste Pawla Stolowskiego.
+Obecnie jego rozwojem zajmuje sie MOORIE TEAM, przy najwiekszym udziale programistow mahho i Cykus'a. 
+Przesylamy pozdrowienia dla wszytskich, ktorzy wniesli swoj wklad oraz poswiecili czas w rozwoj projektu Moorie.
+
+Adresy stron:
+  http://moorie.pl - strona glowna projektu
+  http://forum.moorie.pl- forum dyskusyjne projektu
+  http://github.com/cykus/moorie/  - repozytorium na GITcie
+  http://moorie.pl/pobierz.php - repozytorium z binariam dla roznych dystrybucji
+  http://mantis.moorie.pl - zglaszanie bledow
+  moorie@moorie.pl - e-mail
+
+

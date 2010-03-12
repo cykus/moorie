@@ -45,6 +45,7 @@ const std::string c_names[] = {
 	"livedoor.com",
 	"oneindia.in",
 	"bigmir.net",
+	"sify.com",
 	std::string()
 };
 const bool registered = MailboxFactory::Instance().Register(c_names, Create);

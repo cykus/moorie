@@ -1,0 +1,14 @@
+Lista rzeczy do zrobienia w nastepnych wersjach Moorie:
+
+- Lokalizacja moorie (poczatkowo tylko jezyk angielski)
+- Kreator kont;
+- Sprawdzacz segmentow;
+- Dodanie obslugi nowych skrzynek;
+- Forward segmentow (przesylanie dalej);
+- Modularyzacja bibliotek ze skrzynkami;
+- Aktualizacje skrzynek dla moorie;
+- Obsluga sieci Ygoow, Mailshare, itp;
+- Zapamietywanie hasel pobierania (qmoorie);
+- Wylaczanie komputera po zakonczeniu pobierania (qmoorie);
+- Poprawki stabilnosci oraz bledow;
+
