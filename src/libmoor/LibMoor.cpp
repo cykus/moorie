@@ -122,7 +122,7 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 					else {
 						LOG(Log::Info, "Na skrzynce brakuje segmentu(ow), pobieranie moze sie nie udac");
 						// TODO - pytanie o zmiane skrzynki?
-					}	
+					}
 					found = true;
 				}
 				if (found == true) {
@@ -133,7 +133,7 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 						baddownloads++;
 					}
 				}
-				
+
 			}
 			else {
 				LOG(Log::Info, "Logowanie nie powiodlo sie..." );
@@ -154,19 +154,19 @@ int CLibMoor::selectDownloadMailBox(int MailBox, std::string path) {
 			std::string fileCRC = myMailBox->getFileCRC();
 			LOG(Log::Info, boost::format ("CRC sciagnietego pliku: [%1%]") %fileCRC);
 
-                        if (fileCRC.compare(crcFromHash) != 0){
-                            LOG(Log::Error, "-- Zle CRC sciagnietego pliku! --");
-                            state = Status::FileError;
-                        }
-                        else{
-                            LOG(Log::Info, "-- CRC OK! --");
-                            state = Status::Finished;
-                        }
+			if (fileCRC.compare(crcFromHash) != 0){
+				LOG(Log::Error, "-- Zle CRC sciagnietego pliku! --");
+				state = Status::FileError;
+			} else {
+				LOG(Log::Info, "-- CRC OK! --");
+				state = Status::Finished;
+			}
+			break;
 		}
 
 		if (tries >= myHash->getInfo().accounts.size()) {
 			LOG(Log::Info, "Nie udalo sie pobrac pliku z zadnej ze skrzynek... Koncze program." );
-                        state = Status::FileError;
+			state = Status::FileError;
 			downloadDone = true;
 			delete myMailBox;
 			break;
@@ -199,12 +199,11 @@ int CLibMoor::startDownload() {
 		}
 	}
 
-	if (segValid) {
+	if (segValid && curSeg >= myHash->getInfo().numOfSegments) {
 		LOG(Log::Info, "Wszystkie segmenty sciagnieto pomyslnie... Koncze pobieranie.");
 		downloadDone = true;
-                state = Status::Downloaded;
+		state = Status::Downloaded;
 	}
-
 	return segValid;
 }
 
@@ -430,9 +429,9 @@ std::string CLibMoor::checkVersion(std::string myver) {
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
 		result = curl_easy_perform(curl);//http get performed
 		curl_easy_cleanup(curl);//must cleanup
-		
+
 		myServerVersion = buffer;
-		
+
  		if (result == CURLE_OK) {
 			if (myver.compare(buffer) != 0) {
 				return buffer; // new version avalilable :)

@@ -18,6 +18,7 @@ add_library (moor SHARED Decoder.cpp
                          MailBoxes/GoogleApps.cpp
                          MailBoxes/Volny.cpp
                          MailBoxes/YandexRu.cpp
+                         MailBoxes/InteriaPl.cpp
                          MailboxFactory.cpp
                          HashManager.cpp
                          HashUtils.cpp
