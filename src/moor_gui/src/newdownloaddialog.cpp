@@ -59,6 +59,7 @@ newDownloadDialog::newDownloadDialog(QWidget * parent, Qt::WFlags f):QDialog(par
     main -> addLayout(lay[4]);
     setLayout(main);
 
+    button[0]->setDefault(true);
     QObject::connect( button[1], SIGNAL(clicked()), this, SLOT(reject()));
     QObject::connect( button[0], SIGNAL(clicked()), this, SLOT(ok()));
     QObject::connect(pathButton,SIGNAL(clicked()),this,SLOT(setDir()));

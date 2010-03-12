@@ -51,7 +51,7 @@ ConfigDialog::ConfigDialog()
     createIcons();
     contentsWidget->setCurrentRow(0);
 
-    //QObject::connect(pathButton,SIGNAL(clicked()),this,SLOT(setDir()));
+    okButton->setDefault(true);
     connect(cancelButton,SIGNAL(clicked()),this,SLOT(close()));
     connect(okButton, SIGNAL(clicked()),this,SLOT(saveConfigFile()));
 
@@ -117,8 +117,7 @@ void ConfigDialog::saveConfigFile()
 {
     Zmienne().PATH = confpage->pathEdit->text();
     Zmienne().LLEVEL = confpage->lBox->value();
-    Zmienne().DLEVEL = confpage->dBox->value();
-    Zmienne().KSEGMENTS = confpage->kBox->isChecked();
+//    Zmienne().DLEVEL = confpage->dBox->value();
     Zmienne().TRAY = confpage->tBox->isChecked();
     Zmienne().RUNINTRAY = confpage->thBox->isChecked();
     Zmienne().ASKBEFORECLOSE = confpage->abcBox->isChecked();
@@ -134,9 +133,8 @@ void ConfigDialog::saveConfigFile()
         settings.beginGroup("CONFIG_PAGE");
         settings.setValue("PATH", confpage->pathEdit->text());
         settings.setValue("LLEVEL", confpage->lBox->value());
-        settings.setValue("DLEVEL", confpage->dBox->value());
+//        settings.setValue("DLEVEL", confpage->dBox->value());
         settings.setValue("NLEVEL", Zmienne().NLEVEL);
-        settings.setValue("KSEGMENTS", confpage->kBox->isChecked());
         settings.setValue("TRAY", confpage->tBox->isChecked());
         settings.setValue("RUNINTRAY", confpage->thBox->isChecked());
         settings.setValue("ASKBEFORECLOSE", confpage->abcBox->isChecked());

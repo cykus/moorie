@@ -200,6 +200,7 @@ int CLibMoor::startDownload() {
 	}
 
 	if (segValid && curSeg >= myHash->getInfo().numOfSegments) {
+
 		LOG(Log::Info, "Wszystkie segmenty sciagnieto pomyslnie... Koncze pobieranie.");
 		downloadDone = true;
 		state = Status::Downloaded;
@@ -322,7 +323,7 @@ int CLibMoor::startUpload(unsigned int fromseg) {
         }
         LOG(Log::Info, boost::format( "Upload zakonczony!" ));
         downloadDone = true;
-        state = Status::Finished;
+        state = Status::FinishedUpload;
 	return 0;
 }
 
@@ -355,8 +356,7 @@ std::string CLibMoor::addMirror(std::string editpass, std::string orighash, std:
         encoder = new MoorhuntHashEncoder();
 
 	std::string newhash = encoder->addNewMirror(editpass, orighash, mboxaddr, mboxpass);
- 	delete encoder;
-	LOG(Log::Info, "Nowy hashcode: \n" + newhash);
+        delete encoder;
 	return newhash;
 }
 

@@ -31,7 +31,7 @@ public:
     QString configPath;
     QString EDITPASS, DOWNPASS;
     int LLEVEL, DLEVEL, NLEVEL, SEGSIZE;
-    bool KSEGMENTS, TRAY, RUNINTRAY, ASKBEFORECLOSE;
+    bool TRAY, RUNINTRAY, ASKBEFORECLOSE;
 private:
     Singleton();
     Singleton(const Singleton&);
