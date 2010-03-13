@@ -11,4 +11,9 @@ Lista rzeczy do zrobienia w nastepnych wersjach Moorie:
 - Zapamietywanie hasel pobierania (qmoorie);
 - Wylaczanie komputera po zakonczeniu pobierania (qmoorie);
 - Poprawki stabilnosci oraz bledow;
-
+- Kolejka pobierania; (qmoorie)
+- Dodanie zakładki "Autorzy" w oknie "o programie"; (qmoorie)
+- Sprawdzanie dostępnej przestrzeni dyskowej przed dodaniem pobierania; (qmoorie)
+- Dodanie opcji wyłączania wyświetlania splasha przy uruchamianiu; (qmoorie)
+- Wczytywanie kont do uploadu, forwardu itp. z pliku tekstowego;
+- Dosyłanie pojedynczych segmentów;

@@ -27,23 +27,33 @@ uploadInstance::uploadInstance(QString file, QVector<mirrorMailbox*> mirrorMailb
         msize(msize),
         fromseg(fromseg),
         infoString('Brak informacji, spróbuj później.'),
-        wyslano(false),
+        done(false),
         totalSegments(0)
 {
     loadMailboxesFromFile();
 }
 void uploadInstance::run()
 {
-    user = uploadMailboxes.first()->username;
-    pass = uploadMailboxes.first()->password;
+    int x = 0;
     Instance = new CLibMoor();
     Instance -> splitFile(file.toStdString(), msize);
-    if(!Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), getToUsernames().toStdString(), dpass.toStdString(), epass.toStdString())){
-        totalSegments = Instance->getMyUploadNumOfSeg();
-        fileCRC = QString::fromStdString(Instance->getMyUploadFileCRC());
-        infoString = generateInfo();
-        Instance->generateCleanHashcode();
-        Instance->startUpload(fromseg);
+    while(x < 3)
+    {
+        for (int i = 0; i < uploadMailboxes.size(); ++i)
+        {
+            user = uploadMailboxes.at(i)->username;
+            pass = uploadMailboxes.at(i)->password;
+
+            if(!Instance -> selectUploadMailBox(user.toStdString(), pass.toStdString(), getToUsernames().toStdString(), dpass.toStdString(), epass.toStdString()))
+            {
+                totalSegments = Instance->getMyUploadNumOfSeg();
+                fileCRC = QString::fromStdString(Instance->getMyUploadFileCRC());
+                infoString = generateInfo();
+                Instance->generateCleanHashcode();
+                Instance->startUpload(fromseg);
+            }
+        }
+        x++;
     }
 }
 void uploadInstance::loadMailboxesFromFile()
