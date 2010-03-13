@@ -287,7 +287,7 @@ int main(int argc, char **argv) {
         } else if (edit) {
 			try {
 				Instance = new CLibMoor();
-				Instance->addMirror(editpass, orighash, mboxaddr, mboxpass);
+                                std::cerr << "Nowy hashcode: \n" << Instance->addMirror(editpass, orighash, mboxaddr, mboxpass);
 // 				delete Instance;
 
 			}

@@ -42,8 +42,9 @@ class Status
                         FileError,        //!< CRC or other error for file
 			Downloaded,       //!< All segments downloaded
 			GivingUp,         //!< No (more) valid mailboxes
-			Finished		  //!< Download finished
-		};
+                        Finished,		  //!< Download finished
+                        FinishedUpload		  //!< Upload finished
+                };
 
 		Status::State state; //!< Current state
                 int downloadSegment; //!< Number of downloaded segments

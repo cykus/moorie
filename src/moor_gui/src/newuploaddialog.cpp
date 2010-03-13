@@ -123,7 +123,7 @@ newUploadDialog::newUploadDialog(QWidget * parent, Qt::WFlags f):QDialog(parent,
     main -> addLayout(buttonLayout);
     setLayout(main);
 
-    //connect( button[1], SIGNAL(clicked()), this, SLOT(reject()));
+    sendButton->setDefault(true);
     connect(sendButton, SIGNAL(clicked()), this, SLOT(ok()));
     connect(fileButton,SIGNAL(clicked()),this,SLOT(setFile()));
     connect(addButton,SIGNAL(clicked()),this,SLOT(addMailbox()));
