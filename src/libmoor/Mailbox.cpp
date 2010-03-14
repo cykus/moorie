@@ -515,13 +515,13 @@ int CMailBox::pauseDownload() {
         ret = curl_easy_pause(handle, CURLPAUSE_ALL);
         if(ret == CURLE_OK)
         {
-            LOG( Log::Info, "Wstrzymanie pobierania");
+            LOG( Log::Info, "Wstrzymanie");
 
             return 1;
         }
         else
         {
-            LOG( Log::Error, "Wstrzymanie pobierania nie powiodło się");
+            LOG( Log::Error, "Wstrzymanie nie powiodło się");
             return 0;
         }
 }
@@ -530,12 +530,12 @@ int CMailBox::unpauseDownload() {
         ret = curl_easy_pause(handle, CURLPAUSE_CONT);
         if(ret == CURLE_OK)
         {
-            LOG( Log::Info, "Wznowienie pobierania");
+            LOG( Log::Info, "Wznowienie");
             return 1;
         }
         else
         {
-            LOG( Log::Error, "Wznowienie pobierania nie powiodło się");
+            LOG( Log::Error, "Wznowienie nie powiodło się");
             return 0;
         }
 }
