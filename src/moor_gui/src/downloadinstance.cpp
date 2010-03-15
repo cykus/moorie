@@ -24,7 +24,7 @@ downloadInstance::downloadInstance(QString hash, QString pass, QString path):
         hash(hash),
         pass(pass),
         path(path),
-        pobrano(false),
+        done(false),
         pobranoLS(0)
 {
 }

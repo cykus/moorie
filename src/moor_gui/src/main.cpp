@@ -26,15 +26,12 @@
 
 int main(int argc, char *argv[])
 {
-    //QString lang = config_file.readEntry("General", "Language", QLocale::system().name().mid(0,2));
-
-
 
     QApplication app(argc, argv);
     app.setApplicationName("Qmoorie");
     app.setOrganizationName("Moorie Team");
     app.setOrganizationDomain("moorie.pl");
-    app.setApplicationVersion ("GIT(20100306)");
+    app.setApplicationVersion ("GIT");
     QString lang = checkLanguage();
     QString appPath = qApp->applicationDirPath();
     QString data_path = appPath + "/../share/";

@@ -46,7 +46,7 @@ public:
     CLibMoor * Instance; //!< Instancja klasy CLibMoor
 
     void run();
-    bool wyslano;
+    bool done;
     QString infoString; //!< Przechowuje informacje o pliku
     QString file; //!< Nazwa pliku wraz ze ścieżką do wysłania
     QString fileName; //!< Nazwa pliku do wysłania

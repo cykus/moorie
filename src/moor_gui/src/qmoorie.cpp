@@ -301,7 +301,7 @@ void QMoorie::addDownloadInstance(QString hash, QString pass, QString path)
     downloadInstanceH[itemNumber]->filename = QString::fromStdString(hashcode->getInfo().fileName);
     downloadInstanceH[itemNumber]->size = hashcode->getInfo().fileSize;
     downloadInstanceH[itemNumber]->totalSegments = hashcode->getInfo().numOfSegments;
-    downloadInstanceH[itemNumber]->pobrano = false;
+    downloadInstanceH[itemNumber]->done = false;
     itemRow = downloadTable->rowCount();
     downloadInstanceH[itemNumber]->start();
     
@@ -341,7 +341,7 @@ void QMoorie::refreshStatuses()
         int itemNumber = downloadTable->item(i,ID)->text().toInt();
         if(itemNumber < 0) continue;
         Status status = downloadInstanceH[itemNumber]->Instance->getDownloadStatus();
-        if(downloadInstanceH[itemNumber]->Instance->downloadDone && !downloadInstanceH[itemNumber]->pobrano && downloadInstanceH[itemNumber]->Instance->started)
+        if(downloadInstanceH[itemNumber]->Instance->downloadDone && !downloadInstanceH[itemNumber]->done && downloadInstanceH[itemNumber]->Instance->started)
         {
             if(status.state == Status::Downloaded || status.state == Status::Finished)
             {
@@ -375,7 +375,7 @@ void QMoorie::refreshStatuses()
                 {
                     downloadTable->item(i, j)->setBackground(QColor(255, 0, 0, 200));
                 }
-                downloadInstanceH[itemNumber]->pobrano = true;
+                downloadInstanceH[itemNumber]->done = true;
                 tray->showHints(tr("Błąd pobierania"), tr("Niestety nie udało się pobrać pliku:<br/><b><i>")+downloadInstanceH[itemNumber]->filename+"</i></b>");
             }
         }
@@ -437,10 +437,10 @@ void QMoorie::refreshStatuses()
     {
         int itemNumber = uploadTable->item(i,ID)->text().toInt();
         if(itemNumber < 0) continue;
-        if(uploadInstanceH[itemNumber]->Instance->downloadDone && !uploadInstanceH[itemNumber]->wyslano && uploadInstanceH[itemNumber]->Instance->started)
+        if(uploadInstanceH[itemNumber]->Instance->downloadDone && !uploadInstanceH[itemNumber]->done && uploadInstanceH[itemNumber]->Instance->started)
         {
             Status status = uploadInstanceH[itemNumber]->Instance->getUploadStatus();
-            if(status.state == Status::Uploaded || status.state == Status::Finished)
+            if(status.state == Status::FinishedUpload)
             {
                 uploadTable->item( i, REMAINING )->setText( "0.00 MB" );
                 uploadTable->item( i, PROGRESS )->setData(Qt::DisplayRole, 100);
@@ -449,9 +449,6 @@ void QMoorie::refreshStatuses()
                                                           "\n " + QString::number(uploadInstanceH[itemNumber]->totalSegments) +
                                                           "/" + QString::number(uploadInstanceH[itemNumber]->totalSegments));
                 uploadTable->item( i, STATUS )->setForeground(QColor(0, 0, 200, 255));
-            }
-            if(status.state == Status::Finished)
-            {
                 for(int j = 0 ; j < 8; j++ )
                 {
                     uploadTable->item(i, j)->setBackground(QColor(0, 50, 0, 100));
@@ -461,7 +458,7 @@ void QMoorie::refreshStatuses()
                 uploadTable->item(i,ID)->setText("-1");
                 saveUploads();
             }
-            if(status.state == Status::FileError && !uploadInstanceH[itemNumber]->wyslano)
+            if(status.state == Status::FileError)
             {
                 uploadTable->item( i, REMAINING )->setText( "0.00 MB" );
                 uploadTable->item( i, PROGRESS )->setData(Qt::DisplayRole, 0);
@@ -471,12 +468,13 @@ void QMoorie::refreshStatuses()
                 {
                     uploadTable->item(i, j)->setBackground(QColor(255, 0, 0, 200));
                 }
-                uploadInstanceH[itemNumber]->wyslano = true;
+                uploadInstanceH[itemNumber]->done = true;
                 tray->showHints(tr("Błąd wysyłania"), tr("Niestety nie udało się wysłać pliku:<br/><b><i>")+uploadInstanceH[itemNumber]->fileName+"</i></b>");
             }
         }
         else if(!uploadInstanceH[itemNumber]->Instance->downloadDone && uploadInstanceH[itemNumber]->Instance->started)
         {
+            uploadInstanceH[itemNumber]->done = false;
             Status status = uploadInstanceH[itemNumber]->Instance->getUploadStatus();
             if(!(uploadInstanceH[itemNumber]->Instance->downloadPaused) && status.state != Status::FileError)
             {

@@ -32,7 +32,7 @@ public:
     CLibMoor * Instance; //!< Instancja klasy CLibMoor
 
     void run();
-    bool pobrano;
+    bool done;
     quint64 size; //!< rozmiar pliku
     int totalSegments; //!< liczba wszystkich segmentów
     unsigned int itemRow; //!< Nr. wiersza w tabeli

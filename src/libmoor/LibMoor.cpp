@@ -255,6 +255,7 @@ int CLibMoor::selectUploadMailBox(std::string login, std::string passwd, std::st
         boost::smatch result_sth;
         boost::regex_match(login, result_sth, mail_rgx);
 
+        downloadDone = false;
         myLogin = result_sth[1];
         myPasswd = passwd;
         myDownPasswd = downPasswd;
