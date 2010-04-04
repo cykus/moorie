@@ -34,6 +34,7 @@ public:
     QAction *tPauseAct;
     QAction *tInfoAct;
     QAction *tRemoveAct;
+    QAction *tRemoveDataAct;
 public Q_SLOTS:
     //int info();
     //void paste();

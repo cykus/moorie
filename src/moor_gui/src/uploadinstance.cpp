@@ -39,6 +39,7 @@ void uploadInstance::run()
     Instance -> splitFile(file.toStdString(), msize);
     while(x < 3)
     {
+        if(Instance->downloadDone) break;
         for (int i = 0; i < uploadMailboxes.size(); ++i)
         {
             user = uploadMailboxes.at(i)->username;

@@ -31,6 +31,7 @@ void myTableWidget::setUpContextMenu()
     addAction(tPauseAct);
     addAction(tInfoAct);
     addAction(tRemoveAct);
+    addAction(tRemoveDataAct);
     setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
@@ -40,13 +41,16 @@ void myTableWidget::createActions()
     tInfoAct = new QAction(QIcon::fromTheme("help-about", QIcon(":images/hi16-help-about.png")), "&Informacje", this);
     tPauseAct = new QAction(QIcon::fromTheme("media-playback-pause", QIcon(":images/hi16-media-playback-pause.png")), "Wstrzymaj/Wznów", this);
     tRemoveAct = new QAction(QIcon::fromTheme("list-remove", QIcon(":images/hi16-list-remove.png")), "&Usuń", this);
+    tRemoveDataAct = new QAction(QIcon::fromTheme("list-remove", QIcon(":images/hi16-list-remove.png")), "Usuń wraz z &danymi", this);
 #else
     tInfoAct = new QAction(QIcon(":/images/hi16-help-about.png"), "&Informacje", this);
     tPauseAct = new QAction(QIcon(":/images/hi16-media-playback-pause.png"), "Wstrzymaj/Wznów", this);
     tRemoveAct = new QAction(QIcon(":/images/hi16-list-remove.png"), "&Usuń", this);
+    tRemoveDataAct = new QAction(QIcon(":/images/hi16-list-remove.png"), "Usuń wraz z &danymi", this);
 #endif
     tInfoAct->setStatusTip(tr("Wyświetla informacje o uploadzie"));
     tPauseAct->setStatusTip(tr("Wstrzymuje/Wznawia pobieranie uploadu"));
     tRemoveAct->setStatusTip(tr("Usuwa zadanie"));
+    tRemoveDataAct->setStatusTip(tr("Usuwa zadanie wraz z danymi"));
 }
 

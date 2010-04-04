@@ -132,11 +132,12 @@ void QMoorie::createActions()
     exitAct->setShortcut(tr("Ctrl+Q"));
     exitAct->setStatusTip(tr("Wyjście z aplikacji"));
     connect(exitAct, SIGNAL(triggered()), this, SLOT(exitApp()));
-
     connect(downloadTable->tRemoveAct, SIGNAL(triggered()), this, SLOT(removeDownload()));
+    connect(downloadTable->tRemoveDataAct, SIGNAL(triggered()), this, SLOT(removeDownloadWithData()));
     connect(downloadTable->tPauseAct, SIGNAL(triggered()), this, SLOT(pauseDownload()));
     connect(downloadTable->tInfoAct, SIGNAL(triggered()), this, SLOT(showDownloadInfoDialog()));
     connect(uploadTable->tRemoveAct, SIGNAL(triggered()), this, SLOT(removeUpload()));
+    connect(uploadTable->tRemoveDataAct, SIGNAL(triggered()), this, SLOT(removeUploadWithData()));
     connect(uploadTable->tPauseAct, SIGNAL(triggered()), this, SLOT(pauseUpload()));
     connect(uploadTable->tInfoAct, SIGNAL(triggered()), this, SLOT(showUploadInfoDialog()));
     connect(&statuses, SIGNAL(refresh()), this, SLOT(refreshStatuses()));
@@ -168,11 +169,12 @@ void QMoorie::createTable()
     ui->tab_2->setLayout(main);
     downloadTable->setEditTriggers(0);
     downloadTable->setItemDelegate(new TrackDelegate());
-    downloadTable->setColumnCount(8);
+    downloadTable->setColumnCount(9);
     downloadTable->horizontalHeader()->setStretchLastSection(true);
     downloadHeaderH << tr("ID") << tr("Nazwa pliku") << tr("Rozmiar") << tr("Pozostało") << tr("Postęp") << tr("Prędkość") << tr("Status") << tr("Skrzynka");
     downloadTable->setHorizontalHeaderLabels(downloadHeaderH);
-    downloadTable->hideColumn( 0 );
+    downloadTable->hideColumn( ID );
+    downloadTable->hideColumn( FILEPATH );
     downloadTable->setSortingEnabled( 1 );
     downloadTable->sortItems( 1 );
 
@@ -183,11 +185,12 @@ void QMoorie::createTable()
     ui->tab_4->setLayout(main2);
     uploadTable->setEditTriggers(0);
     uploadTable->setItemDelegate(new TrackDelegate());
-    uploadTable->setColumnCount(8);
+    uploadTable->setColumnCount(9);
     uploadTable->horizontalHeader()->setStretchLastSection(true);
-    uploadHeaderH << tr("ID") << tr("Nazwa pliku") << tr("Rozmiar") << tr("Wysłano") << tr("Postęp") << tr("Prędkość") << tr("Status") << tr("Skrzynka");
+    uploadHeaderH << tr("ID") << tr("Nazwa pliku") << tr("Rozmiar") << tr("Wysłano") << tr("Postęp") << tr("Prędkość") << tr("Status") << tr("Skrzynka") << tr("Ścieżka");
     uploadTable->setHorizontalHeaderLabels(uploadHeaderH);
-    uploadTable->hideColumn ( 0 );
+    uploadTable->hideColumn ( ID );
+    uploadTable->hideColumn ( FILEPATH );
     uploadTable->setSortingEnabled( 1 );
     uploadTable->sortItems( 1 );
 }
@@ -281,6 +284,7 @@ void QMoorie::addUploadInstance(QString file, QVector<mirrorMailbox*> mirrorMail
     uploadTable->setItem(itemRow, SPEED, new QTableWidgetItem("?"));
     uploadTable->setItem(itemRow, STATUS, new QTableWidgetItem());
     uploadTable->setItem(itemRow, MAILBOX, new QTableWidgetItem());
+    uploadTable->setItem(itemRow, FILEPATH, new QTableWidgetItem(fileInfo.absolutePath()+QDir::separator()));
     uploadInstanceIndex++;
     uploadTable->setSortingEnabled( 1 );
 }
@@ -323,6 +327,7 @@ void QMoorie::addDownloadInstance(QString hash, QString pass, QString path)
     downloadTable->setItem(itemRow, SPEED, new QTableWidgetItem("?"));
     downloadTable->setItem(itemRow, STATUS, new QTableWidgetItem());
     downloadTable->setItem(itemRow, MAILBOX, new QTableWidgetItem());
+    downloadTable->setItem(itemRow, FILEPATH, new QTableWidgetItem(path));
     downloadInstanceIndex++;
     downloadTable->setSortingEnabled( 1 );
 }
@@ -584,15 +589,33 @@ void QMoorie::removeDownload()
     int row = downloadTable->currentRow();
     if(row < 0) return;
     int itemNumber = downloadTable->item(row, ID)->text().toInt();
-    QString fileName = downloadInstanceH[itemNumber]->path + downloadInstanceH[itemNumber]->filename;
-    if(downloadInstanceH[itemNumber]->Instance->downloadDone)
+    if(itemNumber < 0)
     {
         downloadTable->removeRow(row);
-        downloadInstanceH.remove(itemNumber);
-
     }
     else
     {
+        downloadTable->removeRow(row);
+        downloadInstanceH[itemNumber]->terminate();
+        downloadInstanceH.remove(itemNumber);
+    }
+    saveDownloads();
+}
+void QMoorie::removeDownloadWithData()
+{
+    int row = downloadTable->currentRow();
+    if(row < 0) return;
+    int itemNumber = downloadTable->item(row, ID)->text().toInt();
+    if(itemNumber < 0)
+    {
+        QString fileName = downloadTable->item(row, FILEPATH)->text() + downloadTable->item(row, FILEPATH)->text();
+        downloadTable->removeRow(row);
+        if (QFile::exists(fileName)) QFile::remove(fileName);
+        if (QFile::exists(fileName + ".seg")) QFile::remove(fileName + ".seg");
+    }
+    else
+    {
+        QString fileName = downloadInstanceH[itemNumber]->path + downloadInstanceH[itemNumber]->filename;
         downloadTable->removeRow(row);
         downloadInstanceH[itemNumber]->terminate();
         downloadInstanceH.remove(itemNumber);
@@ -626,9 +649,8 @@ void QMoorie::removeUpload()
     if(row < 0) return;
     int itemNumber = uploadTable->item(row, ID)->text().toInt();
 
-    if(uploadInstanceH[itemNumber]->Instance->downloadDone)
+    if(itemNumber < 0)
     {
-        uploadInstanceH.remove(itemNumber);
         uploadTable->removeRow(row);
     }
     else
@@ -636,6 +658,38 @@ void QMoorie::removeUpload()
         uploadInstanceH[itemNumber]->terminate();
         uploadInstanceH.remove(itemNumber);
         uploadTable->removeRow(row);
+    }
+    saveUploads();
+}
+void QMoorie::removeUploadWithData()
+{
+    int row = uploadTable->currentRow();
+    if(row < 0) return;
+    int itemNumber = uploadTable->item(row, ID)->text().toInt();
+    qDebug() << itemNumber;
+    if(itemNumber < 0)
+    {
+        QString fileName = uploadTable->item(row, FILEPATH)->text() + uploadTable->item(row, NAME)->text();
+        uploadTable->removeRow(row);
+        int i = 1;
+        while(QFile::exists(fileName + "."+QString::number(i)))
+        {
+            QFile::remove(fileName + "."+QString::number(i));
+            i++;
+        }
+    }
+    else
+    {
+        QString fileName = uploadTable->item(row, FILEPATH)->text() + uploadTable->item(row, NAME)->text();
+        uploadInstanceH[itemNumber]->terminate();
+        uploadInstanceH.remove(itemNumber);
+        uploadTable->removeRow(row);
+        int i = 1;
+        while(QFile::exists(fileName + "."+QString::number(i)))
+        {
+            QFile::remove(fileName + "."+QString::number(i));
+            i++;
+        }
     }
     saveUploads();
 }

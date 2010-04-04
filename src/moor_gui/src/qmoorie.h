@@ -76,6 +76,7 @@
 #define SPEED 5
 #define STATUS 6
 #define MAILBOX 7
+#define FILEPATH 8
 
 class QMoorie:public QMainWindow
 {
@@ -153,8 +154,10 @@ public Q_SLOTS:
     void toggleVisibility();
     void trayActivated(QSystemTrayIcon::ActivationReason reason);
     void removeDownload(); //!< Usuwa pobieranie wybranego pliku
+    void removeDownloadWithData(); //!< Usuwa pobieranie wybranego pliku wraz z danymi
     void pauseDownload(); //!< Wstrzymuje/Wznawia pobieranie wybranego pliku
     void removeUpload(); //!< Usuwa wysyłanie wybranego pliku
+    void removeUploadWithData(); //!< Usuwa wysyłanie wybranego pliku wraz z danymi
     void pauseUpload(); //!< Wstrzymuje/Wznawia wysyłanie wybranego pliku
     void refreshStatuses();
 };
