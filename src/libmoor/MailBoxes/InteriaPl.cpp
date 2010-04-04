@@ -47,24 +47,27 @@ InteriaPlMailbox::InteriaPlMailbox(const std::string &name, const std::string &u
 
 int InteriaPlMailbox::loginRequest()
 {
-	const std::string vars = std::string("Login=")
-		+ escape(getUser()) + "&Domain=" + escape("mail.ru") + "&Password="
-                + escape(getPassword()) + "&level=1"; //!< parametry dla strony logowania
+	const std::string vars = std::string("referer=&email=")
+			+ escape(getUser()) + escape("@interia.pl") + "&pass="
+			+ escape(getPassword()) + "&formHTTP=1&webmailSelect=classicMail"; //!< parametry dla strony logowania
 
-        page = doPost("http://win.mail.ru/cgi-bin/auth", vars,true); //!< logowanie do skrzynki, zmienna page zawiera stronę główną skrzynki
+	std::string address = "https://ssl.interia.pl/login.html?webmailSelect=classicMail";
+	page = doPost(address, vars,true); //!< logowanie do skrzynki, zmienna page zawiera stronę główną skrzynki
         boost::smatch match;
 
+		std::cout << vars << std::endl;
+		std::cout << page << std::endl;
 
-	boost::regex re("Set-Cookie: (Mpop=.*?;)");
-	if (boost::regex_search(page, match, re))
-	{
-                auth = match[1];
-                return 0; //!< Jeśli logowanie zakończyło sie powodzeniem
-	}
-	else
-        {
-                return 1; //!< Jeśli logowanie zakończyło sie niepowodzeniem
-        }
+		boost::regex re("wyloguj");
+		if (boost::regex_search(page, match, re))
+		{
+			auth = match[1];
+			return 0; //!< Jeśli logowanie zakończyło sie powodzeniem
+		}
+		else
+		{
+			return 1; //!< Jeśli logowanie zakończyło sie niepowodzeniem
+		}
 }
 
 void InteriaPlMailbox::logoutRequest()
@@ -76,6 +79,7 @@ void InteriaPlMailbox::logoutRequest()
 
 void InteriaPlMailbox::getHeadersRequest()
 {
+	/*
         std::string url("http://win.mail.ru/cgi-bin/msglist?folder=0"); //!< adres strony głównej skrzynki
 	//setState(Mailbox::ReadHeadersIP); // request headers
 // 	totalEmails = 0;
@@ -123,18 +127,19 @@ void InteriaPlMailbox::getHeadersRequest()
 		}
 //		LOG(Log::Debug, ".");
 	}
+	*/
 
 //	setState(Mailbox::ReadHeadersDone); */
 }
 
 int InteriaPlMailbox::downloadRequest(int seg)
 {
+	/*
         std::string mylink = getLink(seg); //!< pobranie adresu wiadomości zawierającej dany segment
 //	cout << mylink << endl;
         setCookie(auth); //!< wstawienie cookie do nagłówka
         page = doGet("http://win.mail.ru/cgi-bin/readmsg"+mylink); //!< pobranie strony zawierającej segment
 //	regex re("http://a[a-z]*[0-9].mail.ru/cgi-bin/readmsg/.*?&mode=attachment&channel=");
-// 	boost::regex re("<a href=\"(http://a[^\"]*/cgi-bin/readmsg/[^\"]*&mode=attachment&channel=)");
         boost::regex re("<a href=\"(http://win.mail.ru/cgi-bin/getattach[^\"]*&mode=attachment&channel=&notype)");
 // 	http://win.mail.ru/cgi-bin/getattach?file=devcpp%2d4.9.9.2_setup.exe.5&id=12643664970000000633;0;1&mode=attachment&channel=&notype
 	boost::smatch match;
@@ -153,114 +158,10 @@ int InteriaPlMailbox::downloadRequest(int seg)
 //		setState(Mailbox::DownloadIP);
 //		setSegment(s);
 	}
-
+	*/
 }
 
 int InteriaPlMailbox::uploadRequest(std::string filename, std::vector<std::string> to, int seg) {
-	LOG(Log::Debug, boost::format( "uploadRequest" ));
-
-	size_t len, request_length;
-	std::string message;
-	using boost::asio::ip::tcp;
-
-	len = strlen(getUser().c_str());
-	unsigned char *b64login = base64((char*)getUser().c_str(), len);
-	len = strlen(getPassword().c_str());
-	unsigned char *b64password = base64((char*)getPassword().c_str(), len);
-
-std::cout << b64login << " " << b64password << std::endl;
-
-	boost::asio::io_service io_service;
-	tcp::resolver resolver(io_service);
-	tcp::resolver::query query("smtp.mail.ru", "smtp");
-	tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-	tcp::resolver::iterator end;
-	tcp::socket socket(io_service);
-	boost::system::error_code error = boost::asio::error::host_not_found;
-
-	while (error && endpoint_iterator != end)
-	{
-		socket.close();
-		socket.connect(*endpoint_iterator++, error);
-	}
-	if (error)
-		throw boost::system::system_error(error);
-
-	boost::array<char, 128> buf;
-
-	len = socket.read_some(boost::asio::buffer(buf), error);
-	std::cout.write(buf.data(), len);
-
-	// powiedz ladnie HELO
-	message = "HELO smtpproxy.netcity.pl\n";
-	request_length = strlen(message.c_str());
-	boost::asio::write(socket, boost::asio::buffer(message, request_length));
-	len = socket.read_some(boost::asio::buffer(buf), error);
-	std::cout.write(buf.data(), len);
-
-	// autoryzacja
-	message = "AUTH LOGIN\n";
-	request_length = strlen(message.c_str());
-	boost::asio::write(socket, boost::asio::buffer(message, request_length));
-	len = socket.read_some(boost::asio::buffer(buf), error);
-	std::cout.write(buf.data(), len);
-
-	// autoryzacja - login
-	request_length = strlen((char*)b64login);
-	boost::asio::write(socket, boost::asio::buffer(b64login, request_length));
-	boost::asio::write(socket, boost::asio::buffer("\n", 1));
-	len = socket.read_some(boost::asio::buffer(buf), error);
-	std::cout.write(buf.data(), len);
-
-	// autoryzacja - haslo
-	request_length = strlen((char*)b64password);
-	boost::asio::write(socket, boost::asio::buffer(b64password, request_length));
-	boost::asio::write(socket, boost::asio::buffer("\n", 1));
-	len = socket.read_some(boost::asio::buffer(buf), error);
-	std::cout.write(buf.data(), len);
-
-// nadawca
-	message = "MAIL FROM:" + getUser() + "@mail.ru\n";
-	request_length = strlen(message.c_str());
-	boost::asio::write(socket, boost::asio::buffer(message, request_length));
-	len = socket.read_some(boost::asio::buffer(buf), error);
-	std::cout.write(buf.data(), len);
-
-
-	// odbiorca
-	message = "RCPT TO: " + getUser() + "@mail.ru\n";
-	request_length = strlen(message.c_str());
-	boost::asio::write(socket, boost::asio::buffer(message, request_length));
-	len = socket.read_some(boost::asio::buffer(buf), error);
-	std::cout.write(buf.data(), len);
-
-	// odbiorca
-	message = "DATA\n";
-	request_length = strlen(message.c_str());
-	boost::asio::write(socket, boost::asio::buffer(message, request_length));
-	len = socket.read_some(boost::asio::buffer(buf), error);
-	std::cout.write(buf.data(), len);
-
-	// odbiorca
-	message = "testowanie dupa dupa\n";
-	request_length = strlen(message.c_str());
-	boost::asio::write(socket, boost::asio::buffer(message, request_length));
-
-
-		// odbiorca
-	message = ".\n";
-	request_length = strlen(message.c_str());
-	boost::asio::write(socket, boost::asio::buffer(message, request_length));
-	len = socket.read_some(boost::asio::buffer(buf), error);
-	std::cout.write(buf.data(), len);
-
-	// odbiorca
-	message = "quit\n";
-	request_length = strlen(message.c_str());
-	boost::asio::write(socket, boost::asio::buffer(message, request_length));
-	len = socket.read_some(boost::asio::buffer(buf), error);
-	std::cout.write(buf.data(), len);
-
 	return 0;
 }
 

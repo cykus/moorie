@@ -12,7 +12,7 @@
 int main(int argc, char **argv) {
 
 		std::string version = "0.3.0"; /// version of moorie
-		
+
         CLibMoor * Instance; /// libmoor instance
 
         unsigned int logLevel(6);
@@ -183,6 +183,16 @@ int main(int argc, char **argv) {
                 } else
                         ep = vars["ep"].as<std::string>();
 
+				// upload from given segment
+ 				if (vars.count("fromseg")) {
+ 					fromseg = vars["fromseg"].as<unsigned int>();
+ 				}
+
+				// split file to segments from given segment size
+				if (vars.count("ss")) {
+					ss = vars["ss"].as<unsigned int>();
+				}
+
                 if (ss < 1 || ss > 10) {
                         std::cout << "Zla wielkosc segmentu (tylko 1-10)! Koncze program." << std::endl;
                         return 1;
@@ -215,7 +225,7 @@ int main(int argc, char **argv) {
         }
 
 		curl_global_init(CURL_GLOBAL_ALL);
-		
+
 		/// checking for new version of moorie
 		std::cout << "--== Starting moorie updater... --==" << std::endl;
 		Instance = new CLibMoor();
@@ -225,11 +235,11 @@ int main(int argc, char **argv) {
 		else
 			std::cout << "-> Moorie: No new version avalilable..." << std::endl;
 		delete Instance;
-	   
+
 		std::cout << std::endl;
-		
-		/// end of version checker 
-		
+
+		/// end of version checker
+
 		/// download instance
         if (download) {
                 try
@@ -277,7 +287,7 @@ int main(int argc, char **argv) {
         } else if (edit) {
 			try {
 				Instance = new CLibMoor();
-                                std::cerr << "Nowy hashcode: \n" << Instance->addMirror(editpass, orighash, mboxaddr, mboxpass);
+				Instance->addMirror(editpass, orighash, mboxaddr, mboxpass);
 // 				delete Instance;
 
 			}
