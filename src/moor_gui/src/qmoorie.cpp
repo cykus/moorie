@@ -57,6 +57,7 @@ void QMoorie::setTray()
             this,SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
     contextMenu = new QMenu();
     contextMenu->addAction(addDownloadAct);
+    contextMenu->addAction(addUploadAct);
     contextMenu->addAction(settingsAct);
     contextMenu->addSeparator();
     contextMenu->addAction(exitAct);
