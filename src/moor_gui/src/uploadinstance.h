@@ -62,6 +62,7 @@ public:
     int totalSegments; //!< Liczba wszystkich segmentów
     int msize; //!< Rozmiar segmentu
     unsigned int fromseg; //!< Od którego segmentu
+    quint64 wyslanoLS; //!< Ile wysłano w poprzedniej sesji
 };
 
 #endif // UPLOADINSTANCE_H

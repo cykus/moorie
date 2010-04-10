@@ -268,10 +268,10 @@ void QMoorie::addUploadInstance(QString file, QVector<mirrorMailbox*> mirrorMail
     int itemRow = uploadTable->rowCount();
     QFileInfo fileInfo;
     fileInfo.setFile(file);
-
     uploadInstanceH.insert(itemNumber, new uploadInstance(file, mirrorMailboxes, downPass, editPass, msize, fromSeg));
     uploadInstanceH[itemNumber]->fileName = fileInfo.fileName();
     uploadInstanceH[itemNumber]->fileSize = fileInfo.size();
+    uploadInstanceH[itemNumber]->wyslanoLS = (1024*1024*msize)*(fromSeg-1);
     uploadInstanceH[itemNumber]->start();
     uploadTable->setRowCount(uploadTable->rowCount() + 1);
     
@@ -390,7 +390,13 @@ void QMoorie::refreshStatuses()
             if(!(downloadInstanceH[itemNumber]->Instance->downloadPaused) && status.state != Status::FileError)
             {
                 allBytesReadSession += status.bytesRead;
-
+                if(status.downloadSegment > downloadInstanceH[itemNumber]->fromseg)
+                {
+                    downloadInstanceH[itemNumber]->fromseg = status.downloadSegment;
+                    QFileInfo fileInfo;
+                    fileInfo.setFile(downloadInstanceH[itemNumber]->path+downloadInstanceH[itemNumber]->filename);
+                    downloadInstanceH[itemNumber]->pobranoLS = fileInfo.size();
+                }
                 downloadTable->item( i, REMAINING )->setText( fileSize(downloadInstanceH[itemNumber]->size - downloadInstanceH[itemNumber]->pobranoLS - status.bytesRead) );
                 int percentDownloaded = 100.0f * (status.bytesRead + downloadInstanceH[itemNumber]->pobranoLS)  / downloadInstanceH[itemNumber]->size;
                 downloadTable->item( i, PROGRESS )->setData(Qt::DisplayRole, percentDownloaded);
@@ -409,6 +415,7 @@ void QMoorie::refreshStatuses()
                 }
                 s << speed;
                 downloadTable->item( i, SPEED )->setText( QString::fromStdString(s.str()) + " KB/s" );
+
                 downloadTable->item( i, STATUS )->setText(QString::fromStdString(status.getStateText()) +
                                "\n " + QString::number(status.downloadSegment+1) +
                                "/" + QString::number(downloadInstanceH[itemNumber]->totalSegments));
@@ -485,9 +492,14 @@ void QMoorie::refreshStatuses()
             if(!(uploadInstanceH[itemNumber]->Instance->downloadPaused) && status.state != Status::FileError)
             {
                 allBytesSendSession += status.bytesRead;
-
-                uploadTable->item( i, REMAINING )->setText( fileSize(status.bytesRead) );
-                int percentDownloaded = 100.0f * status.bytesRead  / uploadInstanceH[itemNumber]->fileSize;
+                if(status.downloadSegment > uploadInstanceH[itemNumber]->fromseg)
+                {
+                    uploadInstanceH[itemNumber]->fromseg = status.downloadSegment;
+                    uploadInstanceH[itemNumber]->wyslanoLS = (1024*1024*uploadInstanceH[itemNumber]->msize)*(uploadInstanceH[itemNumber]->fromseg-1);
+                    saveUploads();
+                }
+                uploadTable->item( i, REMAINING )->setText( fileSize(status.bytesRead + uploadInstanceH[itemNumber]->wyslanoLS ) );
+                int percentDownloaded = 100.0f * (status.bytesRead + uploadInstanceH[itemNumber]->wyslanoLS)    / uploadInstanceH[itemNumber]->fileSize;
                 uploadTable->item( i, PROGRESS )->setData(Qt::DisplayRole, percentDownloaded);
 
                 allSpeedSend += static_cast<double>( status.speed) / 1024.0f;
@@ -504,11 +516,6 @@ void QMoorie::refreshStatuses()
                 }
                 s << speed;
                 uploadTable->item( i, SPEED )->setText( QString::fromStdString(s.str()) + " KB/s" );
-                if(status.downloadSegment > uploadInstanceH[itemNumber]->fromseg)
-                {
-                    uploadInstanceH[itemNumber]->fromseg = status.downloadSegment;
-                    saveUploads();
-                }
                 uploadTable->item( i, STATUS )->setText( QString::fromStdString(status.getStateText()) +
                                                          "\n " + QString::number(status.downloadSegment) +
                                                          "/" + QString::number(uploadInstanceH[itemNumber]->totalSegments) );

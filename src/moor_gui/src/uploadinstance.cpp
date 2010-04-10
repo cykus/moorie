@@ -28,7 +28,8 @@ uploadInstance::uploadInstance(QString file, QVector<mirrorMailbox*> mirrorMailb
         fromseg(fromseg),
         infoString('Brak informacji, spróbuj później.'),
         done(false),
-        totalSegments(0)
+        totalSegments(0),
+        wyslanoLS(0)
 {
     loadMailboxesFromFile();
 }

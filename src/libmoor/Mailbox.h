@@ -71,8 +71,6 @@ class CMailBox {
 	std::string result; //Variable that contains result of request
 
 //	mutable mutex speedMutex;
-        double allBytesRead;
-        double allBytesSend;
         double bytesRead;
         double bytesSend;
 
