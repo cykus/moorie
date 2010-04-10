@@ -336,7 +336,7 @@ std::string CLibMoor::generateCleanHashcode() {
         std::string downpass = myDownPasswd;
         std::string editpass = myEditPasswd;
 
-	hashEncoder->setFilename(myUploadFilename);
+        hashEncoder->setFilename(boost::filesystem::basename(myUploadFilename)+boost::filesystem::extension(myUploadFilename));
 	hashEncoder->setCRC(myUploadFileCRC);
 	hashEncoder->setFileSize(myUploadFilesize);
 	hashEncoder->setSegmentCount(myUploadNumOfSeg);
