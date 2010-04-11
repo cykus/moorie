@@ -237,7 +237,6 @@ int main(int argc, char **argv) {
 		delete Instance;
 
 		std::cout << std::endl;
-
 		/// end of version checker
 
 		/// download instance

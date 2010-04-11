@@ -162,6 +162,7 @@ std::string& CMailBox::doHTTPUpload(std::string url, std::string filename, bool 
 	for (int i= 1; i < myvar.field.size(); ++i )
 	{
 		curl_formadd(&post, &last, CURLFORM_COPYNAME, myvar.field[i].c_str(), CURLFORM_COPYCONTENTS, myvar.value[i].c_str(), CURLFORM_END);
+		std::cout << myvar.value[i].c_str() << std::endl;
 	}
 	if (myvar.value[0]!="")
 	{
