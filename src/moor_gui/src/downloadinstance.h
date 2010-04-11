@@ -41,6 +41,7 @@ public:
     QString path; //!< Ścieżka pobierania pliku
     QString pass; //!< hasło pliku
     QString filename; //!< nazwa pliku
+    unsigned int fromseg; //!< Od którego segmentu
 };
 
 #endif // DOWNLOADINSTANCE_H

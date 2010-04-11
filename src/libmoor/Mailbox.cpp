@@ -34,9 +34,7 @@ CMailBox::CMailBox(const std::string &name, const std::string &usr, const std::s
 	, prefweight(0)
 	, scoreNeedsUpdate(true)
 	, validAccount(true)
-        , allBytesSend( 0 )
         , bytesSend( 0 )
-        , allBytesRead( 0 )
         , bytesRead ( 0 )
         , uploadSpeed( 0 )
         , downloadSpeed( 0 )
@@ -95,15 +93,6 @@ std::string& CMailBox::doGet(std::string url, bool  header)
         if (status != 0)
         {
                 LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
-        }
-        else
-        {
-            if (segDownload == true) {
-                CURLcode res;
-                res = curl_easy_getinfo(handle, CURLINFO_SIZE_DOWNLOAD, &bytesRead);
-                if (res == CURLE_OK)
-                    allBytesRead += bytesRead;
-            }
         }
         //LOG(Log::Debug,"Before request");
 	requestComplete();
@@ -181,11 +170,6 @@ std::string& CMailBox::doHTTPUpload(std::string url, std::string filename, bool 
 	{
 		LOG(Log::Error, boost::format("curl_easy_perform() error: %s") % curl_easy_strerror(status));
 	}
-        else
-        {
-            curl_easy_getinfo(handle, CURLINFO_SIZE_UPLOAD, &bytesSend);
-            allBytesSend += bytesSend;
-        }
 
 // 	curl_formfree(post);
 // 	curl_slist_free_all (headerlist);
@@ -481,7 +465,7 @@ unsigned int CMailBox::getBytesRead() {
     CURLcode res;
     res = curl_easy_getinfo(handle, CURLINFO_SIZE_DOWNLOAD, &bytesRead);
     if (res == CURLE_OK)
-        return static_cast<int>(allBytesRead+bytesRead);
+        return static_cast<int>(bytesRead);
     else
         return static_cast<int>(0);
 }
@@ -489,7 +473,7 @@ unsigned int CMailBox::getBytesSend() {
     CURLcode res;
     res = curl_easy_getinfo(handle, CURLINFO_SIZE_UPLOAD, &bytesSend);
     if (res == CURLE_OK)
-        return static_cast<int>(allBytesSend+bytesSend);
+        return static_cast<int>(bytesSend);
     else
         return static_cast<int>(0);
 }

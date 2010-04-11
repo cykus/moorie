@@ -25,7 +25,8 @@ downloadInstance::downloadInstance(QString hash, QString pass, QString path):
         pass(pass),
         path(path),
         done(false),
-        pobranoLS(0)
+        pobranoLS(0),
+        fromseg(0)
 {
 }
 void downloadInstance::run()
