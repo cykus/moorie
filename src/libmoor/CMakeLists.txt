@@ -1,5 +1,8 @@
 add_library (moor SHARED Decoder.cpp
                          LibMoor.cpp
+                         LibMoorieDownload.cpp
+                         LibMoorieUpload.cpp
+                         LibMoorieTools.cpp
                          Log.cpp  
                          Mailbox.cpp
                          Mailboxes.cpp  
