@@ -5,12 +5,11 @@ TODO dla moorie w wersji 0.4  - mahho
     { } - zadanie byc moze bedzie zrobione 
 
 Lista zadan:
-  moorie - console gui:
+  moorie:
     [X] Sprawdzanie aktualnej wersji programu
-    [ ] Plik konfiguracyjny dla moorie
-    [ ] Kolejkowanie pobierania w konsoli
-    { } Byc moze zmieniony interfejs pobierania w konsoli
+    [ ] Plik konfiguracyjny
     [ ] Lokalizacja programu
+    { } Byc moze zmieniony interfejs pobierania w konsoli
   skrzynki:
     [ ] Modularyzacja skrzynek
     [ ] Auto-aktualizacja skrzynek
@@ -18,7 +17,11 @@ Lista zadan:
   inne:
     [ ] Nieszczesny Ygoow
     [ ] Sprawdzanie segmentow dla podanego hashcodu bez pobierania upka
+  download:
+    [ ] Kolejkowanie pobierania w konsoli
+    [ ] Wczytywanie listy hashy z pliku i kolejkowanie ich pobierania
   upload:
+    [ ] Parser pliku z danymi do uploadu (plik do wyslania, dane skrzynki do uploadu, hasla, itp)
     [ ] Sprawdzanie, czy plik do uploadu jest juz podzielony
     [ ] Wypelnianie wiadomosci losowymi slowami
     { } Kodowanie naglowkow maili tak jak robi to moorhunt
