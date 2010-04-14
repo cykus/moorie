@@ -1,3 +1,31 @@
+TODO dla moorie w wersji 0.4  - mahho
+  Wyjasnienie:
+    [ ] - zadanie do zrobienia 
+    [ ] - zadanie ukonczone
+    { } - zadanie byc moze bedzie zrobione 
+
+Lista zadan:
+  moorie - console gui:
+    [X] Sprawdzanie aktualnej wersji programu
+    [ ] Plik konfiguracyjny dla moorie
+    [ ] Kolejkowanie pobierania w konsoli
+    { } Byc moze zmieniony interfejs pobierania w konsoli
+    [ ] Lokalizacja programu
+  skrzynki:
+    [ ] Modularyzacja skrzynek
+    [ ] Auto-aktualizacja skrzynek
+    [ ] Kreator kont
+  inne:
+    [ ] Nieszczesny Ygoow
+    [ ] Sprawdzanie segmentow dla podanego hashcodu bez pobierania upka
+  upload:
+    [ ] Sprawdzanie, czy plik do uploadu jest juz podzielony
+    [ ] Wypelnianie wiadomosci losowymi slowami
+    { } Kodowanie naglowkow maili tak jak robi to moorhunt
+    { } Dosylanie brakujacych segmentow
+    { } Forward segmentow
+
+
 Lista rzeczy do zrobienia w nastepnych wersjach Moorie:
 
 - Lokalizacja moorie (poczatkowo tylko jezyk angielski)
